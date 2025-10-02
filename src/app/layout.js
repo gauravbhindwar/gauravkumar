@@ -1,7 +1,6 @@
 import { Geist, Montserrat, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import ConditionalNavbar from "@/components/ConditionalNavbar";
 import AuthProvider from "@/components/AuthProvider";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -32,7 +31,6 @@ export default function RootLayout({ children }) {
       <body className={`${montserrat.variable} ${spaceGrotesk.variable} font-sans`}>
         <AuthProvider>
           <ThemeProvider>
-            <ConditionalNavbar />
             {children}
           </ThemeProvider>
         </AuthProvider>

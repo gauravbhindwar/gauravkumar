@@ -6,27 +6,39 @@ import { useState, useEffect } from 'react';
 const cache = new Map();
 
 export default function useFetch(url, options = {}) {
-  const { revalidate = 60000 } = options; // Revalidate after 1 minute by default
+  const { revalidate = 300000 } = options; // 5 minutes default cache time
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    let mounted = true;
 
     const fetchData = async () => {
-      // Check if we have cached data and it's not stale
-      const cachedData = cache.get(url);
-      if (cachedData && Date.now() - cachedData.timestamp < revalidate) {
-        setData(cachedData.data);
-        setLoading(false);
-        return;
-      }
-
       try {
-        setLoading(true);
-        const response = await fetch(url, { signal });
+        console.log('useFetch: Starting fetch for URL:', url);
+        
+        // Check cache first
+        const cachedData = cache.get(url);
+        if (cachedData && Date.now() - cachedData.timestamp < revalidate) {
+          console.log('useFetch: Using cached data for:', url);
+          if (mounted) {
+            setData(cachedData.data);
+            setLoading(false);
+            setError(null);
+          }
+          return;
+        }
+
+        if (mounted) {
+          setLoading(true);
+          setError(null);
+        }
+        
+        console.log('useFetch: Making fetch request to:', url);
+        const response = await fetch(url);
+        
+        console.log('useFetch: Response status:', response.status, 'for URL:', url);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status}`);
@@ -34,17 +46,21 @@ export default function useFetch(url, options = {}) {
         
         const result = await response.json();
         
-        // Cache the result with a timestamp
+        console.log('useFetch: Data received for:', url, 'Data:', result);
+        
+        // Cache the result
         cache.set(url, {
           data: result,
           timestamp: Date.now()
         });
         
-        setData(result);
-        setLoading(false);
+        if (mounted) {
+          setData(result);
+          setLoading(false);
+        }
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error('Error fetching data:', err);
+        console.log('useFetch: Error for URL:', url, 'Error:', err.message);
+        if (mounted) {
           setError(err.message);
           setLoading(false);
         }
@@ -54,7 +70,7 @@ export default function useFetch(url, options = {}) {
     fetchData();
 
     return () => {
-      controller.abort();
+      mounted = false;
     };
   }, [url, revalidate]);
 

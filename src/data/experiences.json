@@ -1,0 +1,57 @@
+[
+  {
+    "company": "AGILITYAI Private Limited",
+    "position": "Software Developer Intern / Full Stack Developer",
+    "location": "Remote",
+    "startDate": "2025-06-01",
+    "endDate": "2025-09-01",
+    "isCurrentPosition": false,
+    "description": "Developed 3+ scalable web platforms including Fairly-Settled, Edumaniax, and Invoicely (Billing and Invoicing System). Built comprehensive full-stack solutions with modern technologies and optimized performance.",
+    "responsibilities": [
+      "Developed 3+ scalable web platforms (Fairly-Settled, Edumaniax, Invoicely – Billing and Invoicing System)",
+      "Built Invoicely: Full-stack invoicing system using Next.js, Node.js, and MongoDB for business invoice management",
+      "Implemented secure authentication, role-based dashboards, and dynamic PDF export functionality",
+      "Integrated Razorpay payment gateway and automated email notifications for invoice reminders",
+      "Optimized performance by caching API calls and refactoring database queries, reducing latency by 25%",
+      "Migrated backend from Python Flask to Node.js microservices, reducing API response time by 40%",
+      "Automated deployments using Docker and GCP, cutting manual deployment time by 50%"
+    ],
+    "technologies": [
+      "Next.js", "React.js", "Node.js", "Express.js", "MongoDB", "JavaScript",
+      "Python", "Flask", "Docker", "GCP", "Razorpay", "JWT", "RESTful APIs",
+      "Microservices", "PDF Generation", "Email Automation"
+    ],
+    "companyLogo": "",
+    "companyWebsite": "",
+    "employmentType": "Internship",
+    "order": 1,
+    "isActive": true
+  },
+  {
+    "company": "Software Development Center, Manipal University Jaipur",
+    "position": "Full Stack Web Developer (MERN)",
+    "location": "Jaipur, India",
+    "startDate": "2025-01-01",
+    "endDate": "2025-06-01",
+    "isCurrentPosition": false,
+    "description": "Led development of MentorLink, a comprehensive full-stack mentorship platform serving 500+ users. Implemented secure authentication systems and optimized database performance.",
+    "responsibilities": [
+      "Led development of MentorLink, a full-stack mentorship platform (MERN+Next.js) serving 500+ users",
+      "Implemented secure RESTful APIs with JWT authentication and multi-role access control",
+      "Developed role-based access control using NextAuth and JWT for secure authentication and authorization", 
+      "Created modules for assignments, email notifications, archiving, and analytics dashboards with real-time updates",
+      "Optimized database queries and reduced load time by 35% through schema refactoring and indexing",
+      "Designed and deployed platform architecture supporting university-wide mentorship programs"
+    ],
+    "technologies": [
+      "Next.js", "React.js", "Node.js", "Express.js", "MongoDB", "Prisma ORM",
+      "NextAuth.js", "JWT", "Tailwind CSS", "RESTful APIs", "Real-time Updates",
+      "Database Optimization", "Authentication Systems"
+    ],
+    "companyLogo": "",
+    "companyWebsite": "",
+    "employmentType": "Full-time",
+    "order": 2,
+    "isActive": true
+  }
+]

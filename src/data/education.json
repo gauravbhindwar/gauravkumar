@@ -1,0 +1,84 @@
+[
+  {
+    "institution": "Manipal University Jaipur",
+    "degree": "B.Tech",
+    "field": "Computer Science and Engineering",
+    "startDate": "2022-08-01",
+    "endDate": "2026-06-01",
+    "isCurrentlyStudying": true,
+    "grade": "7.91",
+    "gradeType": "GPA",
+    "location": "Jaipur, India",
+    "description": "Pursuing Bachelor of Technology in Computer Science and Engineering with focus on software development, algorithms, and modern technologies.",
+    "coursework": [
+      "Data Structures and Algorithms",
+      "Object-Oriented Programming",
+      "Database Management Systems",
+      "Operating Systems",
+      "Computer Networks",
+      "Software Engineering",
+      "Web Development",
+      "Machine Learning"
+    ],
+    "achievements": [
+      "2nd Rank in International Project Expo for MentorLink",
+      "Star Performer in Software Development Center (SDC)",
+      "Led development of MentorLink platform serving 500+ users",
+      "GPA: 7.91/10"
+    ],
+    "order": 1,
+    "isActive": true
+  },
+  {
+    "institution": "Govt. +2 High School, Supaul",
+    "degree": "Intermediate",
+    "field": "PCM (Physics, Chemistry, Mathematics)",
+    "startDate": "2019-04-01",
+    "endDate": "2021-04-01",
+    "isCurrentlyStudying": false,
+    "grade": "75.4%",
+    "gradeType": "Percentage",
+    "location": "Supaul, India",
+    "description": "Completed Higher Secondary Education with Physics, Chemistry, and Mathematics as core subjects.",
+    "coursework": [
+      "Physics",
+      "Chemistry", 
+      "Mathematics",
+      "English",
+      "Computer Science"
+    ],
+    "achievements": [
+      "75.4% in Board Examinations",
+      "Strong foundation in Mathematics and Science"
+    ],
+    "order": 2,
+    "isActive": true
+  },
+  {
+    "institution": "Sanskar Bharti Global School, Bihar",
+    "degree": "10th Grade",
+    "field": "Secondary Education",
+    "startDate": "2018-04-01",
+    "endDate": "2019-05-01",
+    "isCurrentlyStudying": false,
+    "grade": "89.90%",
+    "gradeType": "Percentage",
+    "location": "Bihar, India",
+    "description": "Completed Secondary Education with excellent academic performance.",
+    "coursework": [
+      "Mathematics",
+      "Science",
+      "Social Science",
+      "English",
+      "Hindi",
+      "Computer Applications"
+    ],
+    "achievements": [
+      "89.90% in Board Examinations",
+      "Excellent academic performance",
+      "Strong foundation in core subjects"
+    ],
+    "order": 3,
+    "isActive": true
+  }
+]

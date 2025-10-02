@@ -3,10 +3,111 @@
 import { useTheme } from './theme-provider'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { FaSun, FaMoon, FaMusic, FaFileDownload, FaHome, FaPaintBrush, FaCircle, FaArrowRight, FaStar } from 'react-icons/fa'
-import { FiMenu, FiX } from 'react-icons/fi'
+import { FaSun, FaMoon, FaMusic, FaFileDownload, FaHome, FaPaintBrush, FaCircle, FaArrowRight, FaStar, FaLaptopCode, FaRobot, FaRocket } from 'react-icons/fa'
+import { FiMenu, FiX, FiChevronDown } from 'react-icons/fi'
 import Link from 'next/link'
 import useFetch from '@/hooks/useFetch'
+
+// Resume View Toggle Component
+const ResumeViewToggle = ({ onResumeTypeChange, currentType = 'both' }) => {
+  const [resumeType, setResumeType] = useState(currentType)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleToggle = (type) => {
+    setResumeType(type)
+    setIsOpen(false)
+    if (onResumeTypeChange) {
+      onResumeTypeChange(type)
+    }
+  }
+
+  const resumeOptions = [
+    {
+      key: 'fullstack',
+      label: 'Full Stack',
+      icon: FaLaptopCode,
+      description: 'MERN, Next.js, System Design',
+      color: 'text-blue-500'
+    },
+    {
+      key: 'ai',
+      label: 'AI Engineer',
+      icon: FaRobot,
+      description: 'GenAI, LLM, ML',
+      color: 'text-purple-500'
+    },
+    {
+      key: 'both',
+      label: 'Complete',
+      icon: FaRocket,
+      description: 'Full Portfolio',
+      color: 'text-green-500'
+    }
+  ]
+
+  const currentOption = resumeOptions.find(option => option.key === resumeType) || resumeOptions[2]
+
+  return (
+    <div className="relative">
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 bg-base-200/80 hover:bg-base-300/80 
+                   rounded-lg transition-all duration-200 backdrop-blur-sm border border-base-300/50
+                   text-sm font-medium text-base-content"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <currentOption.icon className={`h-4 w-4 ${currentOption.color}`} />
+        <span className="hidden sm:inline">{currentOption.label}</span>
+        <FiChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full right-0 mt-2 w-72 bg-base-100/95 backdrop-blur-lg 
+                       rounded-xl shadow-lg border border-base-300/50 p-4 z-50"
+          >
+            <div className="text-sm text-base-content/80 mb-3 font-medium">
+              Customize Portfolio View
+            </div>
+            <div className="space-y-2">
+              {resumeOptions.map((option) => (
+                <motion.button
+                  key={option.key}
+                  onClick={() => handleToggle(option.key)}
+                  className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+                             ${resumeType === option.key 
+                               ? 'bg-primary/10 border border-primary/20 text-primary' 
+                               : 'hover:bg-base-200/80 border border-transparent'
+                             }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <option.icon className={`h-5 w-5 ${option.color}`} />
+                  <div className="text-left">
+                    <div className="font-medium text-sm">{option.label}</div>
+                    <div className="text-xs text-base-content/60">{option.description}</div>
+                  </div>
+                  {resumeType === option.key && (
+                    <motion.div
+                      layoutId="selected"
+                      className="ml-auto w-2 h-2 bg-primary rounded-full"
+                    />
+                  )}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 // Throttle function for performance optimization
 const throttle = (func, limit) => {
@@ -306,7 +407,7 @@ const ThemeToggleWithAnimations = ({ toggleTheme, theme }) => {
   )
 }
 
-export default function Navbar() {
+export default function Navbar({ onResumeTypeChange, currentResumeType = 'both' }) {
   const { theme, toggleTheme } = useTheme()
   const activeSection = useActiveSection()
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -316,11 +417,15 @@ export default function Navbar() {
   const [currentSection, setCurrentSection] = useState('')
   const [lastScrollY, setLastScrollY] = useState(0) // Store last scroll position
   const { data: contactData, loading, error } = useFetch('/api/contact')
+  
   const navItems = [
     { href: '#home', label: 'Home', id: 'home', icon: FaHome },
-    { href: '#projects', label: 'Projects', id: 'projects' },
-    { href: '#skills', label: 'Skills', id: 'skills' },
+    { href: '#experience', label: 'Experience', id: 'experience' },
+     { href: '#projects', label: 'Projects', id: 'projects' },
+      { href: '#skills', label: 'Skills', id: 'skills' },
+    { href: '#education', label: 'Education', id: 'education' },
     { href: '#certifications', label: 'Certifications', id: 'certifications' },
+    { href: '#achievements-awards', label: 'Achievements', id: 'achievements-awards' },
     { href: '#contact', label: 'Contact', id: 'contact' }
   ]
   const downloadResume = () => {
@@ -370,7 +475,7 @@ export default function Navbar() {
     // No need for setTimeout, let's do it directly
     const element = document.querySelector(href);
     if (element) {
-      const yOffset = -80;
+      const yOffset = -100; // Increased offset for new navbar height
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       
       const sectionId = href.replace('#', '');
@@ -413,7 +518,9 @@ export default function Navbar() {
   }, [activeSection])
 
   return (
-    <>      <AnimatePresence>
+    <>
+      {/* Scroll Progress Bar */}
+      <AnimatePresence>
         {scrollDirection === 'down' && (
           <motion.div 
             className="fixed top-0 left-0 right-0 h-[2px] z-50 bg-gradient-to-r from-transparent via-base-content/10 to-transparent pointer-events-none"
@@ -423,7 +530,7 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
           >
             <motion.div
-              className="h-full bg-gradient-to-r from-primary via-primary to-primary"
+              className="h-full bg-gradient-to-r from-primary via-secondary to-accent"
               style={{ 
                 width: `${scrollProgress}%`
               }}
@@ -436,213 +543,243 @@ export default function Navbar() {
             />
           </motion.div>
         )}
-      </AnimatePresence>      <motion.nav 
-        className={`fixed top-0 left-0 right-0 z-40 ${
-          isScrolled ? 'py-2 backdrop-blur-md shadow-lg border-b border-base-content/10 bg-base-100/95' : 'py-4 bg-base-100/90 backdrop-blur-sm'
-        } transition-all duration-300 will-change-transform`}
+      </AnimatePresence>
+
+      {/* Modern Navbar */}
+      <motion.nav 
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          isScrolled 
+            ? 'py-2 backdrop-blur-xl bg-base-100/90 shadow-xl border-b border-base-content/10' 
+            : 'py-4 bg-base-100/80 backdrop-blur-sm'
+        }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ 
-          type: 'tween', 
-          duration: 0.3,
-          ease: "easeOut"
+          type: 'spring', 
+          stiffness: 300,
+          damping: 30
         }}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between relative">            <motion.a 
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between">
+            
+            {/* Logo */}
+            <motion.a 
               href="#home"
-              className="text-xl md:text-lg lg:text-xl font-bold relative group shrink-0 flex items-center gap-2"
+              className="text-xl md:text-2xl font-bold relative group shrink-0 flex items-center gap-3"
               whileHover={{ scale: 1.05 }}
               onClick={(e) => handleNavClick(e, '#home')}
             >
-              <FaHome className="text-primary w-5 h-5" />
-              <span className="bg-gradient-to-r from-primary via-accent to-secondary text-transparent bg-clip-text">
-                Gaurav
+              <div className="relative">
+                <FaHome className="text-primary w-6 h-6" />
+                {currentSection === 'home' && (
+                  <motion.div
+                    className="absolute -inset-1 bg-primary/20 rounded-full blur-sm"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
+              </div>
+              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                Gaurav Kumar
               </span>
-              {currentSection === 'home' && <AnimatedNotes />}
             </motion.a>
 
-            <div className="hidden lg:flex items-center gap-8">
-              <div className="bg-base-200/50 backdrop-blur-sm rounded-2xl p-1.5">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6">
+              {/* Resume View Toggle */}
+              <ResumeViewToggle 
+                onResumeTypeChange={onResumeTypeChange}
+                currentType={currentResumeType}
+              />
+
+              {/* Navigation Links */}
+              <div className="bg-base-200/40 backdrop-blur-sm rounded-2xl p-1.5 border border-base-300/30">
                 <ul className="flex items-center gap-1 relative">
-                  {navItems.map((item) => (
-                    <motion.li key={item.id}>                      <a 
+                  {navItems.slice(1).map((item) => ( // Skip home since it's in logo
+                    <motion.li key={item.id}>
+                      <a 
                         href={item.href}
                         onClick={(e) => handleNavClick(e, item.href)}
-                        className="relative px-4 py-2 rounded-xl block transition-all"
-                      >                      <AnimatePresence mode="wait" initial={false}>
+                        className="relative px-3 py-2 rounded-xl block transition-all group"
+                      >
+                        <AnimatePresence mode="wait" initial={false}>
                           {currentSection === item.id && (
                             <motion.span
                               layoutId="navActive"
-                              className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
+                              className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl border border-primary/30"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
                               transition={{ duration: 0.2 }}
                             />
                           )}
                         </AnimatePresence>
                         <div className="relative z-10 flex items-center gap-2">
-                          {item.icon && <item.icon className={`w-4 h-4 ${currentSection === item.id ? 'text-primary' : ''}`} />}
-                          <span className={`transition-colors duration-200 ${
+                          <span className={`transition-colors duration-200 text-sm font-medium ${
                             currentSection === item.id 
-                              ? 'text-primary font-medium' 
-                              : 'hover:text-primary/70'
+                              ? 'text-primary' 
+                              : 'hover:text-primary/80 text-base-content/80'
                           }`}>
                             {item.label}
                           </span>
                         </div>
-                        {currentSection === item.id && (
-                          <motion.div 
-                            className="absolute -bottom-4 left-0 right-0"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                          >
-                            <AnimatedNotes />
-                          </motion.div>
-                        )}
                       </a>
                     </motion.li>
                   ))}
                 </ul>
               </div>
 
-              <motion.button 
-                onClick={downloadResume}
-                className="relative p-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-content 
-                          flex items-center gap-2 text-sm transition-all duration-200 shadow-md hover:shadow-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={loading || !contactData}
-              >
-                <div className="relative z-10 flex items-center gap-2">
+              {/* Actions */}
+              <div className="flex items-center gap-3">
+                {/* Download Resume Button */}
+                <motion.button 
+                  onClick={downloadResume}
+                  className="relative px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary 
+                            hover:from-primary/90 hover:to-secondary/90 text-white
+                            flex items-center gap-2 text-sm font-medium transition-all duration-200 
+                            shadow-lg hover:shadow-xl hover:shadow-primary/25"
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={loading || !contactData}
+                >
                   {loading ? (
-                    <div className="w-4 h-4 border-2 border-primary-content/50 border-t-primary-content rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
                   ) : (
                     <FaFileDownload className="w-4 h-4" />
                   )}
-                  <span className="font-medium">Resume</span>
-                </div>
-              </motion.button>
+                  <span>Resume</span>
+                </motion.button>
 
-              <ThemeToggleWithAnimations toggleTheme={toggleTheme} theme={theme} />
-            </div>            <motion.button 
-              className="lg:hidden p-2 rounded-xl hover:bg-base-200/50 ml-auto menu-button"
-              onClick={() => setIsOpen(prev => !prev)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={isOpen ? 'close' : 'open'}
-                  initial={{ opacity: 0, rotate: isOpen ? 45 : -45 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: isOpen ? -45 : 45 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  {isOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
-                </motion.div>
-              </AnimatePresence>
-            </motion.button>
+                {/* Theme Toggle */}
+                <ThemeToggleWithAnimations toggleTheme={toggleTheme} theme={theme} />
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="flex items-center gap-3 lg:hidden">
+              <ResumeViewToggle 
+                onResumeTypeChange={onResumeTypeChange}
+                currentType={currentResumeType}
+              />
+              
+              <motion.button 
+                className="p-2.5 rounded-xl hover:bg-base-200/50 transition-colors menu-button"
+                onClick={() => setIsOpen(prev => !prev)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={isOpen ? 'close' : 'open'}
+                    initial={{ opacity: 0, rotate: isOpen ? 45 : -45 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: isOpen ? -45 : 45 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {isOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.button>
+            </div>
           </div>
-        </div>        <AnimatePresence>
+        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="lg:hidden fixed inset-x-0 top-[60px] bg-base-100/95 backdrop-blur-md 
-                        border-b border-base-content/10 shadow-lg mobile-menu"
+              className="lg:hidden absolute inset-x-0 top-full bg-base-100/95 backdrop-blur-xl 
+                        border-b border-base-content/10 shadow-2xl mobile-menu"
               initial={{ opacity: 0, height: 0 }}
               animate={{ 
                 opacity: 1, 
                 height: 'auto', 
                 transition: { 
                   opacity: { duration: 0.2 },
-                  height: { duration: 0.3 }
+                  height: { duration: 0.3, ease: "easeOut" }
                 } 
               }}
               exit={{ 
                 opacity: 0, 
                 height: 0,
                 transition: { 
-                  opacity: { duration: 0.2 },
-                  height: { duration: 0.2 }
+                  opacity: { duration: 0.15 },
+                  height: { duration: 0.2, ease: "easeIn" }
                 }
               }}
               style={{ 
-                maxHeight: 'calc(100vh - 60px)',
-                overflowY: 'auto',
-                zIndex: 40
+                maxHeight: 'calc(100vh - 80px)',
+                overflowY: 'auto'
               }}
-            ><div className="p-4">
-                <ul className="space-y-3">
+            >
+              <div className="p-6">
+                <ul className="space-y-2 mb-6">
                   {navItems.map((item, i) => (
                     <motion.li
                       key={item.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
+                      transition={{ delay: i * 0.05 }}
                     >
                       <a
                         href={item.href}
                         onClick={(e) => handleNavClick(e, item.href)}
-                        className={`flex items-center justify-between px-4 py-3 rounded-xl relative ${
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                           currentSection === item.id
-                            ? 'bg-primary/10 text-primary font-medium'
+                            ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border border-primary/20'
                             : 'hover:bg-base-200/70'
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          {item.icon && <item.icon className="w-5 h-5" />}
-                          <span className="text-lg">{item.label}</span>
-                        </div>
+                        {item.icon && <item.icon className="w-5 h-5" />}
+                        <span className="text-base font-medium">{item.label}</span>
                         {currentSection === item.id && (
                           <motion.div 
+                            className="ml-auto"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0 }}
                           >
-                            <AnimatedNotes />
+                            <div className="w-2 h-2 bg-primary rounded-full" />
                           </motion.div>
                         )}
                       </a>
                     </motion.li>
                   ))}
-
-                  <motion.li
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 0.1) * 0.1 }}
-                  >
-                    <div className="px-4 py-2">
-                      <ThemeToggleWithAnimations toggleTheme={toggleTheme} theme={theme} />
-                    </div>
-                  </motion.li>
-
-                  <motion.li
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 0.2) * 0.1 }}
-                  >
-                    <button
-                      onClick={downloadResume}
-                      disabled={loading || !contactData}
-                      className="relative w-full flex items-center justify-between px-4 py-3 rounded-xl 
-                                bg-primary hover:bg-primary/90 text-primary-content transition-all duration-200 
-                                shadow-md hover:shadow-lg"
-                    >
-                      <span className="relative z-10 text-lg font-medium">Download Resume</span>
-                      <motion.div 
-                        className="relative z-10 p-2 bg-primary-content/10 backdrop-blur-sm rounded-lg"
-                      >
-                        {loading ? (
-                          <div className="w-5 h-5 border-2 border-primary-content/50 border-t-primary-content rounded-full animate-spin"></div>
-                        ) : (
-                          <FaFileDownload className="w-5 h-5" />
-                        )}
-                      </motion.div>
-                    </button>
-                  </motion.li>
                 </ul>
+
+                <div className="space-y-4">
+                  {/* Mobile Download Button */}
+                  <motion.button
+                    onClick={downloadResume}
+                    disabled={loading || !contactData}
+                    className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl 
+                              bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 
+                              text-white transition-all duration-200 shadow-lg font-medium"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: navItems.length * 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {loading ? (
+                      <div className="w-5 h-5 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      <FaFileDownload className="w-5 h-5" />
+                    )}
+                    <span>Download Resume</span>
+                  </motion.button>
+
+                  {/* Mobile Theme Toggle */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: (navItems.length + 1) * 0.05 }}
+                    className="flex justify-center"
+                  >
+                    <ThemeToggleWithAnimations toggleTheme={toggleTheme} theme={theme} />
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
           )}

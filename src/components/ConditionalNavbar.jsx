@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 import Navbar from './Navbar'
 
-export default function ConditionalNavbar() {
+export default function ConditionalNavbar({ onResumeTypeChange, currentResumeType }) {
   const pathname = usePathname()
   const isAdminRoute = pathname?.startsWith('/admin')
   
@@ -29,5 +29,10 @@ export default function ConditionalNavbar() {
     return null
   }
   
-  return <Navbar />
+  return (
+    <Navbar 
+      onResumeTypeChange={onResumeTypeChange}
+      currentResumeType={currentResumeType}
+    />
+  )
 }

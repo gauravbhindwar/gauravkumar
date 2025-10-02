@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -21,45 +22,62 @@ async function connectToDatabase() {
 
   // If a connection is already being established, wait for it
   if (!cached.promise) {
+    // Proxy configuration
+    let proxyAgent = null;
+    if (process.env.MONGODB_USE_PROXY === 'true' && process.env.MONGODB_PROXY_HOST) {
+      const proxyUrl = process.env.MONGODB_PROXY_USERNAME && process.env.MONGODB_PROXY_PASSWORD
+        ? `http://${process.env.MONGODB_PROXY_USERNAME}:${process.env.MONGODB_PROXY_PASSWORD}@${process.env.MONGODB_PROXY_HOST}:${process.env.MONGODB_PROXY_PORT || 8080}`
+        : `http://${process.env.MONGODB_PROXY_HOST}:${process.env.MONGODB_PROXY_PORT || 8080}`;
+      
+      proxyAgent = new HttpsProxyAgent(proxyUrl);
+      console.log('🔄 Using proxy for MongoDB connection:', process.env.MONGODB_PROXY_HOST);
+    }
+
     const opts = {
       bufferCommands: false,
-      // Optimize connection pool for better performance
-      maxPoolSize: 15, // Increased pool size
-      minPoolSize: 5,  // Maintain minimum connections
-      // Set read preference to primary preferred for better read performance
+      // Network timeout settings for better connectivity
+      connectTimeoutMS: 30000,     // 30 seconds for initial connection
+      socketTimeoutMS: 45000,      // 45 seconds for socket operations
+      serverSelectionTimeoutMS: 30000, // 30 seconds for server selection
+      heartbeatFrequencyMS: 10000, // 10 seconds heartbeat
+      
+      // Connection pool settings
+      maxPoolSize: 10,
+      minPoolSize: 1,
+      maxIdleTimeMS: 30000,
+      waitQueueTimeoutMS: 30000,
+      
+      // Retry and reliability settings
+      retryWrites: true,
+      retryReads: true,
+      
+      // Read preference for better availability
       readPreference: 'primaryPreferred',
-      // Optimize timeouts for faster operations
-      connectTimeoutMS: 8000,  // Connection timeout 8 seconds
-      socketTimeoutMS: 30000,  // Socket timeout 30 seconds
-      serverSelectionTimeoutMS: 8000, // Server selection timeout
-      heartbeatFrequencyMS: 10000, // Heartbeat frequency
-      // Enable compression for better network performance
-      compressors: ['zlib'],
-      // Optimize for faster writes
+      
+      // Write concern for reliability
       writeConcern: {
         w: 'majority',
         j: true,
-        wtimeout: 5000
+        wtimeout: 10000
       },
-      // Add retry writes for better reliability
-      retryWrites: true,
-      retryReads: true,
-      // Optimize for production
-      maxIdleTimeMS: 30000,
+      
+      // Network and performance optimizations
+      compressors: ['zlib'],
+      zlibCompressionLevel: 6,
+      
+      // Modern driver settings
       useUnifiedTopology: true,
+      useNewUrlParser: true,
+      
+      // Additional network resilience
+      family: 4, // Use IPv4
+      
+      // Add proxy agent if configured
+      ...(proxyAgent && { proxyAgent }),
     };
 
-    // Connect to MongoDB
-    cached.promise = mongoose.connect(MONGODB_URI, opts)
-      .then((mongoose) => {
-        console.log('MongoDB connected successfully with optimized settings');
-        return mongoose;
-      })
-      .catch((error) => {
-        console.error('MongoDB connection error:', error);
-        cached.promise = null;
-        throw error;
-      });
+    // Connect to MongoDB with retry mechanism
+    cached.promise = connectWithRetry(MONGODB_URI, opts);
   }
 
   try {
@@ -70,6 +88,46 @@ async function connectToDatabase() {
   }
 
   return cached.conn;
+}
+
+// Retry connection function for better network resilience
+async function connectWithRetry(uri, options, maxRetries = 3, delay = 2000) {
+  const uris = [uri];
+  
+  // Add alternative URI if available
+  if (process.env.MONGODB_URI_ALT && uri !== process.env.MONGODB_URI_ALT) {
+    uris.push(process.env.MONGODB_URI_ALT);
+  }
+  
+  for (const currentUri of uris) {
+    console.log(`🔄 Trying URI: ${currentUri.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`);
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`MongoDB connection attempt ${attempt}/${maxRetries}`);
+        const connection = await mongoose.connect(currentUri, options);
+        console.log('✅ MongoDB connected successfully with optimized settings');
+        return connection;
+      } catch (error) {
+        console.error(`❌ MongoDB connection attempt ${attempt} failed:`, error.message);
+        
+        if (attempt === maxRetries) {
+          console.error(`🚫 All attempts failed for this URI`);
+          if (currentUri === uris[uris.length - 1]) {
+            throw error; // This was the last URI and last attempt
+          }
+          break; // Try next URI
+        }
+        
+        console.log(`⏳ Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 1.2; // Gradual backoff
+      }
+    }
+    
+    // Reset delay for next URI
+    delay = 2000;
+  }
 }
 
 // Add additional utility for optimized queries

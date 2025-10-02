@@ -33,6 +33,40 @@ const AdminSchema = new mongoose.Schema({
   lastLogin: {
     type: Date,
     default: null
+  },
+  lastLoginIP: {
+    type: String,
+    default: null
+  },
+  lastLoginUserAgent: {
+    type: String,
+    default: null
+  },
+  loginHistory: [{
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    ip: String,
+    userAgent: String,
+    success: {
+      type: Boolean,
+      default: true
+    }
+  }],
+  securitySettings: {
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false
+    },
+    sessionTimeout: {
+      type: Number,
+      default: 24 // hours
+    },
+    passwordLastChanged: {
+      type: Date,
+      default: Date.now
+    }
   }
 }, {
   timestamps: true

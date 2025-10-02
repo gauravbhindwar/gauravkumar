@@ -63,6 +63,9 @@ export const config = {
     '/api/projects/:path*',
     '/api/skills/:path*',
     '/api/certifications/:path*',
+    '/api/experiences/:path*',
+    '/api/achievements/:path*',
+    '/api/awards/:path*',
     '/api/contact/:path*'
   ]
 }

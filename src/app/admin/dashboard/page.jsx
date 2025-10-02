@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import AdminProtection from '@/components/AdminProtection';
 import { 
   FolderOpen, 
@@ -14,7 +15,16 @@ import {
   Eye, 
   Activity,
   Github,
-  Users
+  Users,
+  ChevronRight,
+  Calendar,
+  Clock,
+  BarChart3,
+  Sparkles,
+  Zap,
+  Star,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -31,8 +41,12 @@ function AdminDashboard() {
     projects: 0,
     skills: 0,
     certifications: 0,
-    courses: 0
+    courses: 0,
+    experiences: 0,
+    awards: 0,
+    achievements: 0
   });
+  const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,51 +56,110 @@ function AdminDashboard() {
       try {
         // Initialize with empty data structures
         let projectsData = { projects: [] };
-        let skillsData = { categories: [], courses: {} };
+        let skillsData = { categories: [] };
         let certificationsData = { certifications: [] };
+        let educationData = { education: [] };
+        let experiencesData = { experiences: [] };
+        let awardsData = { awards: [] };
+        let achievementsData = { achievements: [] };
         
-        // Fetch data one by one with proper error handling
-        try {
-          const projectsRes = await fetch('/api/projects');
-          if (projectsRes.ok) {
-            projectsData = await projectsRes.json();
-          }
-        } catch (err) {
-          console.error('Error fetching projects:', err);
-        }
+        // Fetch all data with proper error handling
+        const fetchPromises = [
+          fetch('/api/projects').then(res => res.ok ? res.json() : { projects: [] }).catch(() => ({ projects: [] })),
+          fetch('/api/skills').then(res => res.ok ? res.json() : { categories: [] }).catch(() => ({ categories: [] })),
+          fetch('/api/certifications').then(res => res.ok ? res.json() : { certifications: [] }).catch(() => ({ certifications: [] })),
+          fetch('/api/education').then(res => res.ok ? res.json() : { education: [] }).catch(() => ({ education: [] })),
+          fetch('/api/experiences').then(res => res.ok ? res.json() : []).catch(() => []),
+          fetch('/api/awards').then(res => res.ok ? res.json() : { awards: [] }).catch(() => ({ awards: [] })),
+          fetch('/api/achievements').then(res => res.ok ? res.json() : { achievements: [] }).catch(() => ({ achievements: [] }))
+        ];
+
+        const [projects, skills, certifications, education, experiences, awards, achievements] = await Promise.all(fetchPromises);
         
-        try {
-          const skillsRes = await fetch('/api/skills');
-          if (skillsRes.ok) {
-            skillsData = await skillsRes.json();
-          }
-        } catch (err) {
-          console.error('Error fetching skills:', err);
-        }
+        // Count courses from education entries that have type 'course' or similar
+        const coursesCount = Array.isArray(education?.education) 
+          ? education.education.filter(item => 
+              item.type === 'course' || 
+              item.degree?.toLowerCase().includes('course') ||
+              item.degree?.toLowerCase().includes('training')
+            ).length 
+          : 0;
         
-        try {
-          const certificationsRes = await fetch('/api/certifications');
-          if (certificationsRes.ok) {
-            certificationsData = await certificationsRes.json();
-          }
-        } catch (err) {
-          console.error('Error fetching certifications:', err);
-        }
-        
-        // Safely access data with proper checks
         setStats({
-          projects: Array.isArray(projectsData?.projects) ? projectsData.projects.length : 0,
-          skills: Array.isArray(skillsData?.categories) ? 
-            skillsData.categories.reduce((total, category) => 
+          projects: Array.isArray(projects?.projects) ? projects.projects.length : 0,
+          skills: Array.isArray(skills?.categories) ? 
+            skills.categories.reduce((total, category) => 
               total + (Array.isArray(category?.skills) ? category.skills.length : 0), 0) : 0,
-          certifications: Array.isArray(certificationsData?.certifications) ? 
-            certificationsData.certifications.length : 0,
-          courses: skillsData?.courses ? 
-            Object.values(skillsData.courses).reduce((total, courseList) => 
-              total + (Array.isArray(courseList) ? courseList.length : 0), 0) : 0
+          certifications: Array.isArray(certifications?.certifications) ? 
+            certifications.certifications.length : 0,
+          courses: coursesCount,
+          experiences: Array.isArray(experiences) ? experiences.length : 0,
+          awards: Array.isArray(awards?.awards) ? awards.awards.length : 0,
+          achievements: Array.isArray(achievements?.achievements) ? achievements.achievements.length : 0
         });
+
+        // Generate recent activity from actual data
+        const activities = [];
+        
+        // Add recent projects
+        if (Array.isArray(projects?.projects)) {
+          projects.projects.slice(0, 2).forEach(project => {
+            activities.push({
+              title: `Updated ${project.title}`,
+              description: project.description?.substring(0, 60) + '...' || 'Project details updated',
+              time: 'Recently',
+              type: 'project'
+            });
+          });
+        }
+
+        // Add recent certifications
+        if (Array.isArray(certifications?.certifications)) {
+          certifications.certifications.slice(0, 2).forEach(cert => {
+            activities.push({
+              title: `Added ${cert.name}`,
+              description: `New certification from ${cert.issuer || 'Organization'}`,
+              time: 'Recently',
+              type: 'certification'
+            });
+          });
+        }
+
+        // Add recent skills
+        if (Array.isArray(skills?.categories) && skills.categories.length > 0) {
+          const recentSkills = skills.categories[0]?.skills?.slice(0, 1) || [];
+          recentSkills.forEach(skill => {
+            activities.push({
+              title: `Added ${skill.name}`,
+              description: `New skill in ${skills.categories[0]?.category || 'development'}`,
+              time: 'Recently',
+              type: 'skill'
+            });
+          });
+        }
+
+        // Fallback activity if no data
+        if (activities.length === 0) {
+          activities.push({
+            title: 'Welcome to Admin Dashboard',
+            description: 'Start by adding your first project or experience',
+            time: 'Now',
+            type: 'info'
+          });
+        }
+
+        setRecentActivity(activities.slice(0, 4)); // Show max 4 activities
       } catch (error) {
         console.error('Error fetching stats:', error);
+        setStats({
+          projects: 0,
+          skills: 0,
+          certifications: 0,
+          courses: 0,
+          experiences: 0,
+          awards: 0,
+          achievements: 0
+        });
       } finally {
         setLoading(false);
       }
@@ -98,7 +171,15 @@ function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <motion.div
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex items-center space-x-2"
+        >
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+        </motion.div>
       </div>
     )
   }
@@ -108,32 +189,40 @@ function AdminDashboard() {
       title: 'Total Projects',
       value: stats.projects,
       change: '+12% from last month',
+      trend: 'up',
       icon: FolderOpen,
-      color: 'bg-blue-500',
+      gradient: 'from-blue-500 to-blue-600',
+      bgGradient: 'from-blue-50 to-blue-100',
       href: '/admin/projects'
     },
     { 
       title: 'Skills',
       value: stats.skills,
       change: '+8% from last month',
+      trend: 'up',
       icon: Code,
-      color: 'bg-green-500',
+      gradient: 'from-emerald-500 to-emerald-600',
+      bgGradient: 'from-emerald-50 to-emerald-100',
       href: '/admin/skills'
     },
     {
       title: 'Certifications',
       value: stats.certifications,
       change: '+5% from last month',
+      trend: 'up',
       icon: Award,
-      color: 'bg-purple-500',
+      gradient: 'from-purple-500 to-purple-600',
+      bgGradient: 'from-purple-50 to-purple-100',
       href: '/admin/certifications'
     },
     {
       title: 'Courses',
       value: stats.courses,
       change: '+3% from last month',
+      trend: 'up',
       icon: BookOpen,
-      color: 'bg-orange-500',
+      gradient: 'from-orange-500 to-orange-600',
+      bgGradient: 'from-orange-50 to-orange-100',
       href: '/admin/courses'
     }
   ];
@@ -143,7 +232,8 @@ function AdminDashboard() {
       title: 'Create New Project',
       description: 'Add a new project to your portfolio showcase',
       icon: FolderOpen,
-      color: 'bg-blue-500',
+      gradient: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
       href: '/admin/projects',
       action: 'Add Project'
     },
@@ -151,7 +241,8 @@ function AdminDashboard() {
       title: 'Add Skills',
       description: 'Update your technical skills and expertise',
       icon: Code,
-      color: 'bg-green-500',
+      gradient: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-50',
       href: '/admin/skills',
       action: 'Manage Skills'
     },
@@ -159,7 +250,8 @@ function AdminDashboard() {
       title: 'New Certification',
       description: 'Add your latest certification or achievement',
       icon: Award,
-      color: 'bg-purple-500',
+      gradient: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50',
       href: '/admin/certifications',
       action: 'Add Certification'
     },
@@ -167,7 +259,8 @@ function AdminDashboard() {
       title: 'Update Contact',
       description: 'Manage your contact information and social links',
       icon: Mail,
-      color: 'bg-indigo-500',
+      gradient: 'from-indigo-500 to-indigo-600',
+      bgColor: 'bg-indigo-50',
       href: '/admin/contact',
       action: 'Update Contact'
     },
@@ -175,158 +268,336 @@ function AdminDashboard() {
       title: 'Manage Admins',
       description: 'Create, update, and manage admin accounts',
       icon: Users,
-      color: 'bg-purple-600',
+      gradient: 'from-violet-500 to-violet-600',
+      bgColor: 'bg-violet-50',
       href: '/admin/admins',
       action: 'Manage Admins'
     }
   ];
 
-  const recentActivity = [
-    {
-      title: 'Updated React Portfolio Project',
-      description: 'Modified project description and added new features',
-      time: '2 hours ago',
-      type: 'project'
-    },
-    {
-      title: 'Added Next.js Skill',
-      description: 'Added Next.js to frontend development skills',
-      time: '1 day ago',
-      type: 'skill'
-    },
-    {
-      title: 'AWS Certification Added',
-      description: 'Added AWS Solutions Architect certification',
-      time: '3 days ago',
-      type: 'certification'
-    }
-  ];
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Here's what's happening with your portfolio today</p>
-          </div>
-          <div className="hidden md:flex items-center space-x-3">
-            <div className="bg-blue-50 p-3 rounded-xl">
-              <Activity className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-3xl overflow-hidden shadow-2xl"
+      >
+        <div className="absolute inset-0 bg-black/10"></div>
+        {/* Animated background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full mix-blend-overlay filter blur-xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
         </div>
-      </div>
+        
+        <div className="relative p-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="flex items-center space-x-3 mb-4"
+              >
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    👋
+                  </motion.div>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-white">
+                    Welcome back, {session?.user?.username}!
+                  </h1>
+                </div>
+              </motion.div>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="text-blue-100 text-lg font-medium"
+              >
+                Here's what's happening with your portfolio today
+              </motion.p>
+            </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="hidden md:flex items-center space-x-4"
+            >
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/20 backdrop-blur-sm p-4 rounded-xl border border-white/20"
+              >
+                <BarChart3 className="w-8 h-8 text-white" />
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="bg-white/20 backdrop-blur-sm p-4 rounded-xl border border-white/20"
+              >
+                <Sparkles className="w-8 h-8 text-white" />
+              </motion.div>
+            </motion.div>
+          </div>
+          
+          
+        </div>
+      </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statsData.map((stat) => (
-          <Link href={stat.href} key={stat.title}>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all hover:border-blue-300 cursor-pointer">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                  {stat.change && (
-                    <div className="flex items-center mt-2">
-                      <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                      <span className="text-sm text-green-600 font-medium">{stat.change}</span>
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {statsData.map((stat, index) => (
+          <motion.div
+            key={stat.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * index }}
+            whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Link href={stat.href}>
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 group cursor-pointer overflow-hidden relative">
+                <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`bg-gradient-to-r ${stat.gradient} p-3 rounded-xl shadow-lg`}>
+                      <stat.icon className="w-6 h-6 text-white" />
                     </div>
-                  )}
-                </div>
-                <div className={`${stat.color} p-4 rounded-full`}>
-                  <stat.icon className="w-6 h-6 text-white" />
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-600 group-hover:text-gray-700">{stat.title}</p>
+                    <p className="text-3xl font-bold text-gray-900 group-hover:text-gray-800">{stat.value}</p>
+                    
+                    {stat.change && (
+                      <div className="flex items-center space-x-1">
+                        <div className={`flex items-center space-x-1 px-2 py-1 rounded-full ${
+                          stat.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        }`}>
+                          <TrendingUp className="w-3 h-3" />
+                          <span className="text-xs font-medium">{stat.change}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-900">Quick Actions</h2>
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
+            <p className="text-gray-600">Manage your portfolio content efficiently</p>
+          </div>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
+            <Zap className="w-6 h-6 text-white" />
+          </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {quickActions.map((action) => (
-            <div key={action.title} className="border border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 transition-all hover:shadow-md">
-              <div className="p-5">
-                <div className={`${action.color} w-12 h-12 rounded-full flex items-center justify-center mb-4`}>
-                  <action.icon className="text-white w-6 h-6" />
-                </div>
-                <h3 className="font-medium text-gray-900">{action.title}</h3>
-                <p className="text-gray-600 mt-1 text-sm">{action.description}</p>
-                <div className="mt-4">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          {quickActions.map((action, index) => (
+            <motion.div
+              key={action.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * index }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group"
+            >
+              <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-300 cursor-pointer relative overflow-hidden">
+                <div className={`absolute inset-0 ${action.bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                <div className="relative">
+                  <div className={`bg-gradient-to-r ${action.gradient} w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
+                    <action.icon className="text-white w-7 h-7" />
+                  </div>
+                  
+                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-gray-800">{action.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4 group-hover:text-gray-700">{action.description}</p>
+                  
                   <Link href={action.href}>
-                    <span className="text-blue-600 font-medium text-sm hover:underline">{action.action} →</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-600 font-semibold text-sm group-hover:text-blue-700">{action.action}</span>
+                      <ChevronRight className="w-4 h-4 text-blue-600 group-hover:text-blue-700 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </Link>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Bottom Grid - Recent Activity & Portfolio Stats */}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+      >
         {/* Recent Activity List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:col-span-2">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
-            <button className="text-blue-600 text-sm font-medium hover:underline">View All</button>
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Recent Activity</h2>
+              <p className="text-gray-600">Latest updates to your portfolio</p>
+            </div>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="text-blue-600 text-sm font-semibold hover:text-blue-700 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors"
+            >
+              View All
+            </motion.button>
           </div>
-          <div className="space-y-5">
+          
+          <div className="space-y-4">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-start p-3 rounded-lg hover:bg-gray-50">
-                <div className={`p-2 rounded-full ${
-                  activity.type === 'project' ? 'bg-blue-100 text-blue-600' : 
-                  activity.type === 'skill' ? 'bg-green-100 text-green-600' : 'bg-purple-100 text-purple-600'
-                } mr-4`}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 * index }}
+                whileHover={{ x: 4 }}
+                className="flex items-start p-4 rounded-xl bg-gradient-to-r from-gray-50 to-white border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all duration-300 group cursor-pointer"
+              >
+                <div className={`p-3 rounded-xl mr-4 shadow-sm ${
+                  activity.type === 'project' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' : 
+                  activity.type === 'skill' ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white' : 
+                  'bg-gradient-to-r from-purple-500 to-purple-600 text-white'
+                }`}>
                   {activity.type === 'project' && <FolderOpen className="w-5 h-5" />}
                   {activity.type === 'skill' && <Code className="w-5 h-5" />}
                   {activity.type === 'certification' && <Award className="w-5 h-5" />}
                 </div>
+                
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{activity.title}</h3>
-                  <p className="text-gray-600 text-sm mt-1">{activity.description}</p>
-                  <p className="text-gray-500 text-xs mt-2">{activity.time}</p>
+                  <h3 className="font-semibold text-gray-900 group-hover:text-gray-800 mb-1">{activity.title}</h3>
+                  <p className="text-gray-600 text-sm mb-2 group-hover:text-gray-700">{activity.description}</p>
+                  <div className="flex items-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="w-3 h-3" />
+                      <span>{activity.time}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>Today</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+                
+                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
+              </motion.div>
             ))}
           </div>
         </div>
         
-        {/* Public Portfolio Stats */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Public Portfolio</h2>
+        {/* Portfolio Analytics */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Portfolio Analytics</h2>
+              <p className="text-gray-600 text-sm">Public engagement metrics</p>
+            </div>
+            <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-3 rounded-xl">
+              <BarChart3 className="w-5 h-5 text-white" />
+            </div>
           </div>
-          <div className="space-y-5">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center">
-                <Eye className="w-5 h-5 text-gray-700 mr-3" />
-                <span className="text-gray-700">Page Views</span>
+          
+          <div className="space-y-6">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-200"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-blue-500 p-2 rounded-lg">
+                    <Eye className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-blue-800 font-medium">Page Views</span>
+                </div>
+                <span className="text-2xl font-bold text-blue-900">1,248</span>
               </div>
-              <span className="font-bold text-gray-900">1,248</span>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div className="flex items-center">
-                <Github className="w-5 h-5 text-gray-700 mr-3" />
-                <span className="text-gray-700">GitHub Views</span>
+              <div className="text-xs text-blue-600 font-medium">↗ +12% from last week</div>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-r from-purple-50 to-purple-100 p-5 rounded-xl border border-purple-200"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-purple-500 p-2 rounded-lg">
+                    <Github className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-purple-800 font-medium">GitHub Views</span>
+                </div>
+                <span className="text-2xl font-bold text-purple-900">743</span>
               </div>
-              <span className="font-bold text-gray-900">743</span>
-            </div>
-            <div className="mt-6">
-              <Link href="/" target="_blank" className="flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+              <div className="text-xs text-purple-600 font-medium">↗ +8% from last week</div>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-gradient-to-r from-emerald-50 to-emerald-100 p-5 rounded-xl border border-emerald-200"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-emerald-500 p-2 rounded-lg">
+                    <Star className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-emerald-800 font-medium">Profile Rank</span>
+                </div>
+                <span className="text-2xl font-bold text-emerald-900">#42</span>
+              </div>
+              <div className="text-xs text-emerald-600 font-medium">↗ +3 positions</div>
+            </motion.div>
+            
+            <div className="pt-4 space-y-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center font-semibold shadow-lg shadow-blue-500/25"
+              >
                 <Eye className="w-4 h-4 mr-2" />
-                View Public Portfolio
-              </Link>
+                View Portfolio
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-medium"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Resume
+              </motion.button>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

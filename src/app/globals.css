@@ -4,7 +4,7 @@
 
 @layer base {
   section {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem; /* Increased for new navbar height */
   }
   
   html, body {
