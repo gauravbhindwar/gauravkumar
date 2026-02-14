@@ -9,7 +9,8 @@ export async function GET(request, { params }) {
   try {
     await connectToDatabase()
     
-    const award = await Award.findById(params.id).lean()
+    const { id } = await params
+    const award = await Award.findById(id).lean()
     
     if (!award) {
       return NextResponse.json({ error: 'Award not found' }, { status: 404 })
@@ -36,6 +37,7 @@ export async function PUT(request, { params }) {
 
     await connectToDatabase()
     
+    const { id } = await params
     const data = await request.json()
     
     // Convert date string to Date object
@@ -44,7 +46,7 @@ export async function PUT(request, { params }) {
     }
 
     const award = await Award.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true, runValidators: true }
     )
@@ -86,7 +88,8 @@ export async function DELETE(request, { params }) {
 
     await connectToDatabase()
     
-    const award = await Award.findByIdAndDelete(params.id)
+    const { id } = await params
+    const award = await Award.findByIdAndDelete(id)
 
     if (!award) {
       return NextResponse.json({ error: 'Award not found' }, { status: 404 })

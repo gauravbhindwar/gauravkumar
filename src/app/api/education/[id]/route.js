@@ -8,7 +8,8 @@ export async function GET(request, { params }) {
   try {
     await connectToDatabase();
     
-    const education = await Education.findById(params.id).lean();
+    const { id } = await params;
+    const education = await Education.findById(id).lean();
     
     if (!education) {
       return NextResponse.json(
@@ -39,9 +40,10 @@ export async function PUT(request, { params }) {
 
     await connectToDatabase();
     
+    const { id } = await params;
     const data = await request.json();
     const education = await Education.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true, runValidators: true }
     );
@@ -75,7 +77,8 @@ export async function DELETE(request, { params }) {
 
     await connectToDatabase();
     
-    const education = await Education.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const education = await Education.findByIdAndDelete(id);
     
     if (!education) {
       return NextResponse.json(

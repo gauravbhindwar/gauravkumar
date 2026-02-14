@@ -9,7 +9,8 @@ export async function GET(request, { params }) {
   try {
     await connectToDatabase()
     
-    const experience = await Experience.findById(params.id).lean()
+    const { id } = await params
+    const experience = await Experience.findById(id).lean()
     
     if (!experience) {
       return NextResponse.json({ error: 'Experience not found' }, { status: 404 })
@@ -36,6 +37,7 @@ export async function PUT(request, { params }) {
 
     await connectToDatabase()
     
+    const { id } = await params
     const data = await request.json()
     
     // Convert date strings to Date objects
@@ -47,7 +49,7 @@ export async function PUT(request, { params }) {
     }
 
     const experience = await Experience.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true, runValidators: true }
     )
@@ -89,7 +91,8 @@ export async function DELETE(request, { params }) {
 
     await connectToDatabase()
     
-    const experience = await Experience.findByIdAndDelete(params.id)
+    const { id } = await params
+    const experience = await Experience.findByIdAndDelete(id)
 
     if (!experience) {
       return NextResponse.json({ error: 'Experience not found' }, { status: 404 })

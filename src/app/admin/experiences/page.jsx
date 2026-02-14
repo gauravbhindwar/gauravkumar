@@ -24,7 +24,11 @@ const ExperiencesAdmin = () => {
   const { data: session } = useSession()
   const [experiences, setExperiences] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
   const [editingExperience, setEditingExperience] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
@@ -101,7 +105,9 @@ const ExperiencesAdmin = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
     try {
       const url = editingExperience 
         ? `/api/experiences/${editingExperience._id}`
@@ -124,23 +130,36 @@ const ExperiencesAdmin = () => {
       }
     } catch (error) {
       console.error('Error submitting form:', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  // Handle delete
-  const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this experience?')) {
-      try {
-        const response = await fetch(`/api/experiences/${id}`, {
-          method: 'DELETE',
-        })
-        
-        if (response.ok) {
-          await fetchExperiences()
-        }
-      } catch (error) {
-        console.error('Error deleting experience:', error)
+  // Handle delete click
+  const handleDeleteClick = (id) => {
+    setItemToDelete(id)
+    setIsDeleteModalOpen(true)
+  }
+
+  // Handle confirmed delete
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return
+
+    setDeletingId(itemToDelete)
+    try {
+      const response = await fetch(`/api/experiences/${itemToDelete}`, {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        await fetchExperiences()
+        setIsDeleteModalOpen(false)
+        setItemToDelete(null)
       }
+    } catch (error) {
+      console.error('Error deleting experience:', error)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -393,7 +412,7 @@ const ExperiencesAdmin = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => handleDelete(experience._id)}
+                    onClick={() => handleDeleteClick(experience._id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -690,14 +709,84 @@ const ExperiencesAdmin = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                        disabled={isSubmitting}
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
-                        <Save className="w-4 h-4" />
-                        {editingExperience ? 'Update' : 'Create'} Experience
+                        {isSubmitting ? (
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                          />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                        {isSubmitting ? 'Saving...' : (editingExperience ? 'Update' : 'Create') + ' Experience'}
                       </motion.button>
                     </div>
                   </div>
                 </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl border border-gray-100 p-6"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                  <Trash2 className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Experience</h3>
+                <p className="text-gray-500 mb-6">
+                  Are you sure you want to delete this experience? This action cannot be undone.
+                </p>
+                
+                <div className="flex gap-4 w-full">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setIsDeleteModalOpen(false)
+                      setItemToDelete(null)
+                    }}
+                    className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleConfirmDelete}
+                    disabled={deletingId === itemToDelete}
+                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors shadow-lg shadow-red-500/30 flex items-center justify-center gap-2"
+                  >
+                    {deletingId === itemToDelete ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      'Delete'
+                    )}
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

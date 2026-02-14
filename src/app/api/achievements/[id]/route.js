@@ -9,7 +9,8 @@ export async function GET(request, { params }) {
   try {
     await connectToDatabase()
     
-    const achievement = await Achievement.findById(params.id).lean()
+    const { id } = await params
+    const achievement = await Achievement.findById(id).lean()
     
     if (!achievement) {
       return NextResponse.json({ error: 'Achievement not found' }, { status: 404 })
@@ -36,6 +37,7 @@ export async function PUT(request, { params }) {
 
     await connectToDatabase()
     
+    const { id } = await params
     const data = await request.json()
     
     // Convert date string to Date object
@@ -44,7 +46,7 @@ export async function PUT(request, { params }) {
     }
 
     const achievement = await Achievement.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true, runValidators: true }
     )
@@ -86,7 +88,8 @@ export async function DELETE(request, { params }) {
 
     await connectToDatabase()
     
-    const achievement = await Achievement.findByIdAndDelete(params.id)
+    const { id } = await params
+    const achievement = await Achievement.findByIdAndDelete(id)
 
     if (!achievement) {
       return NextResponse.json({ error: 'Achievement not found' }, { status: 404 })
