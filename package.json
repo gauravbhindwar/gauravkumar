@@ -20,6 +20,7 @@
     "@fontsource/space-grotesk": "^5.1.1",
     "@geist-ui/react": "^2.2.5",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.9.0",
     "daisyui": "^4.4.19",
     "dotenv": "^16.3.1",
     "framer-motion": "^12.4.1",

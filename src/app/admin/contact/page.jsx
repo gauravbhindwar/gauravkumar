@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { User, Mail, Phone, MapPin, Linkedin, Github, Twitter, FileText, Globe, Save, CheckCircle, AlertCircle, Eye } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Linkedin, Github, Twitter, FileText, Globe, Save, CheckCircle, AlertCircle, Eye, Image as ImageIcon, Upload } from 'lucide-react'
 
 export default function AdminContact() {
   const { data: session, status } = useSession()
@@ -67,6 +67,7 @@ export default function AdminContact() {
           github: data.social?.github || ''
         },
         resumeLink: data.resumeLink || '',
+        homeImage: data.homeImage || '',
         twitter: data.twitter || '',
         description: data.description || ''
       })
@@ -77,6 +78,41 @@ export default function AdminContact() {
       setLoading(false)
     }
   }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      setMessage('Uploading image...');
+      setSaving(true);
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({
+          ...prev,
+          homeImage: data.url
+        }));
+        setMessage('Image uploaded successfully!');
+      } else {
+        setMessage('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading:', error);
+      setMessage('Error uploading image');
+    } finally {
+      setSaving(false);
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -114,6 +150,7 @@ export default function AdminContact() {
           github: formData.social.github
         },
         resumeLink: formData.resumeLink,
+        homeImage: formData.homeImage,
         twitter: formData.twitter,
         description: formData.description
       }
@@ -274,6 +311,63 @@ export default function AdminContact() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="City, State/Country"
                 />
+              </div>
+            </div>
+
+            {/* Home Page Image Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
+                <div className="p-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg">
+                  <ImageIcon className="w-5 h-5 text-purple-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Home Page Image</h2>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="flex-1 space-y-4 w-full">
+                     <label className="block text-sm font-semibold text-gray-700">
+                        Profile/Hero Image
+                     </label>
+                     
+                     <div className="flex gap-2">
+                        <input
+                           type="text"
+                           name="homeImage"
+                           value={formData.homeImage || ''}
+                           onChange={handleInputChange}
+                           className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                           placeholder="/uploads/my-image.jpg or https://..."
+                        />
+                        <label className="cursor-pointer px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors flex items-center gap-2">
+                           <Upload className="w-5 h-5" />
+                           <span className="hidden sm:inline">Upload</span>
+                           <input 
+                              type="file" 
+                              className="hidden" 
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                           />
+                        </label>
+                     </div>
+                     <p className="text-sm text-gray-500">
+                        Upload an image to store it locally, or paste an external URL. Best size: 600x600px or larger.
+                     </p>
+                  </div>
+                  
+                  {formData.homeImage && (
+                     <div className="shrink-0">
+                        <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-purple-100 shadow-sm relative group bg-gray-50">
+                           <img 
+                              src={formData.homeImage} 
+                              alt="Home Preview" 
+                              className="w-full h-full object-cover"
+                              onError={(e) => e.target.src = 'https://via.placeholder.com/150?text=No+Image'}
+                           />
+                        </div>
+                     </div>
+                  )}
+                </div>
               </div>
             </div>
 

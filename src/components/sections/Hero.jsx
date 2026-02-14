@@ -302,14 +302,22 @@ export default function Hero() {
                   whileHover={{ scale: 1.02, rotate: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Image
-                    src="/gaurav.jpg"
-                    alt="Gaurav Kumar - Software Engineer"
-                    fill
-                    priority
-                    sizes="(max-width: 768px) 320px, 384px"
-                    className="object-cover"
-                  />
+                  {contactLoading ? (
+                    <div className="w-full h-full bg-base-200 animate-pulse" />
+                  ) : contactData?.homeImage ? (
+                    <Image
+                      src={contactData.homeImage}
+                      alt="Gaurav Kumar - Software Engineer"
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 320px, 384px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-base-200/50 flex items-center justify-center">
+                      <span className="text-base-content/30 text-sm">No Image</span>
+                    </div>
+                  )}
                   
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
