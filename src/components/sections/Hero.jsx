@@ -303,7 +303,7 @@ export default function Hero() {
                   transition={{ duration: 0.3 }}
                 >
                   {contactLoading ? (
-                    <div className="w-full h-full bg-base-200 animate-pulse" />
+                    <div className="w-full h-full" />
                   ) : contactData?.homeImage ? (
                     <Image
                       src={contactData.homeImage}
