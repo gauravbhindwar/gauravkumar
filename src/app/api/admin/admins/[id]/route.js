@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import connectToDatabase from '@/lib/mongodb'
-import Admin from '@/models/Admin'
+import getSupabase from '@/lib/supabase'
 import { checkAdminAuth, getAdminSession } from '@/lib/auth'
+import { rowToClient } from '@/lib/dbMapper'
+
+function toClientAdmin(admin) {
+  const { password, ...rest } = admin
+  return rowToClient(rest)
+}
 
 // GET - Fetch specific admin
 export async function GET(request, { params }) {
@@ -16,10 +21,13 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params
+    const supabase = getSupabase()
 
-    await connectToDatabase()
-
-    const admin = await Admin.findById(id, '-password').lean()
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
 
     if (!admin) {
       return NextResponse.json(
@@ -30,10 +38,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json({
       success: true,
-      admin: {
-        ...admin,
-        _id: admin._id.toString()
-      }
+      admin: toClientAdmin(admin)
     })
   } catch (error) {
     console.error('Fetch admin error:', error)
@@ -85,10 +90,15 @@ export async function PUT(request, { params }) {
       )
     }
 
-    await connectToDatabase()
+    const supabase = getSupabase()
 
     // Check if admin exists
-    const existingAdmin = await Admin.findById(id)
+    const { data: existingAdmin } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+
     if (!existingAdmin) {
       return NextResponse.json(
         { error: 'Admin not found' },
@@ -97,13 +107,12 @@ export async function PUT(request, { params }) {
     }
 
     // Check for duplicate username/email (excluding current admin)
-    const duplicateCheck = await Admin.findOne({
-      _id: { $ne: id },
-      $or: [
-        { email: email.toLowerCase() },
-        { username: username }
-      ]
-    })
+    const { data: duplicateCheck } = await supabase
+      .from('admins')
+      .select('id')
+      .neq('id', id)
+      .or(`email.eq.${email.toLowerCase()},username.eq.${username}`)
+      .maybeSingle()
 
     if (duplicateCheck) {
       return NextResponse.json(
@@ -117,7 +126,7 @@ export async function PUT(request, { params }) {
       username: username.trim(),
       email: email.toLowerCase().trim(),
       role: role || existingAdmin.role,
-      isActive: isActive !== undefined ? isActive : existingAdmin.isActive
+      is_active: isActive !== undefined ? isActive : existingAdmin.is_active
     }
 
     // Hash new password if provided
@@ -126,32 +135,31 @@ export async function PUT(request, { params }) {
     }
 
     // Update admin
-    const updatedAdmin = await Admin.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, select: '-password' }
-    ).lean()
+    const { data: updatedAdmin, error } = await supabase
+      .from('admins')
+      .update(updateData)
+      .eq('id', id)
+      .select('*')
+      .single()
+
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { error: 'Admin with this email or username already exists' },
+          { status: 400 }
+        )
+      }
+      throw error
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Admin updated successfully',
-      admin: {
-        ...updatedAdmin,
-        _id: updatedAdmin._id.toString()
-      },
+      admin: toClientAdmin(updatedAdmin),
       isUpdatingSelf
     })
   } catch (error) {
     console.error('Update admin error:', error)
-    
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0]
-      return NextResponse.json(
-        { error: `Admin with this ${field} already exists` },
-        { status: 400 }
-      )
-    }
-
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -181,10 +189,15 @@ export async function DELETE(request, { params }) {
       )
     }
 
-    await connectToDatabase()
+    const supabase = getSupabase()
 
     // Check if admin exists
-    const admin = await Admin.findById(id)
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('id')
+      .eq('id', id)
+      .maybeSingle()
+
     if (!admin) {
       return NextResponse.json(
         { error: 'Admin not found' },
@@ -193,7 +206,11 @@ export async function DELETE(request, { params }) {
     }
 
     // Check if this is the last admin
-    const adminCount = await Admin.countDocuments({ isActive: true })
+    const { count: adminCount } = await supabase
+      .from('admins')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_active', true)
+
     if (adminCount <= 1) {
       return NextResponse.json(
         { error: 'Cannot delete the last active admin account' },
@@ -202,7 +219,7 @@ export async function DELETE(request, { params }) {
     }
 
     // Delete admin
-    await Admin.findByIdAndDelete(id)
+    await supabase.from('admins').delete().eq('id', id)
 
     return NextResponse.json({
       success: true,

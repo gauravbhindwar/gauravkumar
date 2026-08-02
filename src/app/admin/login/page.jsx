@@ -370,7 +370,7 @@ function AdminLoginForm() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className=" bg-error/10 border border-error/20 p-4 backdrop-blur-sm"
+                    className=" bg-base-100 border border-base-content p-4 backdrop-blur-sm"
                   >
                     <div className="flex items-start">
                       <XCircle className="h-5 w-5 text-error mr-3 mt-0.5 shrink-0" />
@@ -388,7 +388,7 @@ function AdminLoginForm() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className=" bg-warning/10 border border-warning/20 p-4 backdrop-blur-sm"
+                    className=" bg-base-100 border border-base-content p-4 backdrop-blur-sm"
                   >
                     <div className="flex items-start">
                       <AlertTriangle className="h-5 w-5 text-warning mr-3 mt-0.5 shrink-0" />
@@ -653,7 +653,7 @@ export default function AdminLogin() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-none h-16 w-16 border-4 border-base-content bg-primary"></div>
       </div>
     }>
       <AdminLoginForm />

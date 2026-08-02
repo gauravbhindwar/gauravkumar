@@ -196,7 +196,7 @@ export default function AdminCertifications() {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
+      className="min-h-screen bg-base-200 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
         
@@ -227,7 +227,7 @@ export default function AdminCertifications() {
               resetForm();
               setShowForm(true);
             }}
-            className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
+            className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             <span>Add Certification</span>
@@ -242,8 +242,8 @@ export default function AdminCertifications() {
               value: certifications.length, 
               icon: Award,
               color: 'text-primary',
-              bg: 'bg-primary/10',
-              borderColor: 'border-primary/20'
+              bg: 'bg-base-100',
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Active', 
@@ -251,7 +251,7 @@ export default function AdminCertifications() {
               icon: CheckCircle,
               color: 'text-emerald-600',
               bg: 'bg-emerald-50',
-              borderColor: 'border-emerald-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Unique Issuers', 
@@ -259,7 +259,7 @@ export default function AdminCertifications() {
               icon: Users,
               color: 'text-blue-600',
               bg: 'bg-blue-50',
-              borderColor: 'border-blue-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'With Credentials', 
@@ -267,17 +267,17 @@ export default function AdminCertifications() {
               icon: FileText,
               color: 'text-orange-600',
               bg: 'bg-orange-50',
-              borderColor: 'border-orange-100'
+              borderColor: 'border-base-content'
             }
           ].map((stat, i) => (
             <motion.div 
               key={stat.label}
               variants={item}
               whileHover={{ y: -5 }}
-              className={`bg-base-100 p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
+              className={`bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200`}
             >
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                <div className={`p-3 rounded-none ${stat.bg} ${stat.color}`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
               </div>
@@ -290,7 +290,7 @@ export default function AdminCertifications() {
         </div>
 
         {/* Search & Filter Bar */}
-        <motion.div variants={item} className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <motion.div variants={item} className="bg-base-100 p-4 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
               <input 
@@ -298,19 +298,19 @@ export default function AdminCertifications() {
                 placeholder="Search certifications..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
+                className="w-full pl-10 pr-4 py-2 bg-base-100 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono text-base-content transition-all"
               />
             </div>
-            <div className="flex items-center gap-2 bg-base-200 p-1 rounded-xl border border-base-300/60">
+            <div className="flex items-center gap-2 bg-base-200 p-1 rounded-none border border-base-content">
                <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-2  transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === \'grid\' ? \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary\' : \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content\'}`}
                >
                   <Grid className="w-4 h-4" />
                </button>
                <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-2  transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === \'list\' ? \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary\' : \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content\'}`}
                >
                   <List className="w-4 h-4" />
                </button>
@@ -328,11 +328,11 @@ export default function AdminCertifications() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
-                className={`bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-xl transition-all p-6 group ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col'}`}
+                className={`bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all p-6 group ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col'}`}
               >
                 <div className="flex justify-between items-start mb-4 w-full">
                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                      <div className="w-12 h-12 bg-base-100 rounded-none flex items-center justify-center shrink-0">
                          <Award className="w-6 h-6 text-primary" />
                       </div>
                       <div>
@@ -343,7 +343,7 @@ export default function AdminCertifications() {
                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
                          onClick={() => handleEdit(cert)}
-                         className="p-2 hover:bg-primary/10 text-base-content/40 hover:text-primary  transition-colors"
+                         className="p-2 hover:bg-base-100 text-base-content/40 hover:text-primary  transition-colors"
                       >
                          <Edit className="w-4 h-4" />
                       </button>
@@ -352,7 +352,7 @@ export default function AdminCertifications() {
                             setCertificationToDelete(cert);
                             setShowDeleteModal(true);
                          }}
-                         className="p-2 hover:bg-error/10 text-base-content/40 hover:text-error  transition-colors"
+                         className="p-2 hover:bg-base-100 text-base-content/40 hover:text-error  transition-colors"
                       >
                          <Trash2 className="w-4 h-4" />
                       </button>
@@ -369,12 +369,12 @@ export default function AdminCertifications() {
                    
                    <div className="flex items-center gap-3">
                       {(cert.credentialLink || cert.credentialUrl) && (
-                         <a href={cert.credentialLink || cert.credentialUrl} target="_blank" className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1  hover:bg-primary/20 transition-colors flex items-center gap-1">
+                         <a href={cert.credentialLink || cert.credentialUrl} target="_blank" className="text-xs font-semibold text-primary bg-base-100 px-2.5 py-1  hover:bg-base-100 transition-colors flex items-center gap-1">
                             <Globe className="w-3 h-3" /> Credential
                          </a>
                       )}
                       {cert.pdfFile && (
-                         <a href={cert.pdfFile} target="_blank" className="text-xs font-semibold text-secondary bg-secondary/10 px-2.5 py-1  hover:bg-secondary/20 transition-colors flex items-center gap-1">
+                         <a href={cert.pdfFile} target="_blank" className="text-xs font-semibold text-secondary bg-base-100 px-2.5 py-1  hover:bg-base-100 transition-colors flex items-center gap-1">
                             <FileText className="w-3 h-3" /> Certificate
                          </a>
                       )}
@@ -383,12 +383,12 @@ export default function AdminCertifications() {
                    {cert.skills && cert.skills.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                          {cert.skills.slice(0, 3).map((skill, i) => (
-                            <span key={i} className="px-2 py-0.5 bg-base-200 border border-base-300/60 rounded text-xs font-medium text-base-content/70">
+                            <span key={i} className="px-2 py-0.5 bg-base-200 border border-base-content rounded text-xs font-medium text-base-content/70">
                                {skill}
                             </span>
                          ))}
                          {cert.skills.length > 3 && (
-                            <span className="px-2 py-0.5 bg-base-200 border border-base-300/60 rounded text-xs font-medium text-base-content/60">
+                            <span className="px-2 py-0.5 bg-base-200 border border-base-content rounded text-xs font-medium text-base-content/60">
                                +{cert.skills.length - 3}
                             </span>
                          )}
@@ -409,20 +409,20 @@ export default function AdminCertifications() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
                initial={{ opacity: 0, scale: 0.95, y: 20 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-               className="bg-base-100 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+               className="bg-base-100 rounded-none w-full max-w-2xl overflow-hidden shadow-[4px_4px_0_0_currentColor] flex flex-col max-h-[90vh]"
             >
-               <div className="bg-primary p-6 flex items-center justify-between text-primary-content shrink-0">
+               <div className="bg-primary p-6 flex items-center justify-between text-base-100 border-b-4 border-base-content shrink-0">
                   <h3 className="text-xl font-bold flex items-center gap-2">
                      <Award className="w-6 h-6" />
                      {editingCertification ? 'Edit Certification' : 'Add Certification'}
                   </h3>
-                  <button onClick={() => setShowForm(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
+                  <button onClick={() => setShowForm(false)} className="p-2 hover:bg-primary-content/20 rounded-none transition-colors">
                      <X className="w-5 h-5" />
                   </button>
                </div>
@@ -436,7 +436,7 @@ export default function AdminCertifications() {
                            type="text" 
                            value={formData.title}
                            onChange={(e) => setFormData({...formData, title: e.target.value})}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="AWS Certified Solutions Architect"
                         />
                      </div>
@@ -449,7 +449,7 @@ export default function AdminCertifications() {
                               type="text" 
                               value={formData.issuer}
                               onChange={(e) => setFormData({...formData, issuer: e.target.value})}
-                              className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="Amazon Web Services"
                            />
                         </div>
@@ -459,7 +459,7 @@ export default function AdminCertifications() {
                               type="date" 
                               value={formData.date}
                               onChange={(e) => setFormData({...formData, date: e.target.value})}
-                              className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            />
                         </div>
                      </div>
@@ -470,7 +470,7 @@ export default function AdminCertifications() {
                            type="url" 
                            value={formData.credentialLink}
                            onChange={(e) => setFormData({...formData, credentialLink: e.target.value})}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="https://..."
                         />
                      </div>
@@ -481,18 +481,18 @@ export default function AdminCertifications() {
                            rows={2}
                            value={Array.isArray(formData.skills) ? formData.skills.join(', ') : formData.skills}
                            onChange={(e) => setFormData({...formData, skills: e.target.value.split(',').map(s => s.trim())})}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                            placeholder="Cloud Computing, React, Design..."
                         />
                      </div>
                   </form>
                </div>
 
-               <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
+               <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
                   <button 
                      type="button" 
                      onClick={() => setShowForm(false)}
-                     className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                     className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                   >
                      Cancel
                   </button>
@@ -500,7 +500,7 @@ export default function AdminCertifications() {
                      type="submit" 
                      form="certForm"
                      disabled={isSubmitting}
-                     className="bg-primary text-primary-content px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70"
+                     className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                      {isSubmitting ? 'Saving...' : 'Save Certification'}
                   </button>
@@ -518,15 +518,15 @@ export default function AdminCertifications() {
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+               className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             >
                <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-base-100 rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
+                  className="bg-base-100 rounded-none shadow-[4px_4px_0_0_currentColor] max-w-sm w-full p-6 text-center"
                >
-                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-base-100 rounded-none flex items-center justify-center mx-auto mb-4">
                      <AlertTriangle className="w-8 h-8 text-error" />
                   </div>
                   <h3 className="text-xl font-bold text-base-content mb-2">Delete Certification?</h3>
@@ -536,13 +536,13 @@ export default function AdminCertifications() {
                   <div className="flex gap-3 justify-center">
                      <button 
                         onClick={() => setShowDeleteModal(false)}
-                        className="px-5 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-200 transition-colors"
+                        className="px-5 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-200 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleDelete}
-                        className="bg-error text-error-content px-5 py-2.5 rounded-xl font-semibold hover:bg-error/90 transition-colors shadow-lg shadow-error/20"
+                        className="bg-error text-error-content px-5 py-2.5 rounded-none font-semibold hover:bg-base-100 transition-colors shadow-[4px_4px_0_0_currentColor] "
                      >
                         Delete
                      </button>

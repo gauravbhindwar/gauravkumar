@@ -194,7 +194,7 @@ const ExperiencesAdmin = () => {
   if (loading) {
      return (
        <div className="flex items-center justify-center h-screen bg-base-200">
-         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-none animate-spin"></div>
        </div>
      )
    }
@@ -204,7 +204,7 @@ const ExperiencesAdmin = () => {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
+      className="min-h-screen bg-base-200 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
         
@@ -238,7 +238,7 @@ const ExperiencesAdmin = () => {
               resetForm();
               setIsModalOpen(true);
             }}
-            className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
+            className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             <span>Add Experience</span>
@@ -254,7 +254,7 @@ const ExperiencesAdmin = () => {
               icon: Briefcase,
               color: 'text-blue-600',
               bg: 'bg-blue-50',
-              borderColor: 'border-blue-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Current Position', 
@@ -262,7 +262,7 @@ const ExperiencesAdmin = () => {
               icon: Clock,
               color: 'text-emerald-600',
               bg: 'bg-emerald-50',
-              borderColor: 'border-emerald-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Companies', 
@@ -270,25 +270,25 @@ const ExperiencesAdmin = () => {
               icon: Building,
               color: 'text-purple-600',
               bg: 'bg-purple-50',
-              borderColor: 'border-purple-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Total Years',
               value: '3+', // This could be calculated dynamically
               icon: Award,
               color: 'text-primary',
-              bg: 'bg-primary/10',
-              borderColor: 'border-primary/20'
+              bg: 'bg-base-100',
+              borderColor: 'border-base-content'
             }
           ].map((stat, i) => (
             <motion.div 
               key={stat.label}
               variants={item}
               whileHover={{ y: -5 }}
-              className={`bg-base-100 p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
+              className={`bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200`}
             >
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                <div className={`p-3 rounded-none ${stat.bg} ${stat.color}`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
               </div>
@@ -303,7 +303,7 @@ const ExperiencesAdmin = () => {
         {/* Search & Filter Bar */}
         <motion.div 
           variants={item}
-          className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center"
+          className="bg-base-100 p-4 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] flex flex-col md:flex-row gap-4 items-center"
         >
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
@@ -312,7 +312,7 @@ const ExperiencesAdmin = () => {
               placeholder="Search roles, companies, or locations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
+              className="w-full pl-10 pr-4 py-2 bg-base-100 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono text-base-content transition-all"
             />
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
@@ -320,7 +320,7 @@ const ExperiencesAdmin = () => {
             <select 
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="w-full md:w-auto px-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
+              className="w-full md:w-auto px-4 py-2 bg-base-100 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono text-base-content transition-all"
             >
               <option value="all">All Experiences</option>
               <option value="current">Current Roles</option>
@@ -339,14 +339,14 @@ const ExperiencesAdmin = () => {
                   key={experience._id}
                   variants={item}
                   whileHover={{ y: -2, scale: 1.005 }}
-                  className="bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-lg transition-all p-6 group relative overflow-hidden"
+                  className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all p-6 group relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-bl-full -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-base-100 rounded-bl-full -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   
                   <div className="flex flex-col md:flex-row gap-6 relative z-10">
                     {/* Logo/Icon Placeholder */}
                     <div className="hidden md:flex flex-col items-center">
-                        <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary shadow-inner">
+                        <div className="w-14 h-14 rounded-none bg-base-200 border-2 border-base-content flex items-center justify-center text-primary shadow-[4px_4px_0_0_currentColor]">
                           <Building className="w-7 h-7" />
                         </div>
                         <div className="h-full w-px bg-base-300 my-4 border-l border-dashed border-base-300"></div>
@@ -358,12 +358,12 @@ const ExperiencesAdmin = () => {
                           <div className="flex items-center gap-3 flex-wrap">
                             <h3 className="text-xl font-bold text-base-content">{experience.position}</h3>
                             {experience.isCurrentPosition && (
-                              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                              <span className="px-3 py-1 border-2 border-base-content bg-success text-success-content font-mono font-bold uppercase tracking-widest text-xs font-semibold rounded-none flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-none animate-pulse"></span>
                                 Current
                               </span>
                             )}
-                            <span className="px-3 py-1 bg-base-200 text-base-content/70 text-xs font-medium rounded-full border border-base-300">
+                            <span className="px-3 py-1 bg-base-200 text-base-content/70 text-xs font-medium rounded-none border-2 border-base-content">
                               {experience.employmentType}
                             </span>
                           </div>
@@ -397,7 +397,7 @@ const ExperiencesAdmin = () => {
                                 });
                                 setIsModalOpen(true);
                               }}
-                              className="p-2 text-base-content/40 hover:text-primary hover:bg-primary/10  transition-colors"
+                              className="p-2 bg-base-100 border-2 border-base-content text-base-content shadow-[2px_2px_0_0_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
                             >
                               <Edit className="w-5 h-5" />
                             </button>
@@ -405,14 +405,14 @@ const ExperiencesAdmin = () => {
                               
                               
                               onClick={() => handleDeleteClick(experience._id)}
-                              className="p-2 text-base-content/40 hover:text-error hover:bg-error/10  transition-colors"
+                              className="p-2 bg-error border-2 border-base-content text-base-100 shadow-[2px_2px_0_0_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
                             >
                               <Trash2 className="w-5 h-5" />
                             </button>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-base-content/60 mb-6 bg-base-200/50 p-3 rounded-xl border border-base-300/60 w-fit">
+                      <div className="flex items-center gap-4 text-sm text-base-content/60 mb-6 bg-base-200 p-3 rounded-none border border-base-content w-fit">
                          <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-base-content/40" />
                             <span>
@@ -442,7 +442,7 @@ const ExperiencesAdmin = () => {
                           {experience.technologies.map((tech, i) => (
                             <span 
                               key={i} 
-                              className="px-3 py-1 bg-base-100 border border-base-300 text-base-content/70 text-xs font-semibold  shadow-sm hover:border-primary/40 hover:text-primary transition-colors cursor-default"
+                              className="px-2 py-1 bg-base-200 border-2 border-base-content text-base-content font-mono text-xs font-bold uppercase tracking-widest  shadow-[4px_4px_0_0_currentColor] hover:border-base-content hover:text-primary transition-colors cursor-default"
                             >
                               {tech}
                             </span>
@@ -455,8 +455,8 @@ const ExperiencesAdmin = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-base-100 rounded-2xl shadow-sm border border-dashed border-base-300 p-12 text-center">
-              <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-base-100 rounded-none shadow-[4px_4px_0_0_currentColor] border border-dashed border-base-300 p-12 text-center">
+              <div className="w-16 h-16 bg-base-200 rounded-none flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-8 h-8 text-base-content/40" />
               </div>
               <h3 className="text-lg font-bold text-base-content mb-2">No experiences found</h3>
@@ -471,7 +471,7 @@ const ExperiencesAdmin = () => {
                     resetForm();
                     setIsModalOpen(true);
                   }}
-                  className="bg-primary text-primary-content px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors font-medium shadow-lg shadow-primary/20 inline-flex items-center gap-2"
+                  className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest inline-flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
                 >
                   <Plus className="w-5 h-5" />
                   <span>Add First Experience</span>
@@ -489,20 +489,20 @@ const ExperiencesAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="bg-base-100 border-4 border-base-content w-full max-w-4xl overflow-hidden shadow-[12px_12px_0_0_currentColor] flex flex-col max-h-[90vh]"
             >
-              <div className="bg-primary p-6 flex items-center justify-between text-primary-content shrink-0">
+              <div className="bg-primary p-6 flex items-center justify-between text-base-100 border-b-4 border-base-content shrink-0">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Briefcase className="w-6 h-6" />
                   {editingExperience ? 'Edit Experience' : 'Add New Experience'}
                 </h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-none transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -518,7 +518,7 @@ const ExperiencesAdmin = () => {
                         required
                         value={formData.position}
                         onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="e.g. Senior Frontend Engineer"
                       />
                     </div>
@@ -529,7 +529,7 @@ const ExperiencesAdmin = () => {
                         required
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="e.g. Acme Corp"
                       />
                     </div>
@@ -540,7 +540,7 @@ const ExperiencesAdmin = () => {
                         required
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         placeholder="e.g. San Francisco, CA"
                       />
                     </div>
@@ -549,7 +549,7 @@ const ExperiencesAdmin = () => {
                       <select
                         value={formData.employmentType}
                         onChange={(e) => setFormData({ ...formData, employmentType: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                       >
                          <option value="Full-time">Full-time</option>
                          <option value="Part-time">Part-time</option>
@@ -568,7 +568,7 @@ const ExperiencesAdmin = () => {
                         required
                         value={formData.startDate}
                         onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                       />
                     </div>
                     <div className="space-y-2">
@@ -578,7 +578,7 @@ const ExperiencesAdmin = () => {
                          disabled={formData.isCurrentPosition}
                          value={formData.endDate}
                          onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                         className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                         className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                        />
                        <div className="flex items-center gap-2 mt-2">
                           <input 
@@ -604,7 +604,7 @@ const ExperiencesAdmin = () => {
                       rows={5}
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                      className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                       placeholder="Describe your role, achievements, and impact..."
                     />
                   </div>
@@ -613,7 +613,7 @@ const ExperiencesAdmin = () => {
                      <label className="text-sm font-semibold text-base-content/80 block">Technologies & Skills</label>
                      <div className="flex flex-wrap gap-2">
                         {formData.technologies.map((tech, index) => (
-                           <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary  text-sm font-medium border border-primary/20">
+                           <span key={index} className="inline-flex items-center gap-1.5 px-3 py-1 bg-base-100 text-primary  text-sm font-medium border border-base-content">
                               {tech}
                               <button type="button" onClick={() => removeArrayField('technologies', index)} className="hover:text-error">
                                  <X className="w-3 h-3" />
@@ -634,7 +634,7 @@ const ExperiencesAdmin = () => {
                                  }
                               }
                            }}
-                           className="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none text-sm"
+                           className="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-none focus:ring-2 focus:ring-orange-500/20 focus:border-base-content outline-none text-sm"
                            id="techInput"
                         />
                         <button 
@@ -646,7 +646,7 @@ const ExperiencesAdmin = () => {
                               input.value = '';
                             }
                           }}
-                          className="bg-base-200 px-4 py-2 rounded-xl text-base-content/70 font-medium text-sm hover:bg-base-300 transition-colors"
+                          className="bg-base-200 px-4 py-2 rounded-none text-base-content/70 font-medium text-sm hover:bg-base-300 transition-colors"
                         >
                           Add
                         </button>
@@ -657,11 +657,11 @@ const ExperiencesAdmin = () => {
                 </form>
               </div>
 
-              <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
+              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
                  <button 
                     type="button" 
                     onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                    className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                  >
                     Cancel
                  </button>
@@ -669,7 +669,7 @@ const ExperiencesAdmin = () => {
                     type="submit" 
                     form="experienceForm"
                     disabled={isSubmitting}
-                    className="bg-primary text-primary-content px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                  >
                     {isSubmitting ? 'Saving...' : 'Save Experience'}
                  </button>
@@ -687,15 +687,15 @@ const ExperiencesAdmin = () => {
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+               className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             >
                <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-base-100 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
+                  className="bg-base-100 rounded-none p-6 max-w-sm w-full shadow-[4px_4px_0_0_currentColor] text-center"
                >
-                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4 text-error">
+                  <div className="w-16 h-16 bg-base-100 rounded-none flex items-center justify-center mx-auto mb-4 text-error">
                      <Trash2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-base-content mb-2">Delete Experience?</h3>
@@ -704,14 +704,14 @@ const ExperiencesAdmin = () => {
                   <div className="flex gap-3">
                      <button 
                         onClick={() => setIsDeleteModalOpen(false)}
-                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-xl hover:bg-base-300 transition-colors"
+                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-none hover:bg-base-300 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleConfirmDelete}
                         disabled={deletingId === itemToDelete}
-                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-xl hover:bg-error/90 transition-colors shadow-lg shadow-error/20 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-none hover:bg-base-100 transition-colors shadow-[4px_4px_0_0_currentColor]  flex items-center justify-center gap-2"
                      >
                         {deletingId === itemToDelete ? 'Deleting...' : 'Delete'}
                      </button>

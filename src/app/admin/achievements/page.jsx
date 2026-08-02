@@ -177,12 +177,12 @@ const AchievementsAdmin = () => {
   // Get category color
   const getCategoryColor = (category) => {
     const colors = {
-      'Academic': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Professional': 'bg-green-100 text-green-700 border-green-200',
-      'Technical': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Leadership': 'bg-orange-100 text-orange-700 border-orange-200',
-      'Community': 'bg-pink-100 text-pink-700 border-pink-200',
-      'Sports': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+      'Academic': 'bg-blue-100 text-blue-700 border-base-content',
+      'Professional': 'bg-green-100 text-green-700 border-base-content',
+      'Technical': 'bg-purple-100 text-purple-700 border-base-content',
+      'Leadership': 'bg-orange-100 text-orange-700 border-base-content',
+      'Community': 'bg-pink-100 text-pink-700 border-base-content',
+      'Sports': 'bg-yellow-100 text-yellow-700 border-base-content',
       'Other': 'bg-gray-100 text-gray-700 border-gray-200'
     }
     return colors[category] || colors['Other']
@@ -195,7 +195,7 @@ const AchievementsAdmin = () => {
           <div className="h-8 bg-base-300  w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-base-300 rounded-2xl h-64"></div>
+              <div key={i} className="bg-base-300 rounded-none h-64"></div>
             ))}
           </div>
         </div>
@@ -204,7 +204,7 @@ const AchievementsAdmin = () => {
   }
 
   return (
-    <div className="p-8 bg-base-200/50 min-h-screen">
+    <div className="p-8 bg-base-200 min-h-screen">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -357,11 +357,11 @@ const AchievementsAdmin = () => {
                 )}
 
                 <div className="flex justify-between items-start mb-3">
-                  <span className={`px-3 py-1 text-sm rounded-full border ${getCategoryColor(achievement.category)}`}>
+                  <span className={`px-3 py-1 text-sm rounded-none border ${getCategoryColor(achievement.category)}`}>
                     {achievement.category}
                   </span>
                   {achievement.isFeatured && (
-                    <div className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                    <div className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-none text-sm font-medium flex items-center gap-1">
                       <Star className="w-3 h-3" />
                       Featured
                     </div>
@@ -401,7 +401,7 @@ const AchievementsAdmin = () => {
                   </div>
                 )}
                 
-                <div className="flex items-center space-x-2 pt-3 border-t border-base-300/60">
+                <div className="flex items-center space-x-2 pt-3 border-t border-base-content">
                   <button
                     
                     
@@ -457,7 +457,7 @@ const AchievementsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-base-100 flex items-center justify-center p-4 z-50"
             onClick={(e) => e.target === e.currentTarget && setIsModalOpen(false)}
           >
             <motion.div
@@ -645,7 +645,7 @@ const AchievementsAdmin = () => {
                             
                             type="button"
                             onClick={() => removeArrayField('tags', index)}
-                            className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
+                            className="bg-base-100 text-error hover:bg-base-100 p-3 rounded-none transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -656,7 +656,7 @@ const AchievementsAdmin = () => {
                         
                         type="button"
                         onClick={() => addArrayField('tags')}
-                        className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
+                        className="bg-base-100 text-primary hover:bg-base-100 px-4 py-3 rounded-none transition-colors font-medium flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
                         Add Tag
@@ -681,7 +681,7 @@ const AchievementsAdmin = () => {
 
                     {/* Featured */}
                     <div className="flex items-center">
-                      <label className="flex items-center gap-3 cursor-pointer bg-base-200 px-4 py-3 rounded-xl hover:bg-base-300 transition-colors">
+                      <label className="flex items-center gap-3 cursor-pointer bg-base-200 px-4 py-3 rounded-none hover:bg-base-300 transition-colors">
                         <input
                           type="checkbox"
                           className="w-5 h-5 text-primary border-base-300 rounded focus:ring-primary"

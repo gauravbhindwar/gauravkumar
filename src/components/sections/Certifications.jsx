@@ -91,22 +91,19 @@ export default function Certifications() {
                 <TiltCard maxTilt={6}>
                 <GlassCard className="p-8">
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-primary/20 to-secondary/20 
-                                  flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <FaAward className="w-7 h-7 text-primary" />
+                  <div className="flex items-start justify-between mb-6 border-b-4 border-base-content pb-4">
+                    <div className="w-14 h-14 border-2 border-base-content bg-primary flex items-center justify-center shadow-[4px_4px_0_0_currentColor] group-hover:-translate-y-1 group-hover:-translate-x-1 transition-transform duration-300 shrink-0">
+                      <FaAward className="w-6 h-6 text-base-100" />
                     </div>
                     {cert.credentialLink && (
                       <a
                         href={cert.credentialLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary 
-                                 hover:bg-primary/20 transition-all duration-200 text-sm font-medium
-                                 hover:scale-105 active:scale-95"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-base-content text-[10px] font-mono font-bold uppercase tracking-widest bg-base-200 text-base-content shadow-[2px_2px_0_0_currentColor] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
                       >
-                        <FaCheck className="w-3 h-3" />
-                        Verify
+                        <FaCheck className="w-3 h-3 text-primary" />
+                        VERIFY
                         <FaExternalLinkAlt className="w-3 h-3" />
                       </a>
                     )}
@@ -114,25 +111,23 @@ export default function Certifications() {
 
                   {/* Content */}
                   <div className="space-y-4">
-                    <h3 className="text-xl font-bold leading-tight">
-                      <span className="bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent">
-                        {cert.title}
-                      </span>
+                    <h3 className="text-xl font-mono font-bold uppercase tracking-widest leading-tight text-base-content">
+                      {cert.title}
                     </h3>
                     
                     <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-base-content/70">
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <FaCertificate className="w-4 h-4 text-primary" />
+                      <div className="flex items-center gap-3 text-base-content/80 font-mono text-sm uppercase">
+                        <div className="w-8 h-8 border-2 border-base-content bg-base-100 flex items-center justify-center shadow-[2px_2px_0_0_currentColor]">
+                          <FaCertificate className="w-3.5 h-3.5 text-primary" />
                         </div>
-                        <span className="font-medium">{cert.issuer}</span>
+                        <span className="font-bold">{cert.issuer}</span>
                       </div>
                       
-                      <div className="flex items-center gap-3 text-base-content/60">
-                        <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
-                          <FaCalendarAlt className="w-4 h-4 text-secondary" />
+                      <div className="flex items-center gap-3 text-base-content/60 font-mono text-xs uppercase">
+                        <div className="w-8 h-8 border-2 border-base-content bg-base-100 flex items-center justify-center shadow-[2px_2px_0_0_currentColor]">
+                          <FaCalendarAlt className="w-3.5 h-3.5 text-secondary" />
                         </div>
-                        <span className="text-sm">{cert.date}</span>
+                        <span>{cert.date}</span>
                       </div>
                     </div>
                     

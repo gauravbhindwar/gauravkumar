@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
-import connectToDatabase from '@/lib/mongodb'
-import Admin from '@/models/Admin'
+import getSupabase from '@/lib/supabase'
 
 export async function POST(request) {
   // Completely disable web-based admin setup for security
   return NextResponse.json(
-    { 
-      error: 'Web-based admin setup is disabled for security reasons. Use "npm run create-admin" instead.' 
+    {
+      error: 'Web-based admin setup is disabled for security reasons. Use "npm run create-admin" instead.'
     },
     { status: 403 }
   );
@@ -16,10 +14,14 @@ export async function POST(request) {
 // Get admin setup status
 export async function GET() {
   try {
-    await connectToDatabase()
-    
-    const adminCount = await Admin.countDocuments()
-    
+    const supabase = getSupabase()
+
+    const { count: adminCount, error } = await supabase
+      .from('admins')
+      .select('id', { count: 'exact', head: true })
+
+    if (error) throw error
+
     return NextResponse.json({
       setupRequired: adminCount === 0,
       adminCount

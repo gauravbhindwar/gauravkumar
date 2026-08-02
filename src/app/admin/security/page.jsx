@@ -95,7 +95,7 @@ export default function SecurityDashboard() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full"
+          className="w-8 h-8 border-2 border-base-content border-t-primary rounded-none"
         />
       </div>
     )
@@ -119,7 +119,7 @@ export default function SecurityDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
+          className="bg-base-100 rounded-none p-6 shadow-[4px_4px_0_0_currentColor] border border-base-content"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -135,7 +135,7 @@ export default function SecurityDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
+          className="bg-base-100 rounded-none p-6 shadow-[4px_4px_0_0_currentColor] border border-base-content"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -151,7 +151,7 @@ export default function SecurityDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
+          className="bg-base-100 rounded-none p-6 shadow-[4px_4px_0_0_currentColor] border border-base-content"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -167,7 +167,7 @@ export default function SecurityDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
+          className="bg-base-100 rounded-none p-6 shadow-[4px_4px_0_0_currentColor] border border-base-content"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -185,7 +185,7 @@ export default function SecurityDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-base-100 rounded-xl shadow-sm border border-base-300/60"
+        className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor]"
       >
         <div className="p-6 border-b border-base-300">
           <h2 className="text-lg font-semibold text-base-content">Recent Login Attempts</h2>
@@ -201,7 +201,7 @@ export default function SecurityDashboard() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className={`w-3 h-3 rounded-full ${
+                  <div className={`w-3 h-3 rounded-none ${
                     attempt.success ? 'bg-green-500' : 'bg-red-500'
                   }`} />
                   <div>
@@ -219,10 +219,10 @@ export default function SecurityDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-none text-xs font-medium ${
                     attempt.success 
-                      ? 'bg-success/15 text-success' 
-                      : 'bg-error/15 text-error'
+                      ? 'bg-base-100 text-success' 
+                      : 'bg-base-100 text-error'
                   }`}>
                     {attempt.success ? 'Success' : 'Failed'}
                   </span>
@@ -238,7 +238,7 @@ export default function SecurityDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-base-100 rounded-xl shadow-sm border border-base-300/60"
+        className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor]"
       >
         <div className="p-6 border-b border-base-300">
           <h2 className="text-lg font-semibold text-base-content">Blocked IP Addresses</h2>

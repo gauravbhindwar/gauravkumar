@@ -2,9 +2,9 @@
 
 const VARIANTS = {
   // Default tag: terminal output style
-  neutral: 'bg-base-300/20 border border-base-content/20 hover:border-primary/50 text-base-content/80',
+  neutral: 'bg-base-100 border-2 border-base-content text-base-content hover:shadow-[2px_2px_0_0_currentColor] hover:-translate-y-0.5',
   // Solid tag: highlighted glowing terminal state
-  solid: 'bg-primary/10 text-primary border border-primary/50 shadow-[0_0_15px_rgba(255,175,211,0.2)]',
+  solid: 'bg-primary text-base-100 border-2 border-base-content shadow-[2px_2px_0_0_currentColor]',
 }
 
 /**

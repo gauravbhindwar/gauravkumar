@@ -1,38 +1,36 @@
-'use client'
-
-import dynamic from 'next/dynamic'
 import ConditionalNavbar from '@/components/ConditionalNavbar'
-
-const Hero = dynamic(() => import('@/components/sections/Hero'), {
-  ssr: false,
-  loading: () => <div className="min-h-screen bg-base-100" />
-})
-
-// Import these statically for debugging
+import Hero from '@/components/sections/Hero'
 import Projects from '@/components/sections/Projects'
 import Experience from '@/components/sections/Experience'
-
-const Skills = dynamic(() => import('@/components/sections/Skills'), { ssr: false })
-const Education = dynamic(() => import('@/components/sections/Education'), { ssr: false })
-const Achievements = dynamic(() => import('@/components/sections/Achievements'), { ssr: false })
-const Contact = dynamic(() => import('@/components/sections/Contact'), { ssr: false })
-const AdminAccess = dynamic(() => import('@/components/AdminAccess'), { ssr: false })
 import Certifications from '@/components/sections/Certifications'
+import { DeferredSkillsEducation, DeferredAchievementsContactAdmin } from '@/components/DeferredSections'
+import getSupabase from '@/lib/supabase'
+import { rowToClient } from '@/lib/dbMapper'
 
-export default function Home() {
+async function getContact() {
+  try {
+    const { data } = await getSupabase().from('contact').select('*').limit(1).maybeSingle()
+    if (data) return rowToClient(data)
+  } catch (error) {
+    console.error('Error fetching contact information:', error)
+  }
+  const fallback = await import('@/data/contact.json')
+  return fallback.default
+}
+
+export default async function Home() {
+  const contact = await getContact()
+
   return (
     <main className="min-h-screen bg-base-100 text-base-content selection:bg-primary selection:text-primary-content">
       <ConditionalNavbar />
-      
-      <Hero />
+
+      <Hero contact={contact} />
       <Experience />
       <Projects />
-      <Skills />
-      <Education />
+      <DeferredSkillsEducation />
       <Certifications />
-      <Achievements />
-      <Contact />
-      <AdminAccess />
+      <DeferredAchievementsContactAdmin />
     </main>
   )
 }

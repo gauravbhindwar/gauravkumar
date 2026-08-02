@@ -1,22 +1,25 @@
 import { NextResponse } from 'next/server'
-import connectToDatabase from '@/lib/mongodb'
-import Award from '@/models/Award'
+import getSupabase from '@/lib/supabase'
+import { rowToClient, clientToRow } from '@/lib/dbMapper'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 // GET /api/awards/[id] - Get single award
 export async function GET(request, { params }) {
   try {
-    await connectToDatabase()
-    
     const { id } = await params
-    const award = await Award.findById(id).lean()
-    
+    const supabase = getSupabase()
+    const { data: award } = await supabase
+      .from('awards')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+
     if (!award) {
       return NextResponse.json({ error: 'Award not found' }, { status: 404 })
     }
 
-    return NextResponse.json(award)
+    return NextResponse.json(rowToClient(award))
   } catch (error) {
     console.error('Error fetching award:', error)
     return NextResponse.json(
@@ -30,46 +33,34 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    await connectToDatabase()
-    
     const { id } = await params
     const data = await request.json()
-    
-    // Convert date string to Date object
-    if (data.date) {
-      data.date = new Date(data.date)
-    }
 
-    const award = await Award.findByIdAndUpdate(
-      id,
-      data,
-      { new: true, runValidators: true }
-    )
+    const supabase = getSupabase()
+    const { data: award, error } = await supabase
+      .from('awards')
+      .update(clientToRow(data))
+      .eq('id', id)
+      .select('*')
+      .maybeSingle()
 
+    if (error) throw error
     if (!award) {
       return NextResponse.json({ error: 'Award not found' }, { status: 404 })
     }
 
-    return NextResponse.json(award, {
+    return NextResponse.json(rowToClient(award), {
       headers: {
         'Cache-Control': 'no-cache'
       }
     })
   } catch (error) {
     console.error('Error updating award:', error)
-    
-    if (error.name === 'ValidationError') {
-      return NextResponse.json(
-        { error: 'Validation error', details: error.message },
-        { status: 400 }
-      )
-    }
-
     return NextResponse.json(
       { error: 'Failed to update award' },
       { status: 500 }
@@ -81,15 +72,19 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    await connectToDatabase()
-    
     const { id } = await params
-    const award = await Award.findByIdAndDelete(id)
+    const supabase = getSupabase()
+    const { data: award } = await supabase
+      .from('awards')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle()
 
     if (!award) {
       return NextResponse.json({ error: 'Award not found' }, { status: 404 })

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import connectToDatabase from '@/lib/mongodb'
-import Admin from '@/models/Admin'
+import getSupabase from '@/lib/supabase'
 
 // In-memory store for login attempts (in production, use Redis)
 const loginAttempts = new Map()
@@ -18,8 +17,6 @@ export async function POST(request) {
         { status: 400 }
       )
     }
-
-    await connectToDatabase()
 
     const now = Date.now()
     const key = `${email}-${ip}`
@@ -134,25 +131,31 @@ async function recordSuccessfulLogin(key, email, userAgent, ip) {
   loginAttempts.delete(key)
 
   try {
-    // Update admin record with successful login info
-    await Admin.findOneAndUpdate(
-      { email: email.toLowerCase() },
-      {
-        $set: {
-          lastLogin: new Date(),
-          lastLoginIP: ip,
-          lastLoginUserAgent: userAgent
-        },
-        $push: {
-          loginHistory: {
-            timestamp: new Date(),
-            ip,
-            userAgent,
-            success: true
-          }
-        }
-      }
-    )
+    const supabase = getSupabase()
+
+    const { data: admin } = await supabase
+      .from('admins')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .maybeSingle()
+
+    if (admin) {
+      await supabase
+        .from('admins')
+        .update({
+          last_login: new Date().toISOString(),
+          last_login_ip: ip,
+          last_login_user_agent: userAgent
+        })
+        .eq('id', admin.id)
+
+      await supabase.from('admin_login_history').insert({
+        admin_id: admin.id,
+        ip,
+        user_agent: userAgent,
+        success: true
+      })
+    }
   } catch (error) {
     console.error('Error updating login history:', error)
   }

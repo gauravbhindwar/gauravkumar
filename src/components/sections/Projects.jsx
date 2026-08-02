@@ -318,7 +318,7 @@ export default function Projects() {
     return (
       <section className="py-24 bg-base-100">
         <div className="container mx-auto px-4 text-center">
-          <div className="p-8 bg-error/10 border border-error/20 rounded-2xl max-w-md mx-auto">
+          <div className="p-8 bg-error/10 border border-error/20 rounded-none max-w-md mx-auto">
             <p className="text-error font-medium">Failed to load projects</p>
             <p className="text-base-content/60 text-sm mt-2">Please try refreshing the page</p>
           </div>

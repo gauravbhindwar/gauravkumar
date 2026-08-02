@@ -184,11 +184,11 @@ const EducationAdminPage = () => {
       <div className="p-4 sm:p-6 lg:p-8">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="bg-linear-to-r from-primary to-secondary rounded-3xl p-6 sm:p-8 text-primary-content shadow-2xl">
+          <div className="bg-primary border-b-4 border-base-content rounded-none p-6 sm:p-8 text-primary-content shadow-[4px_4px_0_0_currentColor]">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-4 sm:mb-0">
                 <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-base-100 rounded-none flex items-center justify-center">
                     <GraduationCap className="w-6 h-6" />
                   </div>
                   <div>
@@ -204,7 +204,7 @@ const EducationAdminPage = () => {
                   resetForm();
                   setShowModal(true);
                 }}
-                className="bg-primary-content/20 hover:bg-primary-content/30 text-primary-content px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 backdrop-blur-sm border border-primary-content/20"
+                className="bg-primary-content/20 hover:bg-primary-content/30 text-primary-content px-6 py-3 rounded-none font-semibold transition-all duration-300 flex items-center gap-2 backdrop-blur-sm border border-primary-content/20"
               >
                 <Plus className="w-5 h-5" />
                 Add Education
@@ -215,19 +215,19 @@ const EducationAdminPage = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl p-6 border border-base-300/50 shadow-lg">
+          <div className="bg-base-100 border-4 border-base-content p-6 shadow-[8px_8px_0_0_currentColor]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/60">Total Education</p>
                 <p className="text-2xl font-bold text-base-content">{education.length}</p>
               </div>
-              <div className="w-12 h-12 bg-primary/15 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-base-100 rounded-none flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-primary" />
               </div>
             </div>
           </div>
           
-          <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl p-6 border border-base-300/50 shadow-lg">
+          <div className="bg-base-100 border-4 border-base-content p-6 shadow-[8px_8px_0_0_currentColor]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/60">Current Studies</p>
@@ -235,13 +235,13 @@ const EducationAdminPage = () => {
                   {education.filter(edu => edu.isCurrentlyStudying).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-500/15 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-base-100 rounded-none flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-blue-500" />
               </div>
             </div>
           </div>
           
-          <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl p-6 border border-base-300/50 shadow-lg">
+          <div className="bg-base-100 border-4 border-base-content p-6 shadow-[8px_8px_0_0_currentColor]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-base-content/60">Completed</p>
@@ -249,7 +249,7 @@ const EducationAdminPage = () => {
                   {education.filter(edu => !edu.isCurrentlyStudying).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-success/15 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-base-100 rounded-none flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-success" />
               </div>
             </div>
@@ -257,7 +257,7 @@ const EducationAdminPage = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl shadow-lg border border-base-300/50 p-4 sm:p-6 mb-8">
+        <div className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] p-4 sm:p-6 mb-8">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-base-content/40" />
@@ -266,7 +266,7 @@ const EducationAdminPage = () => {
                 placeholder="Search education records..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 text-base-content bg-base-100"
+                className="w-full pl-10 pr-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 text-base-content bg-base-100"
               />
             </div>
             <div className="flex items-center space-x-2">
@@ -274,7 +274,7 @@ const EducationAdminPage = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-base-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 text-base-content bg-base-100"
+                className="border-2 border-base-content rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 text-base-content bg-base-100"
               >
                 <option value="all">All Status</option>
                 <option value="current">Currently Studying</option>
@@ -287,8 +287,8 @@ const EducationAdminPage = () => {
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="relative">
-              <div className="w-20 h-20 border-4 border-primary/20 rounded-full"></div>
-              <div className="w-20 h-20 border-4 border-primary rounded-full animate-spin border-t-transparent absolute top-0 left-0"></div>
+              <div className="w-20 h-20 border-4 border-base-content rounded-none"></div>
+              <div className="w-20 h-20 border-4 border-primary rounded-none animate-spin border-t-transparent absolute top-0 left-0"></div>
             </div>
           </div>
         ) : (
@@ -301,12 +301,12 @@ const EducationAdminPage = () => {
                     key={edu._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-base-100/80 backdrop-blur-sm rounded-2xl shadow-lg border border-base-300/50 p-6 hover:shadow-xl transition-all duration-300"
+                    className="bg-base-100 backdrop-blur-sm rounded-none shadow-[4px_4px_0_0_currentColor] border border-base-content p-6 hover:shadow-[4px_4px_0_0_currentColor] transition-all duration-300"
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                       <div className="flex-1">
                         <div className="flex items-start space-x-4">
-                          <div className="w-12 h-12 bg-linear-to-r from-primary to-secondary rounded-2xl flex items-center justify-center shrink-0">
+                          <div className="w-12 h-12 bg-primary border-b-4 border-base-content rounded-none flex items-center justify-center shrink-0">
                             <GraduationCap className="w-6 h-6 text-primary-content" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ const EducationAdminPage = () => {
                                 {edu.degree} {edu.field && `in ${edu.field}`}
                               </h3>
                               {edu.isCurrentlyStudying && (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/15 text-blue-500">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-none text-xs font-medium bg-base-100 text-blue-500">
                                   Current
                                 </span>
                               )}
@@ -362,7 +362,7 @@ const EducationAdminPage = () => {
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                   {edu.coursework.map((course, idx) => (
-                                    <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/15 text-primary">
+                                    <span key={idx} className="inline-flex items-center px-3 py-1 rounded-none text-sm font-medium bg-base-100 text-primary">
                                       {course}
                                     </span>
                                   ))}
@@ -395,7 +395,7 @@ const EducationAdminPage = () => {
                           
                           
                           onClick={() => handleEdit(edu)}
-                          className="bg-primary/10 text-primary hover:bg-primary/20 p-3 rounded-xl transition-colors"
+                          className="bg-base-100 text-primary hover:bg-base-100 p-3 rounded-none transition-colors"
                         >
                           <Edit className="w-5 h-5" />
                         </button>
@@ -403,7 +403,7 @@ const EducationAdminPage = () => {
                           
                           
                           onClick={() => handleDelete(edu._id)}
-                          className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
+                          className="bg-base-100 text-error hover:bg-base-100 p-3 rounded-none transition-colors"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
@@ -413,7 +413,7 @@ const EducationAdminPage = () => {
                 ))
               ) : (
                 <div className="text-center py-20">
-                  <div className="w-24 h-24 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-24 h-24 bg-base-200 rounded-none flex items-center justify-center mx-auto mb-4">
                     <GraduationCap className="w-12 h-12 text-base-content/40" />
                   </div>
                   <h3 className="text-xl font-semibold text-base-content mb-2">
@@ -436,7 +436,7 @@ const EducationAdminPage = () => {
                         resetForm();
                         setShowModal(true);
                       }}
-                      className="bg-linear-to-r from-primary to-secondary text-primary-content px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto"
+                      className="bg-primary border-b-4 border-base-content text-primary-content px-6 py-3 rounded-none font-semibold shadow-[4px_4px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all duration-300 flex items-center gap-2 mx-auto"
                     >
                       <Plus className="w-5 h-5" />
                       Add First Education
@@ -455,19 +455,19 @@ const EducationAdminPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl border border-base-300/60"
+                className="bg-base-100 rounded-none w-full max-w-4xl overflow-hidden shadow-[4px_4px_0_0_currentColor] border border-base-content"
               >
                 {/* Modal Header */}
                 <div className="bg-primary p-6 text-base-100 border-b-4 border-base-content">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-primary-content/20 rounded-2xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-primary-content/20 rounded-none flex items-center justify-center">
                         <GraduationCap className="w-6 h-6" />
                       </div>
                       <div>
@@ -483,7 +483,7 @@ const EducationAdminPage = () => {
                       
                       
                       onClick={() => setShowModal(false)}
-                      className="p-2 text-primary-content/80 hover:text-primary-content hover:bg-primary-content/20 rounded-xl transition-colors"
+                      className="p-2 text-primary-content/80 hover:text-primary-content hover:bg-primary-content/20 rounded-none transition-colors"
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -505,7 +505,7 @@ const EducationAdminPage = () => {
                               type="text"
                               value={formData.institution}
                               onChange={(e) => setFormData({...formData, institution: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                               required
                               placeholder="Enter institution name"
                             />
@@ -520,7 +520,7 @@ const EducationAdminPage = () => {
                               type="text"
                               value={formData.degree}
                               onChange={(e) => setFormData({...formData, degree: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                               required
                               placeholder="Enter degree title"
                             />
@@ -535,7 +535,7 @@ const EducationAdminPage = () => {
                               type="text"
                               value={formData.field}
                               onChange={(e) => setFormData({...formData, field: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                               placeholder="Enter field of study"
                             />
                           </div>
@@ -549,7 +549,7 @@ const EducationAdminPage = () => {
                               type="text"
                               value={formData.location}
                               onChange={(e) => setFormData({...formData, location: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                               placeholder="Enter location"
                             />
                           </div>
@@ -563,7 +563,7 @@ const EducationAdminPage = () => {
                               type="date"
                               value={formData.startDate}
                               onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                             />
                           </div>
                           
@@ -576,7 +576,7 @@ const EducationAdminPage = () => {
                               type="date"
                               value={formData.endDate}
                               onChange={(e) => setFormData({...formData, endDate: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:bg-base-200 transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:bg-base-200 transition-all duration-200 text-base-content bg-base-100"
                               disabled={formData.isCurrentlyStudying}
                             />
                           </div>
@@ -590,7 +590,7 @@ const EducationAdminPage = () => {
                               type="text"
                               value={formData.grade}
                               onChange={(e) => setFormData({...formData, grade: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                               placeholder="e.g., 7.91, 89.90%"
                             />
                           </div>
@@ -603,7 +603,7 @@ const EducationAdminPage = () => {
                             <select
                               value={formData.gradeType}
                               onChange={(e) => setFormData({...formData, gradeType: e.target.value})}
-                              className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                              className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                             >
                               <option value="GPA">GPA</option>
                               <option value="Percentage">Percentage</option>
@@ -614,7 +614,7 @@ const EducationAdminPage = () => {
                         </div>
                         
                         {/* Currently Studying Checkbox */}
-                        <div className="flex items-center space-x-3 p-4 bg-primary/10 rounded-xl border border-primary/20">
+                        <div className="flex items-center space-x-3 p-4 bg-base-100 rounded-none border border-base-content">
                           <input
                             type="checkbox"
                             id="currentlyStudying"
@@ -635,7 +635,7 @@ const EducationAdminPage = () => {
                           <textarea
                             value={formData.description}
                             onChange={(e) => setFormData({...formData, description: e.target.value})}
-                            className="w-full px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                            className="w-full px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                             rows={3}
                             placeholder="Describe your education experience..."
                           />
@@ -654,7 +654,7 @@ const EducationAdminPage = () => {
                                   type="text"
                                   value={course}
                                   onChange={(e) => handleArrayFieldChange('coursework', index, e.target.value)}
-                                  className="flex-1 px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                                  className="flex-1 px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                                   placeholder="Course name"
                                 />
                                 <button
@@ -662,7 +662,7 @@ const EducationAdminPage = () => {
                                   
                                   type="button"
                                   onClick={() => removeArrayField('coursework', index)}
-                                  className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
+                                  className="bg-base-100 text-error hover:bg-base-100 p-3 rounded-none transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>
@@ -673,7 +673,7 @@ const EducationAdminPage = () => {
                               
                               type="button"
                               onClick={() => addArrayField('coursework')}
-                              className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
+                              className="bg-base-100 text-primary hover:bg-base-100 px-4 py-3 rounded-none transition-colors font-medium flex items-center gap-2"
                             >
                               <Plus className="w-4 h-4" />
                               Add Course
@@ -694,7 +694,7 @@ const EducationAdminPage = () => {
                                   type="text"
                                   value={achievement}
                                   onChange={(e) => handleArrayFieldChange('achievements', index, e.target.value)}
-                                  className="flex-1 px-4 py-3 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
+                                  className="flex-1 px-4 py-3 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 text-base-content bg-base-100"
                                   placeholder="Achievement description"
                                 />
                                 <button
@@ -702,7 +702,7 @@ const EducationAdminPage = () => {
                                   
                                   type="button"
                                   onClick={() => removeArrayField('achievements', index)}
-                                  className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
+                                  className="bg-base-100 text-error hover:bg-base-100 p-3 rounded-none transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>
@@ -713,7 +713,7 @@ const EducationAdminPage = () => {
                               
                               type="button"
                               onClick={() => addArrayField('achievements')}
-                              className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
+                              className="bg-base-100 text-primary hover:bg-base-100 px-4 py-3 rounded-none transition-colors font-medium flex items-center gap-2"
                             >
                               <Plus className="w-4 h-4" />
                               Add Achievement
@@ -731,7 +731,7 @@ const EducationAdminPage = () => {
                           
                           type="button"
                           onClick={() => setShowModal(false)}
-                          className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 rounded-xl hover:bg-base-200"
+                          className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 rounded-none hover:bg-base-200"
                         >
                           Cancel
                         </button>
@@ -739,7 +739,7 @@ const EducationAdminPage = () => {
                           
                           
                           type="submit" 
-                          className="bg-linear-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                          className="bg-success border-2 border-base-content text-white px-8 py-3 rounded-none font-semibold shadow-[4px_4px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all duration-300 flex items-center gap-2"
                         >
                           <Save className="w-4 h-4" />
                           {editingEducation ? 'Update' : 'Create'} Education

@@ -195,7 +195,7 @@ const ProjectsAdmin = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-base-200">
-        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-none animate-spin"></div>
       </div>
     );
   }
@@ -205,7 +205,7 @@ const ProjectsAdmin = () => {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
+      className="min-h-screen bg-base-200 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
 
@@ -239,7 +239,7 @@ const ProjectsAdmin = () => {
               resetForm();
               setIsModalOpen(true);
             }}
-            className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
+            className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             <span>Add Project</span>
@@ -254,8 +254,8 @@ const ProjectsAdmin = () => {
               value: projects.length, 
               icon: Layout,
               color: 'text-primary',
-              bg: 'bg-primary/10',
-              borderColor: 'border-primary/20'
+              bg: 'bg-base-100',
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Completed', 
@@ -263,7 +263,7 @@ const ProjectsAdmin = () => {
               icon: CheckCircle,
               color: 'text-emerald-600',
               bg: 'bg-emerald-50',
-              borderColor: 'border-emerald-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'Featured', 
@@ -271,7 +271,7 @@ const ProjectsAdmin = () => {
               icon: Star,
               color: 'text-purple-600',
               bg: 'bg-purple-50',
-              borderColor: 'border-purple-100'
+              borderColor: 'border-base-content'
             },
             { 
               label: 'In Progress',
@@ -279,17 +279,17 @@ const ProjectsAdmin = () => {
               icon: Zap,
               color: 'text-orange-600',
               bg: 'bg-orange-50',
-              borderColor: 'border-orange-100'
+              borderColor: 'border-base-content'
             }
           ].map((stat, i) => (
             <motion.div 
               key={stat.label}
               variants={item}
               whileHover={{ y: -5 }}
-              className={`bg-base-100 p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
+              className={`bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200`}
             >
               <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                <div className={`p-3 rounded-none ${stat.bg} ${stat.color}`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
               </div>
@@ -304,7 +304,7 @@ const ProjectsAdmin = () => {
         {/* Search & Filter Bar */}
         <motion.div 
           variants={item}
-          className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center"
+          className="bg-base-100 p-4 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] flex flex-col md:flex-row gap-4 items-center"
         >
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
@@ -313,20 +313,21 @@ const ProjectsAdmin = () => {
               placeholder="Search projects by title, tech, or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
+              className="w-full pl-10 pr-4 py-2 bg-base-100 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono text-base-content transition-all"
             />
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <div className="flex items-center bg-base-200 p-1 rounded-xl border border-base-300/60">
+            <div className="flex items-center bg-base-200 p-1 rounded-none border border-base-content">
                <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-2  transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary' : 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content'}`}
                >
                   <Grid className="w-4 h-4" />
                </button>
+               <div className="w-px h-4 bg-base-content mx-1"></div>
                <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-2  transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary' : 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content'}`}
                >
                   <List className="w-4 h-4" />
                </button>
@@ -334,7 +335,7 @@ const ProjectsAdmin = () => {
             <select 
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content cursor-pointer"
+              className="px-4 py-2 bg-base-100 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono text-base-content transition-all cursor-pointer"
             >
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -354,7 +355,7 @@ const ProjectsAdmin = () => {
                 variants={item}
                 whileHover={{ y: -5 }}
                 onClick={() => setViewingProject(project)}
-                className={`bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-xl transition-all overflow-hidden group cursor-pointer ${
+                className={`bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all overflow-hidden group cursor-pointer ${
                    viewMode === 'list' ? 'flex items-center p-4 gap-6' : 'flex flex-col'
                 }`}
               >
@@ -368,7 +369,7 @@ const ProjectsAdmin = () => {
                       </div>
                    )}
                    {project.featured && (
-                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-sm text-yellow-500">
+                      <div className="absolute top-3 right-3 bg-base-100 backdrop-blur-sm p-1.5 rounded-none shadow-[4px_4px_0_0_currentColor] text-yellow-500">
                          <Star className="w-4 h-4 fill-current" />
                       </div>
                    )}
@@ -380,9 +381,9 @@ const ProjectsAdmin = () => {
                       <div className="space-y-1">
                          <h3 className="text-xl font-bold text-base-content group-hover:text-primary transition-colors line-clamp-1">{project.title}</h3>
                          <div className="flex items-center gap-2">
-                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                              project.status === 'completed' ? 'bg-success/15 text-success' :
-                              project.status === 'in-progress' ? 'bg-blue-500/15 text-blue-500' :
+                           <span className={`px-2.5 py-0.5 rounded-none text-xs font-semibold uppercase tracking-wide ${
+                              project.status === 'completed' ? 'bg-base-100 text-success' :
+                              project.status === 'in-progress' ? 'bg-base-100 text-blue-500' :
                               project.status === 'planned' ? 'bg-base-300 text-base-content/60' :
                               'bg-base-300 text-base-content/60'
                            }`}>
@@ -413,7 +414,7 @@ const ProjectsAdmin = () => {
                               setFeaturesInput((project.features || []).join('\n'));
                               setIsModalOpen(true);
                             }}
-                            className="p-2 hover:bg-primary/10 text-base-content/40 hover:text-primary  transition-colors"
+                            className="p-2 hover:bg-base-100 text-base-content/40 hover:text-primary  transition-colors"
                          >
                             <Edit className="w-4 h-4" />
                          </button>
@@ -422,7 +423,7 @@ const ProjectsAdmin = () => {
                               e.stopPropagation();
                               handleDelete(project._id || project.id);
                             }}
-                            className="p-2 hover:bg-error/10 text-base-content/40 hover:text-error  transition-colors"
+                            className="p-2 hover:bg-base-100 text-base-content/40 hover:text-error  transition-colors"
                          >
                             <Trash2 className="w-4 h-4" />
                          </button>
@@ -436,12 +437,12 @@ const ProjectsAdmin = () => {
                    {project.tech?.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-auto">
                          {project.tech.slice(0, 4).map((tech, i) => (
-                            <span key={i} className="px-2 py-1 bg-base-200 border border-base-300/60 rounded-md text-xs font-medium text-base-content/70">
+                            <span key={i} className="px-2 py-1 bg-base-200 border border-base-content rounded-none text-xs font-medium text-base-content/70">
                                {tech}
                             </span>
                          ))}
                          {project.tech.length > 4 && (
-                            <span className="px-2 py-1 bg-base-200 border border-base-300/60 rounded-md text-xs font-medium text-base-content/60">
+                            <span className="px-2 py-1 bg-base-200 border border-base-content rounded-none text-xs font-medium text-base-content/60">
                                +{project.tech.length - 4}
                             </span>
                          )}
@@ -452,8 +453,8 @@ const ProjectsAdmin = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full bg-base-100 rounded-2xl shadow-sm border border-dashed border-base-300 p-12 text-center">
-               <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="col-span-full bg-base-100 rounded-none shadow-[4px_4px_0_0_currentColor] border border-dashed border-base-300 p-12 text-center">
+               <div className="w-16 h-16 bg-base-200 rounded-none flex items-center justify-center mx-auto mb-4">
                   <Layers className="w-8 h-8 text-base-content/40" />
                </div>
                <h3 className="text-lg font-bold text-base-content mb-2">No projects found</h3>
@@ -468,7 +469,7 @@ const ProjectsAdmin = () => {
                         resetForm();
                         setIsModalOpen(true);
                      }}
-                     className="bg-primary text-primary-content px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors font-medium shadow-lg shadow-primary/20 inline-flex items-center gap-2"
+                     className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest inline-flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
                   >
                      <Plus className="w-5 h-5" />
                      <span>Add First Project</span>
@@ -487,20 +488,20 @@ const ProjectsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="bg-base-100 border-4 border-base-content w-full max-w-4xl overflow-hidden shadow-[12px_12px_0_0_currentColor] flex flex-col max-h-[90vh]"
             >
-              <div className="bg-primary p-6 flex items-center justify-between text-primary-content shrink-0">
+              <div className="bg-primary p-6 flex items-center justify-between text-base-100 border-b-4 border-base-content shrink-0">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Code className="w-6 h-6" />
                   {editingProject ? 'Edit Project' : 'Add New Project'}
                 </h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-none transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -516,7 +517,7 @@ const ProjectsAdmin = () => {
                            required
                            value={formData.title}
                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="e.g. Portfolio v2"
                         />
                      </div>
@@ -525,7 +526,7 @@ const ProjectsAdmin = () => {
                         <select
                            value={formData.status}
                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         >
                            <option value="completed">Completed</option>
                            <option value="in-progress">In Progress</option>
@@ -541,7 +542,7 @@ const ProjectsAdmin = () => {
                         rows={4}
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                         placeholder="What did you build and why?"
                      />
                   </div>
@@ -553,7 +554,7 @@ const ProjectsAdmin = () => {
                            type="url"
                            value={formData.image}
                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                           className="flex-1 px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="flex-1 px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="https://example.com/cover.png"
                         />
                      </div>
@@ -573,7 +574,7 @@ const ProjectsAdmin = () => {
                               type="url"
                               value={formData.githubUrl}
                               onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                              className="w-full pl-10 pr-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              className="w-full pl-10 pr-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="https://github.com/..."
                            />
                         </div>
@@ -586,7 +587,7 @@ const ProjectsAdmin = () => {
                               type="url"
                               value={formData.liveUrl}
                               onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
-                              className="w-full pl-10 pr-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              className="w-full pl-10 pr-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="https://..."
                            />
                         </div>
@@ -600,7 +601,7 @@ const ProjectsAdmin = () => {
                            rows={3}
                            value={techInput}
                            onChange={(e) => setTechInput(e.target.value)}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="React, Tailwind, Node.js (comma separated)"
                         />
                      </div>
@@ -610,13 +611,13 @@ const ProjectsAdmin = () => {
                            rows={3}
                            value={featuresInput}
                            onChange={(e) => setFeaturesInput(e.target.value)}
-                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="Authentication&#10;Dark Mode&#10;(one per line)"
                         />
                      </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-4 border border-primary/20 bg-primary/10 rounded-xl">
+                  <div className="flex items-center gap-3 p-4 border border-base-content bg-base-100 rounded-none">
                      <input 
                         type="checkbox" 
                         id="featured"
@@ -633,11 +634,11 @@ const ProjectsAdmin = () => {
                 </form>
               </div>
 
-              <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
+              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
                  <button 
                     type="button" 
                     onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                    className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                  >
                     Cancel
                  </button>
@@ -645,7 +646,7 @@ const ProjectsAdmin = () => {
                     type="submit" 
                     form="projectForm"
                     disabled={isSubmitting}
-                    className="bg-primary text-primary-content px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                  >
                     {isSubmitting ? 'Saving...' : 'Save Project'}
                  </button>
@@ -663,7 +664,7 @@ const ProjectsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             onClick={() => setViewingProject(null)}
           >
             <motion.div
@@ -671,7 +672,7 @@ const ProjectsAdmin = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="bg-base-100 border-4 border-base-content w-full max-w-4xl overflow-hidden shadow-[12px_12px_0_0_currentColor] flex flex-col max-h-[90vh]"
             >
               <div className="relative h-48 md:h-64 bg-base-200">
                 {viewingProject.image ? (
@@ -681,9 +682,9 @@ const ProjectsAdmin = () => {
                     <Layout className="w-16 h-16" />
                   </div>
                 )}
-                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-linear-to-b from-black/50 to-transparent">
+                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-base-200 border-2 border-base-content
                    <div className="flex gap-2">
-                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-white/90 backdrop-blur-sm ${
+                     <span className={`px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wide bg-base-100 backdrop-blur-sm ${
                         viewingProject.status === 'completed' ? 'text-success' :
                         viewingProject.status === 'in-progress' ? 'text-blue-500' :
                         'text-base-content/60'
@@ -691,14 +692,14 @@ const ProjectsAdmin = () => {
                         {(viewingProject.status || 'In Progress').replace('-', ' ')}
                      </span>
                      {viewingProject.featured && (
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-yellow-100/90 backdrop-blur-sm text-yellow-700 flex items-center gap-1">
+                        <span className="px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wide bg-base-100 backdrop-blur-sm text-yellow-700 flex items-center gap-1">
                            <Star className="w-3 h-3 fill-current" /> Featured
                         </span>
                      )}
                    </div>
                    <button 
                      onClick={() => setViewingProject(null)}
-                     className="p-2 bg-black/30 hover:bg-black/50 text-white rounded-full transition-colors backdrop-blur-sm"
+                     className="p-2 bg-base-100 hover:bg-base-100 text-white rounded-none transition-colors backdrop-blur-sm"
                    >
                      <X className="w-5 h-5" />
                    </button>
@@ -735,7 +736,7 @@ const ProjectsAdmin = () => {
                              </h3>
                              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {viewingProject.features.map((feature, idx) => (
-                                   <li key={idx} className="flex items-start gap-2 text-base-content/70 bg-base-200 p-3 rounded-xl border border-base-300/60">
+                                   <li key={idx} className="flex items-start gap-2 text-base-content/70 bg-base-200 p-3 rounded-none border border-base-content">
                                       <CheckCircle className="w-4 h-4 text-success mt-1 shrink-0" />
                                       <span className="text-sm">{feature}</span>
                                    </li>
@@ -746,13 +747,13 @@ const ProjectsAdmin = () => {
                     </div>
 
                     <div className="w-full md:w-80 shrink-0 space-y-6">
-                       <div className="bg-base-200 rounded-2xl p-6 border border-base-300/60">
+                       <div className="bg-base-200 rounded-none p-6 border border-base-content">
                           <h3 className="text-sm font-bold text-base-content uppercase tracking-wider mb-4 flex items-center gap-2">
                              <Code className="w-4 h-4 text-primary" /> Technologies
                           </h3>
                           <div className="flex flex-wrap gap-2">
                              {viewingProject.tech && viewingProject.tech.map((t, idx) => (
-                                <span key={idx} className="px-3 py-1.5 bg-base-100 border border-base-300  text-sm font-medium text-base-content/80 shadow-sm">
+                                <span key={idx} className="px-3 py-1.5 bg-base-100 border-2 border-base-content  text-sm font-medium text-base-content/80 shadow-[4px_4px_0_0_currentColor]">
                                    {t}
                                 </span>
                              ))}
@@ -762,7 +763,7 @@ const ProjectsAdmin = () => {
                  </div>
               </div>
               
-              <div className="p-6 border-t border-base-300/60 bg-base-200/50 flex justify-end">
+              <div className="p-6 border-t border-base-content bg-base-200 flex justify-end">
                  <button 
                     onClick={() => {
                        setEditingProject(viewingProject);
@@ -783,7 +784,7 @@ const ProjectsAdmin = () => {
                        setViewingProject(null);
                        setIsModalOpen(true);
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-base-100 text-base-content/80 font-medium rounded-xl hover:bg-base-200 border border-base-300 transition-all shadow-sm hover:shadow"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-base-100 text-base-content/80 font-medium rounded-none hover:bg-base-200 border-2 border-base-content transition-all shadow-[4px_4px_0_0_currentColor] hover:shadow"
                  >
                     <Edit className="w-4 h-4" /> Edit Project
                  </button>
@@ -800,15 +801,15 @@ const ProjectsAdmin = () => {
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+               className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             >
                <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-base-100 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
+                  className="bg-base-100 rounded-none p-6 max-w-sm w-full shadow-[4px_4px_0_0_currentColor] text-center"
                >
-                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4 text-error">
+                  <div className="w-16 h-16 bg-base-100 rounded-none flex items-center justify-center mx-auto mb-4 text-error">
                      <Trash2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-base-content mb-2">Delete Project?</h3>
@@ -817,14 +818,14 @@ const ProjectsAdmin = () => {
                   <div className="flex gap-3">
                      <button 
                         onClick={() => setIsDeleteModalOpen(false)}
-                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-xl hover:bg-base-300 transition-colors"
+                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-none hover:bg-base-300 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleConfirmDelete}
                         disabled={deletingId === itemToDelete}
-                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-xl hover:bg-error/90 transition-colors shadow-lg shadow-error/20 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-none hover:bg-base-100 transition-colors shadow-[4px_4px_0_0_currentColor]  flex items-center justify-center gap-2"
                      >
                         {deletingId === itemToDelete ? 'Deleting...' : 'Delete'}
                      </button>

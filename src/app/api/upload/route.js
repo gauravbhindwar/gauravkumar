@@ -1,15 +1,7 @@
-
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
-import { v2 as cloudinary } from 'cloudinary';
-import { Readable } from 'stream';
-
-// Cloudinary config
-// It automatically reads CLOUDINARY_URL from the environment
-cloudinary.config({
-  secure: true,
-});
+import getSupabase, { STORAGE_BUCKET } from '@/lib/supabase';
 
 export async function POST(request) {
   try {
@@ -31,34 +23,30 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'portfolio', // Folder in Cloudinary
-          resource_type: 'auto',
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      );
+    const extension = file.name.includes('.') ? file.name.split('.').pop() : 'bin';
+    const path = `portfolio/${crypto.randomUUID()}.${extension}`;
 
-      // Create a readable stream from the buffer and pipe to Cloudinary
-      const stream = Readable.from(buffer);
-      stream.pipe(uploadStream);
-    });
+    const supabase = getSupabase();
+    const { error: uploadError } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(path, buffer, {
+        contentType: file.type || 'application/octet-stream',
+        upsert: false,
+      });
 
-    return NextResponse.json({ 
-      success: true, 
-      url: result.secure_url 
+    if (uploadError) throw uploadError;
+
+    const { data: publicUrlData } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(path);
+
+    return NextResponse.json({
+      success: true,
+      url: publicUrlData.publicUrl
     });
 
   } catch (error) {
-    console.error('Error uploading to Cloudinary:', error);
+    console.error('Error uploading to Supabase Storage:', error);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }

@@ -229,24 +229,24 @@ Reply directly to: ${formState.email}
         
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <div className="bg-linear-to-br from-base-200/80 to-base-300/80 backdrop-blur-lg rounded-3xl p-8 
+            <div className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] p-8 
                           border border-base-content/5 hover:border-primary/20 transition-all duration-300
                           hover:shadow-[0_0_30px_color-mix(in_oklch,var(--color-primary)_10%,transparent)]">
               <div className="animate-pulse">
-                <div className="h-12 bg-base-300 rounded-lg w-1/3 mx-auto mb-12"></div>
+                <div className="h-12 bg-base-300 rounded-none w-1/3 mx-auto mb-12"></div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                   <div className="space-y-6">
-                    <div className="h-8 bg-base-300 rounded-lg w-3/4"></div>
-                    <div className="h-8 bg-base-300 rounded-lg w-1/2"></div>
-                    <div className="h-8 bg-base-300 rounded-lg w-2/3"></div>
+                    <div className="h-8 bg-base-300 rounded-none w-3/4"></div>
+                    <div className="h-8 bg-base-300 rounded-none w-1/2"></div>
+                    <div className="h-8 bg-base-300 rounded-none w-2/3"></div>
                   </div>
                   
                   <div className="space-y-6">
-                    <div className="h-12 bg-base-300 rounded-lg w-full"></div>
-                    <div className="h-12 bg-base-300 rounded-lg w-full"></div>
-                    <div className="h-32 bg-base-300 rounded-lg w-full"></div>
-                    <div className="h-12 bg-base-300 rounded-lg w-1/3"></div>
+                    <div className="h-12 bg-base-300 rounded-none w-full"></div>
+                    <div className="h-12 bg-base-300 rounded-none w-full"></div>
+                    <div className="h-32 bg-base-300 rounded-none w-full"></div>
+                    <div className="h-12 bg-base-300 rounded-none w-1/3"></div>
                   </div>
                 </div>
               </div>
@@ -264,7 +264,7 @@ Reply directly to: ${formState.email}
         
         <div className="container mx-auto px-4 relative">
           <div className="flex justify-center items-center min-h-[300px]">
-            <div className="bg-linear-to-br from-base-200/80 to-base-300/80 backdrop-blur-lg rounded-3xl p-8 
+            <div className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] p-8 
                           border border-base-content/5 hover:border-primary/20 transition-all duration-300
                           hover:shadow-[0_0_30px_color-mix(in_oklch,var(--color-primary)_10%,transparent)]">
               <div className="text-center">

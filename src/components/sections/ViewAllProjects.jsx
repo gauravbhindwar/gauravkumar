@@ -38,10 +38,10 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
             className="fixed inset-0 z-50 overflow-y-auto"
           >
             <div className="min-h-screen px-4 flex items-center justify-center py-8">
-              <div className="relative bg-base-100 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+              <div className="relative bg-base-100 border-4 border-base-content shadow-[12px_12px_0_0_currentColor] max-w-4xl w-full max-h-[90vh] overflow-hidden">
                 <button
                   onClick={onClose}
-                  className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full bg-base-200/80 hover:bg-base-300 
+                  className="absolute top-6 right-6 z-10 w-12 h-12 bg-base-100 border-2 border-base-content shadow-[4px_4px_0_0_currentColor] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all 
                            flex items-center justify-center transition-all duration-200"
                 >
                   <FaTimes className="w-5 h-5" />
@@ -74,7 +74,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                       </h3>
                       <div className="grid gap-3">
                         {project.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-start gap-3 p-3 bg-base-200/50 rounded-lg">
+                          <div key={idx} className="flex items-start gap-3 p-3 bg-base-200/50 rounded-none">
                             <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0" />
                             <span className="text-base-content/80">{feature}</span>
                           </div>
@@ -90,7 +90,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {project.tech?.map((tech, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20">
+                        <span key={idx} className="px-3 py-1 bg-base-100 text-base-content border-2 border-base-content text-xs font-mono font-bold uppercase tracking-widest shadow-[2px_2px_0_0_currentColor]">
                           {tech}
                         </span>
                       ))}
@@ -100,14 +100,14 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                   <div className="flex gap-4 pt-6 border-t border-base-300">
                     {project.github && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer"
-                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-base-200 hover:bg-base-300 rounded-xl font-medium transition-all">
+                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-base-100 text-base-content border-2 border-base-content font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
                         <FaGithub className="w-5 h-5" />
                         View Code
                       </a>
                     )}
                     {project.live && project.live !== "#" && (
                       <a href={project.live} target="_blank" rel="noopener noreferrer"
-                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-secondary text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all">
+                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-base-100 border-2 border-base-content font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
                         <FaRocket className="w-5 h-5" />
                         Live Demo
                       </a>
@@ -206,7 +206,7 @@ export default function ViewAllProjects() {
             className="mb-12"
           >
             <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 bg-base-200 hover:bg-base-300 
-                                   rounded-xl font-medium transition-all mb-8 hover:scale-105">
+                                   rounded-none font-medium transition-all mb-8 hover:scale-105">
               <FaArrowLeft /> Back to Home
             </Link>
             
@@ -237,7 +237,7 @@ export default function ViewAllProjects() {
                 placeholder="Search projects by name or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-base-200 border border-base-content/10 rounded-xl 
+                className="w-full pl-12 pr-4 py-4 bg-base-100 border-2 border-base-content rounded-none font-mono 
                          focus:outline-none focus:border-primary/50 focus:bg-base-100 transition-all
                          text-base-content placeholder-base-content/40"
               />
@@ -255,7 +255,7 @@ export default function ViewAllProjects() {
             <div className="flex justify-center">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-6 py-3 bg-base-200 hover:bg-base-300 rounded-xl 
+                className="flex items-center gap-2 px-6 py-3 bg-base-200 hover:bg-base-300 rounded-none 
                          font-medium transition-all hover:scale-105"
               >
                 <FaFilter />
@@ -270,7 +270,7 @@ export default function ViewAllProjects() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-base-200/50 rounded-xl p-6 max-w-4xl mx-auto"
+                  className="bg-base-200/50 rounded-none p-6 max-w-4xl mx-auto"
                 >
                   <h3 className="font-semibold mb-4 text-center">Filter by Technology</h3>
                   <div className="flex flex-wrap gap-3 justify-center">
@@ -278,7 +278,7 @@ export default function ViewAllProjects() {
                       <button
                         key={tech}
                         onClick={() => setSelectedTech(tech)}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                        className={`px-4 py-2 rounded-none font-medium transition-all ${
                           selectedTech === tech
                             ? 'bg-linear-to-r from-primary to-secondary text-primary-content shadow-lg scale-105'
                             : 'bg-base-200 hover:bg-base-300 text-base-content hover:scale-105'
@@ -336,7 +336,7 @@ export default function ViewAllProjects() {
                       setSearchTerm('')
                       setSelectedTech('all')
                     }}
-                    className="mt-4 px-6 py-3 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-all"
+                    className="mt-4 px-6 py-3 bg-primary/10 text-primary rounded-none font-medium hover:bg-primary/20 transition-all"
                   >
                     Clear All Filters
                   </button>
@@ -366,8 +366,7 @@ const ProjectCard = ({ project, index, onClick }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.6 }}
       whileHover={{ y: -8 }}
-      className="group bg-linear-to-br from-base-100 to-base-200/50 rounded-2xl overflow-hidden 
-               border border-base-content/10 hover:border-primary/30 shadow-lg hover:shadow-2xl 
+      className="group bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 overflow-hidden transition-all 
                transition-all duration-500 cursor-pointer"
       onClick={() => onClick(project)}
     >
@@ -395,7 +394,7 @@ const ProjectCard = ({ project, index, onClick }) => {
         {/* Quick view overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 
                       transition-opacity duration-300">
-          <div className="px-6 py-3 bg-white/90 text-base-content rounded-xl font-medium shadow-lg backdrop-blur-sm">
+          <div className="px-6 py-3 bg-white/90 text-base-content rounded-none font-medium shadow-lg backdrop-blur-sm">
             View Details
           </div>
         </div>
@@ -403,7 +402,7 @@ const ProjectCard = ({ project, index, onClick }) => {
         {/* Category badge */}
         <div className="absolute top-4 left-4">
           <span className="px-3 py-1 bg-base-100/90 backdrop-blur-sm text-base-content/80 
-                         rounded-full text-xs font-medium border border-base-content/10">
+                         border-2 border-base-content text-[10px] font-mono font-bold uppercase tracking-widest shadow-[2px_2px_0_0_currentColor]">
             {project.category || 'Web Development'}
           </span>
         </div>
@@ -423,12 +422,12 @@ const ProjectCard = ({ project, index, onClick }) => {
         {/* Tech Stack */}
         <div className="flex flex-wrap gap-2">
           {project.tech?.slice(0, 4).map((tech, idx) => (
-            <span key={idx} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-lg font-medium">
+            <span key={idx} className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-none font-medium">
               {tech}
             </span>
           ))}
           {project.tech?.length > 4 && (
-            <span className="px-3 py-1 bg-base-200 text-base-content/60 text-xs rounded-lg font-medium">
+            <span className="px-3 py-1 bg-base-200 text-base-content/60 text-xs rounded-none font-medium">
               +{project.tech.length - 4} more
             </span>
           )}
@@ -443,7 +442,7 @@ const ProjectCard = ({ project, index, onClick }) => {
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-base-200 hover:bg-base-300 
-                       rounded-lg font-medium transition-all text-sm"
+                       rounded-none font-medium transition-all text-sm"
             >
               <FaGithub className="w-4 h-4" />
               Code
@@ -456,7 +455,7 @@ const ProjectCard = ({ project, index, onClick }) => {
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-linear-to-r from-primary to-secondary 
-                       text-primary-content rounded-lg font-medium transition-all text-sm"
+                       text-primary-content rounded-none font-medium transition-all text-sm"
             >
               <FaExternalLinkAlt className="w-4 h-4" />
               Demo

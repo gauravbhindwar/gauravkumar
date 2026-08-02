@@ -28,7 +28,7 @@ export default function AdminSetup() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-none h-16 w-16 border-4 border-base-content bg-primary"></div>
       </div>
     )
   }
@@ -42,7 +42,7 @@ export default function AdminSetup() {
     <div className="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-warning/15">
+          <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-none bg-base-100">
             <Shield className="h-8 w-8 text-warning" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-base-content">
@@ -53,7 +53,7 @@ export default function AdminSetup() {
           </p>
         </div>
 
-        <div className="bg-base-100 shadow-lg  p-8 border border-base-300">
+        <div className="bg-base-100 shadow-[4px_4px_0_0_currentColor]  p-8 border-2 border-base-content">
           <div className="mb-6">
             <div className="flex items-center">
               <AlertTriangle className="h-5 w-5 text-warning mr-2" />
@@ -76,7 +76,7 @@ export default function AdminSetup() {
                 <p className="text-sm text-base-content/70 mb-2">
                   Run the following command in your project directory:
                 </p>
-                <div className="bg-neutral text-success p-4 rounded-md font-mono text-sm">
+                <div className="bg-neutral text-success p-4 rounded-none font-mono text-sm">
                   npm run create-admin
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function AdminSetup() {
           <div className="mt-6 flex justify-center">
             <button
               onClick={checkSetupStatus}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-none text-primary bg-base-100 hover:bg-base-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
             >
               Check Setup Status
             </button>

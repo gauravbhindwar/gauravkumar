@@ -46,8 +46,8 @@ export default function Skills() {
     <section id="skills" className="py-24 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-20">
-        <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 -left-20 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px]" />
+        
+        
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 relative">

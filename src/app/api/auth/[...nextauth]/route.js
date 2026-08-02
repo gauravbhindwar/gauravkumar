@@ -1,37 +1,38 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
-import connectToDatabase from '@/lib/mongodb'
-import Admin from '@/models/Admin'
+import getSupabase from '@/lib/supabase'
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email: { 
-          label: 'Email', 
+        email: {
+          label: 'Email',
           type: 'email',
           placeholder: 'admin@example.com'
         },
-        password: { 
-          label: 'Password', 
-          type: 'password' 
+        password: {
+          label: 'Password',
+          type: 'password'
         }
       },
       async authorize(credentials) {
         try {
-          await connectToDatabase()
-          
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Email and password are required')
           }
 
+          const supabase = getSupabase()
+
           // Find admin by email
-          const admin = await Admin.findOne({ 
-            email: credentials.email.toLowerCase(),
-            isActive: true 
-          })
+          const { data: admin } = await supabase
+            .from('admins')
+            .select('*')
+            .eq('email', credentials.email.toLowerCase())
+            .eq('is_active', true)
+            .maybeSingle()
 
           if (!admin) {
             throw new Error('Invalid credentials')
@@ -39,7 +40,7 @@ export const authOptions = {
 
           // Check password
           const isValidPassword = await bcrypt.compare(
-            credentials.password, 
+            credentials.password,
             admin.password
           )
 
@@ -48,12 +49,13 @@ export const authOptions = {
           }
 
           // Update last login
-          await Admin.findByIdAndUpdate(admin._id, {
-            lastLogin: new Date()
-          })
+          await supabase
+            .from('admins')
+            .update({ last_login: new Date().toISOString() })
+            .eq('id', admin.id)
 
           return {
-            id: admin._id.toString(),
+            id: admin.id,
             email: admin.email,
             username: admin.username,
             role: admin.role

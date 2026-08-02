@@ -2,51 +2,11 @@
 
 import readline from 'readline';
 import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
+import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
-
-const AdminSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 50
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  role: {
-    type: String,
-    enum: ['admin', 'super_admin'],
-    default: 'admin'
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  lastLogin: {
-    type: Date,
-    default: null
-  }
-}, {
-  timestamps: true
-});
-
-const Admin = mongoose.models.Admin || mongoose.model('Admin', AdminSchema);
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -65,22 +25,22 @@ function hiddenQuestion(prompt) {
     process.stdin.setRawMode(true);
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
-    
+
     let password = '';
-    
+
     process.stdin.on('data', function(char) {
       char = char + '';
-      
+
       switch(char) {
         case '\n':
         case '\r':
-        case '\u0004':
+        case '':
           process.stdin.setRawMode(false);
           process.stdin.pause();
           process.stdout.write('\n');
           resolve(password);
           break;
-        case '\u0003':
+        case '':
           process.exit();
           break;
         case '\u007f': // backspace
@@ -103,24 +63,30 @@ async function createAdmin() {
     console.log('🛡️  Admin Account Setup');
     console.log('========================\n');
 
-    // Connect to MongoDB
-    if (!process.env.MONGODB_URI) {
-      console.error('❌ MONGODB_URI not found in environment variables');
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('❌ SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not found in environment variables');
       process.exit(1);
     }
 
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB\n');
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+      auth: { persistSession: false },
+    });
+    console.log('✅ Connected to Supabase\n');
 
     // Check if admin already exists
-    const existingAdminCount = await Admin.countDocuments();
-    if (existingAdminCount > 0) {
+    const { data: existingAdmins, error: listError } = await supabase
+      .from('admins')
+      .select('username, email, created_at')
+      .order('created_at', { ascending: true });
+
+    if (listError) throw listError;
+
+    if (existingAdmins.length > 0) {
       console.log('⚠️  Admin accounts already exist:');
-      const admins = await Admin.find({}, 'username email createdAt').sort({ createdAt: 1 });
-      admins.forEach((admin, index) => {
-        console.log(`   ${index + 1}. ${admin.username} (${admin.email}) - Created: ${admin.createdAt.toLocaleDateString()}`);
+      existingAdmins.forEach((admin, index) => {
+        console.log(`   ${index + 1}. ${admin.username} (${admin.email}) - Created: ${new Date(admin.created_at).toLocaleDateString()}`);
       });
-      
+
       const proceed = await question('\n❓ Do you want to create another admin? (y/N): ');
       if (proceed.toLowerCase() !== 'y' && proceed.toLowerCase() !== 'yes') {
         console.log('🚫 Admin creation cancelled');
@@ -154,9 +120,11 @@ async function createAdmin() {
     }
 
     // Check if admin with this username/email already exists
-    const existingAdmin = await Admin.findOne({
-      $or: [{ username: username.trim() }, { email: email.trim().toLowerCase() }]
-    });
+    const { data: existingAdmin } = await supabase
+      .from('admins')
+      .select('id')
+      .or(`username.eq.${username.trim()},email.eq.${email.trim().toLowerCase()}`)
+      .maybeSingle();
 
     if (existingAdmin) {
       console.log('❌ Admin with this username or email already exists');
@@ -165,21 +133,25 @@ async function createAdmin() {
 
     // Hash password and create admin
     const hashedPassword = await bcrypt.hash(password, 12);
-    
-    const admin = new Admin({
-      username: username.trim(),
-      email: email.trim().toLowerCase(),
-      password: hashedPassword,
-      role: 'admin'
-    });
 
-    await admin.save();
+    const { data: admin, error } = await supabase
+      .from('admins')
+      .insert({
+        username: username.trim(),
+        email: email.trim().toLowerCase(),
+        password: hashedPassword,
+        role: 'admin'
+      })
+      .select('*')
+      .single();
+
+    if (error) throw error;
 
     console.log('\n✅ Admin account created successfully!');
     console.log(`   Username: ${admin.username}`);
     console.log(`   Email: ${admin.email}`);
     console.log(`   Role: ${admin.role}`);
-    console.log(`   Created: ${admin.createdAt.toLocaleString()}\n`);
+    console.log(`   Created: ${new Date(admin.created_at).toLocaleString()}\n`);
 
     console.log('🌐 You can now log in at: http://localhost:3000/admin/login');
 
@@ -188,7 +160,6 @@ async function createAdmin() {
     process.exit(1);
   } finally {
     rl.close();
-    mongoose.connection.close();
   }
 }
 

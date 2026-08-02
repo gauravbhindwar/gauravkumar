@@ -216,17 +216,17 @@ const SkillsAdmin = () => {
   const getLevelColor = (level) => {
     switch (level) {
       case 'Expert': return 'bg-rose-100 text-rose-700 border-rose-200';
-      case 'Advanced': return 'bg-orange-100 text-orange-700 border-orange-200';
-      case 'Intermediate': return 'bg-blue-100 text-blue-700 border-blue-200';
-      default: return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'Advanced': return 'bg-orange-100 text-orange-700 border-base-content';
+      case 'Intermediate': return 'bg-blue-100 text-blue-700 border-base-content';
+      default: return 'border-2 border-base-content bg-success text-success-content font-mono font-bold uppercase tracking-widest border-base-content';
     }
   };
 
   const getTypeColor = (type) => {
     switch (type) {
-      case 'completed': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      case 'current': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'paused': return 'bg-orange-100 text-orange-700 border-orange-200';
+      case 'completed': return 'border-2 border-base-content bg-success text-success-content font-mono font-bold uppercase tracking-widest border-base-content';
+      case 'current': return 'bg-blue-100 text-blue-700 border-base-content';
+      case 'paused': return 'bg-orange-100 text-orange-700 border-base-content';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -248,7 +248,7 @@ const SkillsAdmin = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-base-200">
-        <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${activeTab === 'skills' ? 'border-primary' : 'border-secondary'}`}></div>
+        <div className={`w-8 h-8 border-2 border-t-transparent rounded-none animate-spin ${activeTab === 'skills' ? 'border-primary' : 'border-secondary'}`}></div>
       </div>
     );
   }
@@ -258,7 +258,7 @@ const SkillsAdmin = () => {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
+      className="min-h-screen bg-base-200 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
         
@@ -294,7 +294,7 @@ const SkillsAdmin = () => {
                  resetForm();
                  setIsModalOpen(true);
                }}
-               className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
+               className="bg-primary text-base-100 border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
              >
                <Code className="w-5 h-5" />
                <span>Add Skill</span>
@@ -310,7 +310,7 @@ const SkillsAdmin = () => {
                  resetForm();
                  setIsModalOpen(true);
                }}
-               className="bg-secondary text-secondary-content px-5 py-2.5 rounded-xl hover:bg-secondary/90 transition-colors shadow-lg shadow-secondary/20 flex items-center gap-2 font-semibold"
+               className="bg-secondary text-secondary-content px-5 py-2.5 rounded-none hover:bg-base-100 transition-colors shadow-[4px_4px_0_0_currentColor]  flex items-center gap-2 font-semibold"
              >
                <BookOpen className="w-5 h-5" />
                <span>Add Course</span>
@@ -319,12 +319,12 @@ const SkillsAdmin = () => {
         </header>
 
         {/* Tab Switcher */}
-        <motion.div variants={item} className="flex p-1 bg-base-100 rounded-xl border border-base-300/60 shadow-sm w-fit">
+        <motion.div variants={item} className="flex p-1 bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] w-fit">
           <button
             onClick={() => setActiveTab('skills')}
             className={`flex items-center gap-2 px-6 py-2.5  text-sm font-semibold transition-all ${
               activeTab === 'skills'
-                ? 'bg-primary/10 text-primary shadow-sm'
+                ? 'bg-base-100 text-primary shadow-[4px_4px_0_0_currentColor]'
                 : 'text-base-content/60 hover:text-base-content'
             }`}
           >
@@ -335,7 +335,7 @@ const SkillsAdmin = () => {
             onClick={() => setActiveTab('courses')}
             className={`flex items-center gap-2 px-6 py-2.5  text-sm font-semibold transition-all ${
               activeTab === 'courses'
-                ? 'bg-secondary/10 text-secondary shadow-sm'
+                ? 'bg-base-100 text-secondary shadow-[4px_4px_0_0_currentColor]'
                 : 'text-base-content/60 hover:text-base-content'
             }`}
           >
@@ -355,14 +355,14 @@ const SkillsAdmin = () => {
                className="grid grid-cols-1 md:grid-cols-4 gap-6"
             >
                {[
-                 { label: 'Total Skills', value: skills.length, icon: Code, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
-                 { label: 'Expert Level', value: skills.filter(s => s.level === 'Expert').length, icon: Award, color: 'text-success', bg: 'bg-success/10', border: 'border-success/20' },
-                 { label: 'Categories', value: new Set(skills.map(s => s.category)).size, icon: Brain, color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20' },
-                 { label: 'Filtered', value: filteredSkills.length, icon: Filter, color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
+                 { label: 'Total Skills', value: skills.length, icon: Code, color: 'text-primary', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'Expert Level', value: skills.filter(s => s.level === 'Expert').length, icon: Award, color: 'text-success', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'Categories', value: new Set(skills.map(s => s.category)).size, icon: Brain, color: 'text-secondary', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'Filtered', value: filteredSkills.length, icon: Filter, color: 'text-warning', bg: 'bg-base-100', border: 'border-base-content' },
                ].map((stat) => (
-                  <div key={stat.label} className={`bg-base-100 p-6 rounded-2xl border ${stat.border} shadow-sm hover:shadow-md transition-all`}>
+                  <div key={stat.label} className={`bg-base-100 p-6 rounded-none border ${stat.border} shadow-[4px_4px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all`}>
                      <div className="flex justify-between items-start mb-4">
-                        <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                        <div className={`p-3 rounded-none ${stat.bg} ${stat.color}`}>
                            <stat.icon className="w-6 h-6" />
                         </div>
                      </div>
@@ -382,14 +382,14 @@ const SkillsAdmin = () => {
                className="grid grid-cols-1 md:grid-cols-4 gap-6"
             >
                {[
-                 { label: 'Total Courses', value: courses.length, icon: BookOpen, color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20' },
-                 { label: 'Completed', value: courses.filter(c => c.type === 'completed').length, icon: CheckCircle, color: 'text-success', bg: 'bg-success/10', border: 'border-success/20' },
-                 { label: 'In Progress', value: courses.filter(c => c.type === 'current').length, icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
-                 { label: 'Filtered', value: filteredCourses.length, icon: Filter, color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
+                 { label: 'Total Courses', value: courses.length, icon: BookOpen, color: 'text-secondary', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'Completed', value: courses.filter(c => c.type === 'completed').length, icon: CheckCircle, color: 'text-success', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'In Progress', value: courses.filter(c => c.type === 'current').length, icon: TrendingUp, color: 'text-primary', bg: 'bg-base-100', border: 'border-base-content' },
+                 { label: 'Filtered', value: filteredCourses.length, icon: Filter, color: 'text-warning', bg: 'bg-base-100', border: 'border-base-content' },
                ].map((stat) => (
-                  <div key={stat.label} className={`bg-base-100 p-6 rounded-2xl border ${stat.border} shadow-sm hover:shadow-md transition-all`}>
+                  <div key={stat.label} className={`bg-base-100 p-6 rounded-none border ${stat.border} shadow-[4px_4px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all`}>
                      <div className="flex justify-between items-start mb-4">
-                        <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                        <div className={`p-3 rounded-none ${stat.bg} ${stat.color}`}>
                            <stat.icon className="w-6 h-6" />
                         </div>
                      </div>
@@ -404,7 +404,7 @@ const SkillsAdmin = () => {
         </AnimatePresence>
 
         {/* Search & Filter */}
-        <motion.div variants={item} className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <motion.div variants={item} className="bg-base-100 p-4 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
                <input 
@@ -412,7 +412,7 @@ const SkillsAdmin = () => {
                   placeholder={`Search ${activeTab}...`} 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 transition-all text-base-content ${activeTab === 'skills' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
+                  className={`w-full pl-10 pr-4 py-2 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 transition-all text-base-content ${activeTab === 'skills' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
                />
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto">
@@ -420,7 +420,7 @@ const SkillsAdmin = () => {
                <select 
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className={`px-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 transition-all text-base-content cursor-pointer ${activeTab === 'skills' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
+                  className={`px-4 py-2 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 transition-all text-base-content cursor-pointer ${activeTab === 'skills' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
                >
                   <option value="all">All {activeTab === 'skills' ? 'Categories' : 'Types'}</option>
                   {activeTab === 'skills' ? (
@@ -449,10 +449,10 @@ const SkillsAdmin = () => {
                              key={skill._id || index}
                              variants={item}
                              whileHover={{ y: -5, scale: 1.02 }}
-                             className="bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-lg transition-all p-6 relative group"
+                             className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all p-6 relative group"
                           >
                              <div className="flex justify-between items-start mb-3">
-                                <div className="p-2.5 bg-base-200 rounded-xl group-hover:bg-primary/10 transition-colors">
+                                <div className="p-2.5 bg-base-200 rounded-none group-hover:bg-base-100 transition-colors">
                                    <Code className="w-6 h-6 text-base-content/40 group-hover:text-primary transition-colors" />
                                 </div>
                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -468,7 +468,7 @@ const SkillsAdmin = () => {
                              <h3 className="text-lg font-bold text-base-content mb-2">{skill.name}</h3>
                              
                              <div className="flex flex-wrap gap-2 mt-auto">
-                                <span className="px-2.5 py-1 bg-base-200 text-base-content/70 text-xs font-medium  border border-base-300">
+                                <span className="px-2.5 py-1 bg-base-200 text-base-content/70 text-xs font-medium  border-2 border-base-content">
                                    {skill.category}
                                 </span>
                                 <span className={`px-2.5 py-1 text-xs font-medium  border ${getLevelColor(skill.level)}`}>
@@ -498,10 +498,10 @@ const SkillsAdmin = () => {
                              key={course._id || index}
                              variants={item}
                              whileHover={{ y: -5 }}
-                             className="bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-lg transition-all p-6 relative group flex gap-5"
+                             className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all p-6 relative group flex gap-5"
                           >
                              <div className="shrink-0 flex flex-col items-center">
-                                <div className={`p-3 rounded-2xl ${getTypeColor(course.type)} mb-3`}>
+                                <div className={`p-3 rounded-none ${getTypeColor(course.type)} mb-3`}>
                                    <BookOpen className="w-6 h-6" />
                                 </div>
                                 <div className="h-full w-px bg-base-300 border-l border-dashed border-base-300"></div>
@@ -511,7 +511,7 @@ const SkillsAdmin = () => {
                                 <div className="flex justify-between items-start mb-2">
                                    <div className="pr-12">
                                       <h3 className="text-xl font-bold text-base-content truncate">{course.name}</h3>
-                                      <span className={`inline-block mt-1 px-2.5 py-0.5 text-xs font-semibold rounded-full border ${getTypeColor(course.type)}`}>
+                                      <span className={`inline-block mt-1 px-2.5 py-0.5 text-xs font-semibold rounded-none border ${getTypeColor(course.type)}`}>
                                          {course.type.charAt(0).toUpperCase() + course.type.slice(1)}
                                       </span>
                                    </div>
@@ -564,20 +564,20 @@ const SkillsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
                initial={{ opacity: 0, scale: 0.95, y: 20 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-               className="bg-base-100 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+               className="bg-base-100 border-4 border-base-content w-full max-w-xl overflow-hidden shadow-[12px_12px_0_0_currentColor] flex flex-col max-h-[90vh]"
             >
                <div className={`p-6 flex items-center justify-between text-primary-content shrink-0 ${formType === 'skill' ? 'bg-primary' : 'bg-secondary'}`}>
                   <h3 className="text-xl font-bold flex items-center gap-2">
                      {formType === 'skill' ? <Code className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
                      {editingItem ? `Edit ${formType === 'skill' ? 'Skill' : 'Course'}` : `Add New ${formType === 'skill' ? 'Skill' : 'Course'}`}
                   </h3>
-                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
+                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-none transition-colors">
                      <X className="w-5 h-5" />
                   </button>
                </div>
@@ -591,7 +591,7 @@ const SkillsAdmin = () => {
                            required
                            value={formData.name}
                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                           className={`w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 transition-all ${formType === 'skill' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
+                           className={`w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 transition-all ${formType === 'skill' ? 'focus:ring-primary/20 focus:border-primary' : 'focus:ring-secondary/20 focus:border-secondary'}`}
                            placeholder={`e.g. ${formType === 'skill' ? 'React.js' : 'Advanced React Patterns'}`}
                         />
                      </div>
@@ -603,7 +603,7 @@ const SkillsAdmin = () => {
                               <select
                                  value={formData.category}
                                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                 className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+                                 className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
                               >
                                  {skillCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                               </select>
@@ -613,7 +613,7 @@ const SkillsAdmin = () => {
                               <select
                                  value={formData.level}
                                  onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                                 className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+                                 className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
                               >
                                  {skillLevels.map(level => <option key={level} value={level}>{level}</option>)}
                               </select>
@@ -626,7 +626,7 @@ const SkillsAdmin = () => {
                               <select
                                  value={formData.type}
                                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                 className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all cursor-pointer"
+                                 className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all cursor-pointer"
                               >
                                  {courseTypes.map(type => <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>)}
                               </select>
@@ -637,7 +637,7 @@ const SkillsAdmin = () => {
                                  rows={3}
                                  value={formData.description}
                                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                 className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all resize-none"
+                                 className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all resize-none"
                                  placeholder="What did you learn?"
                               />
                            </div>
@@ -647,7 +647,7 @@ const SkillsAdmin = () => {
                                  type="url"
                                  value={formData.url}
                                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                                 className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all"
+                                 className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all"
                                  placeholder="https://..."
                               />
                            </div>
@@ -656,11 +656,11 @@ const SkillsAdmin = () => {
                   </form>
                </div>
 
-               <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
+               <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
                   <button 
                      type="button" 
                      onClick={() => setIsModalOpen(false)}
-                     className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                     className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                   >
                      Cancel
                   </button>
@@ -668,10 +668,10 @@ const SkillsAdmin = () => {
                      type="submit" 
                      form="metricsForm"
                      disabled={isSubmitting}
-                     className={`text-white px-8 py-2.5 rounded-xl font-semibold shadow-lg transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed ${
+                     className={`text-white px-8 py-2.5 rounded-none font-semibold shadow-[4px_4px_0_0_currentColor] transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed ${
                         formType === 'skill' 
-                           ? 'bg-primary hover:bg-primary/90 shadow-primary/20' 
-                           : 'bg-secondary hover:bg-secondary/90 shadow-secondary/20'
+                           ? 'bg-primary hover:bg-base-100 ' 
+                           : 'bg-secondary hover:bg-base-100 '
                      }`}
                   >
                      {isSubmitting ? 'Saving...' : 'Save Item'}
@@ -689,15 +689,15 @@ const SkillsAdmin = () => {
                initial={{ opacity: 0 }}
                animate={{ opacity: 1 }}
                exit={{ opacity: 0 }}
-               className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+               className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             >
                <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-base-100 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
+                  className="bg-base-100 rounded-none p-6 max-w-sm w-full shadow-[4px_4px_0_0_currentColor] text-center"
                >
-                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4 text-error">
+                  <div className="w-16 h-16 bg-base-100 rounded-none flex items-center justify-center mx-auto mb-4 text-error">
                      <Trash2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-bold text-base-content mb-2">Delete {deleteType === 'skill' ? 'Skill' : 'Course'}?</h3>
@@ -706,14 +706,14 @@ const SkillsAdmin = () => {
                   <div className="flex gap-3">
                      <button 
                         onClick={() => setIsDeleteModalOpen(false)}
-                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-xl hover:bg-base-300 transition-colors"
+                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-none hover:bg-base-300 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleConfirmDelete}
                         disabled={deletingId === itemToDelete?._id}
-                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-xl hover:bg-error/90 transition-colors shadow-lg shadow-error/20 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-none hover:bg-base-100 transition-colors shadow-[4px_4px_0_0_currentColor]  flex items-center justify-center gap-2"
                      >
                         {deletingId === itemToDelete?._id ? 'Deleting...' : 'Delete'}
                      </button>

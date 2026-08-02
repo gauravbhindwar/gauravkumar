@@ -129,12 +129,12 @@ const ExperienceCard = ({ exp, side, isLatest, onInspect }) => {
     >
       <div className="flex flex-col gap-4 mb-6 items-start">
         {/* Company - Brutalist Stop */}
-        <div className="flex items-center gap-3">
-          <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/50 text-primary font-mono text-[10px] uppercase tracking-widest shadow-[0_0_10px_rgba(255,175,211,0.1)] group-hover:bg-primary/20 transition-all">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-3">
+          <div className="inline-block w-fit px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all break-all sm:break-normal whitespace-pre-wrap">
             [ STOP_{new Date(exp.startDate).getFullYear()}: {exp.company.toUpperCase().replace(/\s+/g, '_')} ]
           </div>
           {isLatest && (
-            <span className="px-2 py-1 bg-secondary/20 text-secondary font-mono text-[10px] uppercase tracking-widest border border-secondary/50 animate-pulse">
+            <span className="inline-block w-fit px-2 py-1 bg-secondary text-base-100 font-mono text-[10px] sm:text-xs uppercase tracking-widest border-2 border-base-content shadow-[4px_4px_0_0_currentColor] animate-pulse">
               [ LATEST ]
             </span>
           )}
@@ -256,8 +256,8 @@ const Experience = () => {
     <section className="py-20 relative overflow-hidden" id="experience" ref={containerRef}>
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-20">
-        <div className="absolute top-1/4 -left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-10 w-96 h-96 bg-secondary/30 rounded-full blur-3xl" />
+        
+        
       </div>
 
       <div className="container mx-auto px-4 sm:px-6">

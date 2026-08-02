@@ -324,7 +324,7 @@ function AdminManagement() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-none h-16 w-16 border-4 border-base-content bg-primary"></div>
       </div>
     )
   }
@@ -342,7 +342,7 @@ function AdminManagement() {
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-primary text-primary-content px-4 py-2  hover:bg-primary/90 transition-colors flex items-center"
+          className="bg-primary text-primary-content px-4 py-2  hover:bg-base-100 transition-colors flex items-center"
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Admin
@@ -353,8 +353,8 @@ function AdminManagement() {
       {message && (
         <div className={`mb-4 p-4  ${
           message.includes('Error') || message.includes('Failed') || message.includes('cannot')
-            ? 'bg-error/10 border border-error/20 text-error'
-            : 'bg-success/10 border border-success/20 text-success'
+            ? 'bg-base-100 border border-base-content text-error'
+            : 'bg-base-100 border border-base-content text-success'
         }`}>
           <div className="flex">
             <AlertCircle className="h-5 w-5 mr-2" />
@@ -370,12 +370,12 @@ function AdminManagement() {
           placeholder="Search admins by username or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full max-w-md px-4 py-2 border border-base-300  focus:ring-2 focus:ring-primary focus:border-transparent text-base-content bg-base-100"
+          className="w-full max-w-md px-4 py-2 border-2 border-base-content  focus:ring-2 focus:ring-primary focus:border-transparent text-base-content bg-base-100"
         />
       </div>
 
       {/* Admins List */}
-      <div className="bg-base-100  shadow border border-base-300/60 overflow-hidden">
+      <div className="bg-base-100  shadow border border-base-content overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-base-300">
             <thead className="bg-base-200">
@@ -408,7 +408,7 @@ function AdminManagement() {
                       <div className="text-sm font-medium text-base-content flex items-center">
                         {admin.username}
                         {admin._id === session?.user?.id && (
-                          <span className="ml-2 px-2 py-1 text-xs bg-primary/15 text-primary rounded-full">
+                          <span className="ml-2 px-2 py-1 text-xs bg-base-100 text-primary rounded-none">
                             You
                           </span>
                         )}
@@ -431,10 +431,10 @@ function AdminManagement() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-none ${
                       admin.isActive 
-                        ? 'bg-success/15 text-success' 
-                        : 'bg-error/15 text-error'
+                        ? 'bg-base-100 text-success' 
+                        : 'bg-base-100 text-error'
                     }`}>
                       {admin.isActive ? 'Active' : 'Inactive'}
                     </span>
@@ -470,8 +470,8 @@ function AdminManagement() {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-base-100  p-6 w-full max-w-md max-h-screen overflow-y-auto shadow-xl border border-base-300">
+        <div className="fixed inset-0 bg-base-100 flex items-center justify-center z-50">
+          <div className="bg-base-100  p-6 w-full max-w-md max-h-screen overflow-y-auto shadow-[4px_4px_0_0_currentColor] border-2 border-base-content">
             <h2 className="text-xl font-bold mb-4 text-base-content">
               {editingAdmin ? 'Edit Admin' : 'Create New Admin'}
             </h2>
@@ -579,7 +579,7 @@ function AdminManagement() {
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-base-300  focus:ring-2 focus:ring-primary focus:border-transparent text-base-content bg-base-100"
+                  className="w-full px-3 py-2 border-2 border-base-content  focus:ring-2 focus:ring-primary focus:border-transparent text-base-content bg-base-100"
                 >
                   <option value="admin">Admin</option>
                   <option value="super_admin">Super Admin</option>
@@ -603,14 +603,14 @@ function AdminManagement() {
               <div className="flex space-x-3">
                 <button
                   type="submit"
-                  className="flex-1 bg-primary text-primary-content py-2 px-4  hover:bg-primary/90 transition-colors"
+                  className="flex-1 bg-primary text-primary-content py-2 px-4  hover:bg-base-100 transition-colors"
                 >
                   {editingAdmin ? 'Update Admin' : 'Create Admin'}
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="flex-1 bg-base-300 text-base-content py-2 px-4  hover:bg-base-300/70 transition-colors"
+                  className="flex-1 bg-base-300 text-base-content py-2 px-4  hover:bg-base-100 transition-colors"
                 >
                   Cancel
                 </button>
@@ -622,10 +622,10 @@ function AdminManagement() {
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-base-100  p-6 w-full max-w-md shadow-xl border border-base-300">
+        <div className="fixed inset-0 bg-base-100 flex items-center justify-center z-50">
+          <div className="bg-base-100  p-6 w-full max-w-md shadow-[4px_4px_0_0_currentColor] border-2 border-base-content">
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-warning/15 mb-4">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-none bg-base-100 mb-4">
                 <Timer className="h-6 w-6 text-warning" />
               </div>
               <h3 className="text-lg font-medium text-base-content mb-2">
@@ -640,7 +640,7 @@ function AdminManagement() {
               <div className="flex space-x-3">
                 <button
                   onClick={handleForceLogout}
-                  className="flex-1 bg-error text-error-content py-2 px-4  hover:bg-error/90 transition-colors flex items-center justify-center"
+                  className="flex-1 bg-error text-error-content py-2 px-4  hover:bg-base-100 transition-colors flex items-center justify-center"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout Now
@@ -653,10 +653,10 @@ function AdminManagement() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && adminToDelete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-base-100  p-6 w-full max-w-md shadow-xl border border-base-300">
+        <div className="fixed inset-0 bg-base-100 flex items-center justify-center z-50">
+          <div className="bg-base-100  p-6 w-full max-w-md shadow-[4px_4px_0_0_currentColor] border-2 border-base-content">
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-error/15 mb-4">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-none bg-base-100 mb-4">
                 <AlertTriangle className="h-6 w-6 text-error" />
               </div>
               <h3 className="text-lg font-medium text-base-content mb-2">
@@ -671,13 +671,13 @@ function AdminManagement() {
                     setShowDeleteModal(false)
                     setAdminToDelete(null)
                   }}
-                  className="flex-1 bg-base-300 text-base-content py-2 px-4  hover:bg-base-300/70 transition-colors"
+                  className="flex-1 bg-base-300 text-base-content py-2 px-4  hover:bg-base-100 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="flex-1 bg-error text-error-content py-2 px-4  hover:bg-error/90 transition-colors flex items-center justify-center"
+                  className="flex-1 bg-error text-error-content py-2 px-4  hover:bg-base-100 transition-colors flex items-center justify-center"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete

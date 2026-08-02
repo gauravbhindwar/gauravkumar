@@ -1,22 +1,25 @@
 import { NextResponse } from 'next/server'
-import connectToDatabase from '@/lib/mongodb'
-import Achievement from '@/models/Achievement'
+import getSupabase from '@/lib/supabase'
+import { rowToClient, clientToRow } from '@/lib/dbMapper'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 // GET /api/achievements/[id] - Get single achievement
 export async function GET(request, { params }) {
   try {
-    await connectToDatabase()
-    
     const { id } = await params
-    const achievement = await Achievement.findById(id).lean()
-    
+    const supabase = getSupabase()
+    const { data: achievement } = await supabase
+      .from('achievements')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+
     if (!achievement) {
       return NextResponse.json({ error: 'Achievement not found' }, { status: 404 })
     }
 
-    return NextResponse.json(achievement)
+    return NextResponse.json(rowToClient(achievement))
   } catch (error) {
     console.error('Error fetching achievement:', error)
     return NextResponse.json(
@@ -30,46 +33,34 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    await connectToDatabase()
-    
     const { id } = await params
     const data = await request.json()
-    
-    // Convert date string to Date object
-    if (data.date) {
-      data.date = new Date(data.date)
-    }
 
-    const achievement = await Achievement.findByIdAndUpdate(
-      id,
-      data,
-      { new: true, runValidators: true }
-    )
+    const supabase = getSupabase()
+    const { data: achievement, error } = await supabase
+      .from('achievements')
+      .update(clientToRow(data))
+      .eq('id', id)
+      .select('*')
+      .maybeSingle()
 
+    if (error) throw error
     if (!achievement) {
       return NextResponse.json({ error: 'Achievement not found' }, { status: 404 })
     }
 
-    return NextResponse.json(achievement, {
+    return NextResponse.json(rowToClient(achievement), {
       headers: {
         'Cache-Control': 'no-cache'
       }
     })
   } catch (error) {
     console.error('Error updating achievement:', error)
-    
-    if (error.name === 'ValidationError') {
-      return NextResponse.json(
-        { error: 'Validation error', details: error.message },
-        { status: 400 }
-      )
-    }
-
     return NextResponse.json(
       { error: 'Failed to update achievement' },
       { status: 500 }
@@ -81,15 +72,19 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    await connectToDatabase()
-    
     const { id } = await params
-    const achievement = await Achievement.findByIdAndDelete(id)
+    const supabase = getSupabase()
+    const { data: achievement } = await supabase
+      .from('achievements')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle()
 
     if (!achievement) {
       return NextResponse.json({ error: 'Achievement not found' }, { status: 404 })

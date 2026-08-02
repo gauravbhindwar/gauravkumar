@@ -173,7 +173,7 @@ function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-base-200">
-        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-none animate-spin"></div>
       </div>
     )
   }
@@ -187,7 +187,7 @@ function AdminDashboard() {
       color: 'bg-blue-500', 
       lightColor: 'bg-blue-50', 
       textColor: 'text-blue-600',
-      borderColor: 'border-blue-100'
+      borderColor: 'border-base-content'
     },
     { 
       label: 'Skills', 
@@ -197,7 +197,7 @@ function AdminDashboard() {
       color: 'bg-emerald-500', 
       lightColor: 'bg-emerald-50', 
       textColor: 'text-emerald-600',
-      borderColor: 'border-emerald-100'
+      borderColor: 'border-base-content'
     },
     { 
       label: 'Certifications', 
@@ -207,7 +207,7 @@ function AdminDashboard() {
       color: 'bg-purple-500', 
       lightColor: 'bg-purple-50', 
       textColor: 'text-purple-600',
-      borderColor: 'border-purple-100'
+      borderColor: 'border-base-content'
     },
     { 
       label: 'Experiences', 
@@ -217,7 +217,7 @@ function AdminDashboard() {
       color: 'bg-orange-500', 
       lightColor: 'bg-orange-50', 
       textColor: 'text-orange-600',
-      borderColor: 'border-orange-100'
+      borderColor: 'border-base-content'
     },
   ];
 
@@ -366,21 +366,21 @@ function AdminDashboard() {
             </div>
             
             {recentActivity.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mt-4">
+              <div className="flex flex-col gap-0 mt-4">
                 {recentActivity.map((activity, index) => (
                    <motion.div 
                       key={`${activity.type}-${activity.id}-${index}`} 
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.2 + (index * 0.05) }}
-                      className="flex items-start group relative pl-4"
+                      className="flex items-start group relative pl-8 py-2"
                    >
                       {/* Timeline Line */}
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-base-content group-last:bottom-auto group-last:h-4"></div>
+                      <div className="absolute left-3 top-0 bottom-0 w-1 bg-base-content group-first:top-4 group-last:bottom-auto group-last:h-4"></div>
                       
-                      <div className="absolute left-0 top-2 w-3 h-3 bg-primary border-2 border-base-content group-hover:bg-secondary transition-colors ml-[-4px]"></div>
+                      <div className="absolute left-2 top-4 w-3 h-3 bg-primary border-2 border-base-content group-hover:bg-secondary transition-colors z-10"></div>
                       
-                      <div className="flex-1 ml-6 p-4 border-2 border-base-content bg-base-100 shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                      <div className="flex-1 w-full p-4 border-2 border-base-content bg-base-100 shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
                         <div className="flex flex-col gap-2 mb-2">
                            <div className="flex justify-between items-start gap-2">
                              <h4 className="text-sm font-mono font-bold uppercase tracking-wider text-base-content leading-tight">{activity.title}</h4>

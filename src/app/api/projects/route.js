@@ -1,80 +1,79 @@
-import connectToDatabase from '@/lib/mongodb';
-import Project from '@/models/Project';
+import getSupabase from '@/lib/supabase';
+import { rowToClient, clientToRow } from '@/lib/dbMapper';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
+// Projects keep their old Mongoose-era `id` field as the app-facing slug
+// (now the `slug` column); the Postgres uuid primary key is exposed as `_id`.
+function projectToClient(row) {
+  if (!row) return row;
+  const { slug, ...rest } = rowToClient(row);
+  return { ...rest, id: slug };
+}
+
+function projectFromClient(data) {
+  const { id, _id, ...rest } = data;
+  const row = clientToRow(rest);
+  if (id !== undefined) row.slug = id;
+  return row;
+}
+
 export async function GET() {
   try {
-    await connectToDatabase();
-    
-    // Fetch all projects with optimized query - only select needed fields
-    const projects = await Project.find({}, {
-      id: 1,
-      title: 1,
-      description: 1,
-      image: 1,
-      tech: 1,
-      github: 1,
-      live: 1,
-      preview: 1,
-      features: 1,
-      order: 1,
-      status: 1,
-      createdAt: 1
-    })
-      .sort({ order: 1, id: 1, createdAt: -1 }) // Sort by order, then id, then creation date
-      .lean() // Use lean() for better performance
-      .maxTimeMS(5000); // Set query timeout to 5 seconds
-    
+    const supabase = getSupabase();
+
+    const { data: projects, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('order', { ascending: true })
+      .order('slug', { ascending: true })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
     if (!projects || projects.length === 0) {
-      // Fallback to static data if no MongoDB data exists
+      // Fallback to static data if no Supabase data exists
       const staticData = await import('@/data/projects.json');
-      
+
       // Sort the static data by order field with proper secondary sorts
       const sortedProjects = [...staticData.default.projects].sort((a, b) => {
-        // Primary sort: order (if exists)
         const orderA = a.order !== undefined && a.order !== null ? a.order : 999;
         const orderB = b.order !== undefined && b.order !== null ? b.order : 999;
-        
-        // If orders are different, use them
+
         if (orderA !== orderB) {
           return orderA - orderB;
         }
-        
-        // Secondary sort: id
+
         return a.id.localeCompare(b.id);
       });
-      
-      // Set cache headers for static data
+
       const response = NextResponse.json({ projects: sortedProjects });
-      response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=1200'); // Cache static data longer
+      response.headers.set('Cache-Control', 'public, max-age=600, s-maxage=1200');
       return response;
     }
-    
-    // Return data with optimized cache headers
-    const response = NextResponse.json({ projects });
+
+    const response = NextResponse.json({ projects: projects.map(projectToClient) });
     response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=60');
     response.headers.set('ETag', `"${Date.now()}"`);
     return response;
   } catch (error) {
     console.error('Error fetching projects:', error);
-    
+
     // Fallback to static data on error
     try {
       const staticData = await import('@/data/projects.json');
       const sortedProjects = [...staticData.default.projects].sort((a, b) => {
-        // Handle missing or duplicate orders with secondary sorts
         const orderA = a.order !== undefined && a.order !== null ? a.order : 999;
         const orderB = b.order !== undefined && b.order !== null ? b.order : 999;
-        
+
         if (orderA !== orderB) {
           return orderA - orderB;
         }
-        
+
         return a.id.localeCompare(b.id);
       });
-      
+
       const response = NextResponse.json({ projects: sortedProjects });
       response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=600');
       return response;
@@ -88,16 +87,15 @@ export async function GET() {
 async function checkAdminAuth() {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user) {
       return false;
     }
-    
-    // Check if user has admin or super_admin role
+
     if (session.user.role !== 'admin' && session.user.role !== 'super_admin') {
       return false;
     }
-    
+
     return true;
   } catch (error) {
     console.error('Auth check error:', error);
@@ -114,7 +112,7 @@ export async function POST(request) {
     }
 
     const projectData = await request.json();
-    
+
     // Validate required fields
     if (!projectData.id || !projectData.title || !projectData.description) {
       return NextResponse.json(
@@ -123,10 +121,15 @@ export async function POST(request) {
       );
     }
 
-    await connectToDatabase();
+    const supabase = getSupabase();
 
-    // Check if project with this ID already exists
-    const existingProject = await Project.findOne({ id: projectData.id });
+    // Check if project with this slug already exists
+    const { data: existingProject } = await supabase
+      .from('projects')
+      .select('id')
+      .eq('slug', projectData.id)
+      .maybeSingle();
+
     if (existingProject) {
       return NextResponse.json(
         { error: 'Project with this ID already exists' },
@@ -134,12 +137,17 @@ export async function POST(request) {
       );
     }
 
-    const project = new Project(projectData);
-    await project.save();
+    const { data: project, error } = await supabase
+      .from('projects')
+      .insert(projectFromClient(projectData))
+      .select('*')
+      .single();
 
-    return NextResponse.json({ 
-      message: 'Project created successfully', 
-      project 
+    if (error) throw error;
+
+    return NextResponse.json({
+      message: 'Project created successfully',
+      project: projectToClient(project)
     }, { status: 201 });
 
   } catch (error) {
@@ -160,7 +168,7 @@ export async function PUT(request) {
     }
 
     const { id, ...updateData } = await request.json();
-    
+
     if (!id) {
       return NextResponse.json(
         { error: 'Project ID is required' },
@@ -168,22 +176,21 @@ export async function PUT(request) {
       );
     }
 
-    await connectToDatabase();
+    const supabase = getSupabase();
 
-    // Use findOneAndUpdate with lean option for better performance
-    const project = await Project.findOneAndUpdate(
-      { id },
-      { 
-        ...updateData, 
-        updatedAt: new Date() 
-      },
-      { 
-        new: true,
-        lean: true, // Return plain object instead of mongoose document
-        runValidators: true, // Ensure schema validation
-        maxTimeMS: 5000 // Set timeout for update operation
-      }
-    );
+    const { data: project, error } = await supabase
+      .from('projects')
+      .update(projectFromClient(updateData))
+      .eq('slug', id)
+      .select('*')
+      .maybeSingle();
+
+    if (error) {
+      return NextResponse.json(
+        { error: 'Invalid project data: ' + error.message },
+        { status: 400 }
+      );
+    }
 
     if (!project) {
       return NextResponse.json(
@@ -193,35 +200,18 @@ export async function PUT(request) {
     }
 
     // Return success response with cache invalidation headers
-    const response = NextResponse.json({ 
-      message: 'Project updated successfully', 
-      project 
+    const response = NextResponse.json({
+      message: 'Project updated successfully',
+      project: projectToClient(project)
     });
-    
-    // Add headers to invalidate any cached data
+
     response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     response.headers.set('ETag', `"${Date.now()}"`);
-    
+
     return response;
 
   } catch (error) {
     console.error('Error updating project:', error);
-    
-    // Provide more specific error messages
-    if (error.name === 'ValidationError') {
-      return NextResponse.json(
-        { error: 'Invalid project data: ' + error.message },
-        { status: 400 }
-      );
-    }
-    
-    if (error.name === 'MongoTimeoutError') {
-      return NextResponse.json(
-        { error: 'Database operation timed out. Please try again.' },
-        { status: 503 }
-      );
-    }
-    
     return NextResponse.json(
       { error: 'Failed to update project' },
       { status: 500 }
@@ -239,7 +229,7 @@ export async function DELETE(request) {
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    
+
     if (!id) {
       return NextResponse.json(
         { error: 'Project ID is required' },
@@ -247,9 +237,14 @@ export async function DELETE(request) {
       );
     }
 
-    await connectToDatabase();
+    const supabase = getSupabase();
 
-    const project = await Project.findOneAndDelete({ id });
+    const { data: project } = await supabase
+      .from('projects')
+      .delete()
+      .eq('slug', id)
+      .select('id')
+      .maybeSingle();
 
     if (!project) {
       return NextResponse.json(
@@ -258,8 +253,8 @@ export async function DELETE(request) {
       );
     }
 
-    return NextResponse.json({ 
-      message: 'Project deleted successfully' 
+    return NextResponse.json({
+      message: 'Project deleted successfully'
     });
 
   } catch (error) {

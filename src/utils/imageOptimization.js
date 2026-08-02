@@ -13,26 +13,22 @@ export function optimizeImageUrl(imageUrl, options = {}) {
     width = null,
     height = null,
     quality = 80,
-    format = 'auto'
   } = options;
-  
-  // For external URLs, we can't optimize directly but we can add loading hints
-  // This is a placeholder for future CDN integration (Cloudinary, etc.)
-  
-  // If it's a supported CDN, we could add optimization parameters
-  if (imageUrl.includes('cloudinary.com')) {
-    // Add Cloudinary transformations
-    const transformations = [];
-    if (width) transformations.push(`w_${width}`);
-    if (height) transformations.push(`h_${height}`);
-    if (quality !== 80) transformations.push(`q_${quality}`);
-    transformations.push('f_auto'); // Auto format
-    
-    if (transformations.length > 0) {
-      return imageUrl.replace('/upload/', `/upload/${transformations.join(',')}/`);
+
+  // Supabase Storage serves transformed images through its render endpoint
+  // (same bucket path, /object/public/ -> /render/image/public/ + query params).
+  if (imageUrl.includes('/storage/v1/object/public/')) {
+    const params = new URLSearchParams();
+    if (width) params.set('width', width);
+    if (height) params.set('height', height);
+    if (quality !== 80) params.set('quality', quality);
+
+    if ([...params].length > 0) {
+      const renderUrl = imageUrl.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/');
+      return `${renderUrl}?${params.toString()}`;
     }
   }
-  
+
   // For other URLs, return as-is
   return imageUrl;
 }

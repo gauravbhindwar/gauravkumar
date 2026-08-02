@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import connectToDatabase from '@/lib/mongodb'
-import Admin from '@/models/Admin'
-import { checkAdminAuth, getAdminSession } from '@/lib/auth'
+import getSupabase from '@/lib/supabase'
+import { checkAdminAuth } from '@/lib/auth'
+import { rowToClient, rowsToClient } from '@/lib/dbMapper'
+
+function toClientAdmin(admin) {
+  const { password, ...rest } = admin
+  return rowToClient(rest)
+}
 
 // GET - Fetch all admins
 export async function GET() {
@@ -15,18 +20,17 @@ export async function GET() {
       )
     }
 
-    await connectToDatabase()
+    const supabase = getSupabase()
+    const { data: admins, error } = await supabase
+      .from('admins')
+      .select('*')
+      .order('created_at', { ascending: false })
 
-    const admins = await Admin.find({}, '-password')
-      .sort({ createdAt: -1 })
-      .lean()
+    if (error) throw error
 
     return NextResponse.json({
       success: true,
-      admins: admins.map(admin => ({
-        ...admin,
-        _id: admin._id.toString()
-      }))
+      admins: rowsToClient(admins.map(({ password, ...rest }) => rest))
     })
   } catch (error) {
     console.error('Fetch admins error:', error)
@@ -73,15 +77,14 @@ export async function POST(request) {
       )
     }
 
-    await connectToDatabase()
+    const supabase = getSupabase()
 
     // Check if admin already exists
-    const existingAdmin = await Admin.findOne({
-      $or: [
-        { email: email.toLowerCase() },
-        { username: username }
-      ]
-    })
+    const { data: existingAdmin } = await supabase
+      .from('admins')
+      .select('id')
+      .or(`email.eq.${email.toLowerCase()},username.eq.${username}`)
+      .maybeSingle()
 
     if (existingAdmin) {
       return NextResponse.json(
@@ -94,38 +97,35 @@ export async function POST(request) {
     const hashedPassword = await bcrypt.hash(password, 12)
 
     // Create new admin
-    const newAdmin = new Admin({
-      username: username.trim(),
-      email: email.toLowerCase().trim(),
-      password: hashedPassword,
-      role,
-      isActive
-    })
+    const { data: newAdmin, error } = await supabase
+      .from('admins')
+      .insert({
+        username: username.trim(),
+        email: email.toLowerCase().trim(),
+        password: hashedPassword,
+        role,
+        is_active: isActive
+      })
+      .select('*')
+      .single()
 
-    await newAdmin.save()
-
-    // Return admin without password
-    const adminResponse = await Admin.findById(newAdmin._id, '-password').lean()
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json(
+          { error: 'Admin with this email or username already exists' },
+          { status: 400 }
+        )
+      }
+      throw error
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Admin created successfully',
-      admin: {
-        ...adminResponse,
-        _id: adminResponse._id.toString()
-      }
+      admin: toClientAdmin(newAdmin)
     }, { status: 201 })
   } catch (error) {
     console.error('Create admin error:', error)
-    
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0]
-      return NextResponse.json(
-        { error: `Admin with this ${field} already exists` },
-        { status: 400 }
-      )
-    }
-
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

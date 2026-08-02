@@ -17,10 +17,7 @@ export default function GlassCard({
 }) {
   return (
     <Component
-      className={`relative bg-base-300/10 backdrop-blur-sm border border-base-content/10 
-                 transition-all duration-300 group overflow-hidden
-                 ${hover ? "hover:border-primary/50 hover:bg-base-300/20 hover:shadow-[0_0_20px_rgba(255,175,211,0.1)] hover:-translate-y-1" : ''}
-                 ${className}`}
+      className={`relative bg-base-100 border-4 border-base-content transition-all duration-300 group overflow-hidden ${hover ? "hover:shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1" : ""} ${className}`}
       {...motionProps}
     >
       {/* Corner Brackets */}

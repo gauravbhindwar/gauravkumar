@@ -7,12 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node scripts/seed-db.js",
     "seed-admin": "node scripts/seed-admin.js",
-    "create-admin": "node scripts/create-admin.js",
-    "seed-portfolio": "node scripts/seed-experience-achievements-awards.js",
-    "test-mongo": "node -e \"require('dotenv').config({path:'.env.local'});const c=require('./src/lib/mongodb.js').default;c().then(()=>console.log('✅ Connected')).catch(e=>console.log('❌',e.message))\"",
-    "setup-proxy": "node scripts/setup-proxy.js"
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -21,6 +17,7 @@
     "@geist-ui/react": "^2.2.5",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.7.0",
+    "@supabase/supabase-js": "^2.111.0",
     "@tailwindcss/postcss": "^4.3.3",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",
@@ -32,7 +29,6 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.28.0",
     "maath": "^0.10.8",
-    "mongoose": "^9.9.1",
     "next": "^15.5.22",
     "next-auth": "^4.24.15",
     "react": "^19.2.8",

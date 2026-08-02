@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Education from '@/models/Education';
+import getSupabase from '@/lib/supabase';
+import { rowsToClient, rowToClient, clientToRow } from '@/lib/dbMapper';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET() {
   try {
-    await connectDB();
-    
-    const education = await Education.find({ isActive: true })
-      .sort({ order: 1, endDate: -1 })
-      .lean();
-    
-    return NextResponse.json({ success: true, data: education });
+    const supabase = getSupabase();
+
+    const { data: education, error } = await supabase
+      .from('education')
+      .select('*')
+      .eq('is_active', true)
+      .order('order', { ascending: true })
+      .order('end_date', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, data: rowsToClient(education) });
   } catch (error) {
     console.error('Education API GET Error:', error);
     return NextResponse.json(
@@ -32,12 +37,17 @@ export async function POST(request) {
       );
     }
 
-    await connectDB();
-    
     const data = await request.json();
-    const education = await Education.create(data);
-    
-    return NextResponse.json({ success: true, data: education }, { status: 201 });
+    const supabase = getSupabase();
+    const { data: education, error } = await supabase
+      .from('education')
+      .insert(clientToRow(data))
+      .select('*')
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, data: rowToClient(education) }, { status: 201 });
   } catch (error) {
     console.error('Education API POST Error:', error);
     return NextResponse.json(

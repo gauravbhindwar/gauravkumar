@@ -188,11 +188,11 @@ const AwardsAdmin = () => {
   // Get level color
   const getLevelColor = (level) => {
     const colors = {
-      'International': 'bg-red-100 text-red-700 border-red-200',
-      'National': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Regional': 'bg-green-100 text-green-700 border-green-200',
-      'State': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Local': 'bg-orange-100 text-orange-700 border-orange-200',
+      'International': 'bg-red-100 text-red-700 border-base-content',
+      'National': 'bg-blue-100 text-blue-700 border-base-content',
+      'Regional': 'bg-green-100 text-green-700 border-base-content',
+      'State': 'bg-purple-100 text-purple-700 border-base-content',
+      'Local': 'bg-orange-100 text-orange-700 border-base-content',
       'Institutional': 'bg-gray-100 text-gray-700 border-gray-200'
     }
     return colors[level] || colors['Institutional']
@@ -201,14 +201,14 @@ const AwardsAdmin = () => {
   // Get category color
   const getCategoryColor = (category) => {
     const colors = {
-      'Academic': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Professional': 'bg-green-100 text-green-700 border-green-200',
-      'Technical': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Leadership': 'bg-orange-100 text-orange-700 border-orange-200',
-      'Innovation': 'bg-pink-100 text-pink-700 border-pink-200',
-      'Community Service': 'bg-teal-100 text-teal-700 border-teal-200',
-      'Competition': 'bg-red-100 text-red-700 border-red-200',
-      'Recognition': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+      'Academic': 'bg-blue-100 text-blue-700 border-base-content',
+      'Professional': 'bg-green-100 text-green-700 border-base-content',
+      'Technical': 'bg-purple-100 text-purple-700 border-base-content',
+      'Leadership': 'bg-orange-100 text-orange-700 border-base-content',
+      'Innovation': 'bg-pink-100 text-pink-700 border-base-content',
+      'Community Service': 'bg-teal-100 text-teal-700 border-base-content',
+      'Competition': 'bg-red-100 text-red-700 border-base-content',
+      'Recognition': 'bg-yellow-100 text-yellow-700 border-base-content',
       'Other': 'bg-gray-100 text-gray-700 border-gray-200'
     }
     return colors[category] || colors['Other']
@@ -221,7 +221,7 @@ const AwardsAdmin = () => {
           <div className="h-8 bg-base-300  w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-base-300 rounded-2xl h-64"></div>
+              <div key={i} className="bg-base-300 rounded-none h-64"></div>
             ))}
           </div>
         </div>
@@ -230,7 +230,7 @@ const AwardsAdmin = () => {
   }
 
   return (
-    <div className="p-8 bg-base-200/50 min-h-screen">
+    <div className="p-8 bg-base-200 min-h-screen">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -282,7 +282,7 @@ const AwardsAdmin = () => {
             <div className="relative">
               <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40 w-5 h-5" />
               <select
-                className="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
+                className="pl-10 pr-8 py-3 border border-gray-200 rounded-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
@@ -295,7 +295,7 @@ const AwardsAdmin = () => {
             <div className="relative">
               <Crown className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40 w-5 h-5" />
               <select
-                className="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
+                className="pl-10 pr-8 py-3 border border-gray-200 rounded-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                 value={levelFilter}
                 onChange={(e) => setLevelFilter(e.target.value)}
               >
@@ -356,7 +356,7 @@ const AwardsAdmin = () => {
           </div>
         </div>
         
-        <div className="bg-secondary/10 rounded-xl p-6 border border-secondary/20">
+        <div className="bg-base-100 rounded-none p-6 border border-base-content">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-secondary text-sm font-medium">Filtered Results</p>
@@ -384,20 +384,20 @@ const AwardsAdmin = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
-                className="bg-base-100 rounded-2xl shadow-lg border border-base-300/60 overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] overflow-hidden hover:shadow-[4px_4px_0_0_currentColor] transition-all duration-300"
               >
                 {/* Award Header */}
-                <div className="bg-linear-to-r from-primary to-secondary p-4 text-primary-content">
+                <div className="bg-primary border-b-4 border-base-content p-4 text-primary-content">
                   <div className="flex items-center justify-between mb-2">
                     <Trophy className="w-6 h-6" />
                     {award.isFeatured && (
-                      <div className="bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <div className="border-2 border-base-content bg-base-200 text-base-content font-mono font-bold uppercase tracking-widest px-2 py-1 rounded-none text-xs font-medium flex items-center gap-1">
                         <Star className="w-3 h-3" />
                         Featured
                       </div>
                     )}
                   </div>
-                  <span className={`px-2 py-1 text-xs rounded-full bg-white bg-opacity-20`}>
+                  <span className={`px-2 py-1 text-xs rounded-none border-2 border-base-content bg-base-200 text-base-content font-mono font-bold uppercase tracking-widest`}>
                     {award.level}
                   </span>
                 </div>
@@ -426,7 +426,7 @@ const AwardsAdmin = () => {
                   )}
                   
                   <div className="flex items-center justify-between mb-3">
-                    <span className={`px-3 py-1 text-sm rounded-full border ${getCategoryColor(award.category)}`}>
+                    <span className={`px-3 py-1 text-sm rounded-none border ${getCategoryColor(award.category)}`}>
                       {award.category}
                     </span>
                     <div className="flex items-center gap-1 text-xs text-base-content/60">
@@ -445,7 +445,7 @@ const AwardsAdmin = () => {
                   </p>
 
                   {award.prizeValue && (
-                    <div className="bg-success/10 text-success px-3 py-1  text-sm font-medium mb-3 flex items-center gap-2">
+                    <div className="bg-base-100 text-success px-3 py-1  text-sm font-medium mb-3 flex items-center gap-2">
                       <Gift className="w-4 h-4" />
                       {award.prizeValue}
                     </div>
@@ -466,7 +466,7 @@ const AwardsAdmin = () => {
                     </div>
                   )}
                   
-                  <div className="flex items-center space-x-2 pt-3 border-t border-base-300/60">
+                  <div className="flex items-center space-x-2 pt-3 border-t border-base-content">
                     <button
                       
                       
@@ -524,7 +524,7 @@ const AwardsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-base-100 flex items-center justify-center p-4 z-50"
             onClick={(e) => e.target === e.currentTarget && setIsModalOpen(false)}
           >
             <motion.div
@@ -594,7 +594,7 @@ const AwardsAdmin = () => {
                             Category *
                           </label>
                           <select
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                             value={formData.category}
                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                             required
@@ -611,7 +611,7 @@ const AwardsAdmin = () => {
                             Level
                           </label>
                           <select
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                             value={formData.level}
                             onChange={(e) => setFormData({ ...formData, level: e.target.value })}
                           >
@@ -759,7 +759,7 @@ const AwardsAdmin = () => {
                                 
                                 type="button"
                                 onClick={() => removeArrayField('tags', index)}
-                                className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
+                                className="bg-base-100 text-error hover:bg-base-100 p-3 rounded-none transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -770,7 +770,7 @@ const AwardsAdmin = () => {
                             
                             type="button"
                             onClick={() => addArrayField('tags')}
-                            className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
+                            className="bg-base-100 text-primary hover:bg-base-100 px-4 py-3 rounded-none transition-colors font-medium flex items-center gap-2"
                           >
                             <Plus className="w-4 h-4" />
                             Add Tag
@@ -795,7 +795,7 @@ const AwardsAdmin = () => {
 
                         {/* Featured */}
                         <div className="flex items-center">
-                          <label className="flex items-center gap-3 cursor-pointer bg-base-200 px-4 py-3 rounded-xl hover:bg-base-300 transition-colors">
+                          <label className="flex items-center gap-3 cursor-pointer bg-base-200 px-4 py-3 rounded-none hover:bg-base-300 transition-colors">
                             <input
                               type="checkbox"
                               className="w-5 h-5 text-primary border-base-300 rounded focus:ring-primary"

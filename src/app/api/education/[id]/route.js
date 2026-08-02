@@ -1,24 +1,27 @@
 import { NextResponse } from 'next/server';
-import connectToDatabase from '@/lib/mongodb';
-import Education from '@/models/Education';
+import getSupabase from '@/lib/supabase';
+import { rowToClient, clientToRow } from '@/lib/dbMapper';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET(request, { params }) {
   try {
-    await connectToDatabase();
-    
     const { id } = await params;
-    const education = await Education.findById(id).lean();
-    
+    const supabase = getSupabase();
+    const { data: education } = await supabase
+      .from('education')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
     if (!education) {
       return NextResponse.json(
         { success: false, error: 'Education entry not found' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ success: true, data: education });
+
+    return NextResponse.json({ success: true, data: rowToClient(education) });
   } catch (error) {
     console.error('Education API GET Error:', error);
     return NextResponse.json(
@@ -38,24 +41,26 @@ export async function PUT(request, { params }) {
       );
     }
 
-    await connectToDatabase();
-    
     const { id } = await params;
     const data = await request.json();
-    const education = await Education.findByIdAndUpdate(
-      id,
-      data,
-      { new: true, runValidators: true }
-    );
-    
+
+    const supabase = getSupabase();
+    const { data: education, error } = await supabase
+      .from('education')
+      .update(clientToRow(data))
+      .eq('id', id)
+      .select('*')
+      .maybeSingle();
+
+    if (error) throw error;
     if (!education) {
       return NextResponse.json(
         { success: false, error: 'Education entry not found' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ success: true, data: education });
+
+    return NextResponse.json({ success: true, data: rowToClient(education) });
   } catch (error) {
     console.error('Education API PUT Error:', error);
     return NextResponse.json(
@@ -75,18 +80,22 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    await connectToDatabase();
-    
     const { id } = await params;
-    const education = await Education.findByIdAndDelete(id);
-    
+    const supabase = getSupabase();
+    const { data: education } = await supabase
+      .from('education')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
+
     if (!education) {
       return NextResponse.json(
         { success: false, error: 'Education entry not found' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({ success: true, message: 'Education entry deleted successfully' });
   } catch (error) {
     console.error('Education API DELETE Error:', error);

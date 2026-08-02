@@ -1,46 +1,49 @@
-import connectToDatabase from '@/lib/mongodb';
-import { Skill, Course } from '@/models/Skill';
+import getSupabase from '@/lib/supabase';
+import { rowToClient, rowsToClient, clientToRow } from '@/lib/dbMapper';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET() {
   try {
-    await connectToDatabase();
-    
-    // Fetch all skills
-    const skills = await Skill.find({});
-    
-    // Fetch all courses
-    const courses = await Course.find({});
-    
+    const supabase = getSupabase();
+
+    const [{ data: skills, error: skillsError }, { data: courses, error: coursesError }] = await Promise.all([
+      supabase.from('skills').select('*'),
+      supabase.from('courses').select('*')
+    ]);
+
+    if (skillsError) throw skillsError;
+    if (coursesError) throw coursesError;
+
     if (!skills || skills.length === 0) {
-      // Fallback to static data if no MongoDB data exists
+      // Fallback to static data if no Supabase data exists
       const staticData = await import('@/data/skills.json');
       return NextResponse.json(staticData.default);
     }
-    
+
     // Define the category order we want
     const categoryOrder = [
-      "Languages", 
-      "Web Development", 
-      "Data Science & ML", 
+      "Languages",
+      "Web Development",
+      "Data Science & ML",
       "Tools & Platforms"
     ];
-    
-    // Restructure data to match the expected format with proper ordering
-    let categories = [];
-    
+
+    const clientSkills = rowsToClient(skills);
+    const clientCourses = rowsToClient(courses);
+
     // Group skills by category
     const skillsByCategory = {};
-    for (const skill of skills) {
+    for (const skill of clientSkills) {
       if (!skillsByCategory[skill.category]) {
         skillsByCategory[skill.category] = [];
       }
       skillsByCategory[skill.category].push(skill);
     }
-    
+
     // Build categories array in the specified order
+    const categories = [];
     for (const category of categoryOrder) {
       if (skillsByCategory[category]) {
         categories.push({
@@ -49,39 +52,15 @@ export async function GET() {
         });
       }
     }
-    
+
     // Restructure courses by type
     const coursesByType = {
-      current: courses.filter(course => course.type === 'current').map(course => ({
-        _id: course._id,
-        name: course.name,
-        type: course.type,
-        description: course.description || '',
-        url: course.url || ''
-      })),
-      completed: courses.filter(course => course.type === 'completed').map(course => ({
-        _id: course._id,
-        name: course.name,
-        type: course.type,
-        description: course.description || '',
-        url: course.url || ''
-      })),
-      paused: courses.filter(course => course.type === 'paused').map(course => ({
-        _id: course._id,
-        name: course.name,
-        type: course.type,
-        description: course.description || '',
-        url: course.url || ''
-      })),
-      planned: courses.filter(course => course.type === 'planned').map(course => ({
-        _id: course._id,
-        name: course.name,
-        type: course.type,
-        description: course.description || '',
-        url: course.url || ''
-      }))
+      current: clientCourses.filter(course => course.type === 'current'),
+      completed: clientCourses.filter(course => course.type === 'completed'),
+      paused: clientCourses.filter(course => course.type === 'paused'),
+      planned: clientCourses.filter(course => course.type === 'planned')
     };
-    
+
     // Set cache headers
     const response = NextResponse.json({
       categories,
@@ -91,7 +70,7 @@ export async function GET() {
     return response;
   } catch (error) {
     console.error('Error fetching skills:', error);
-    
+
     // Fallback to static data on error
     try {
       const staticData = await import('@/data/skills.json');
@@ -120,7 +99,7 @@ export async function POST(request) {
     }
 
     const { type, ...skillData } = await request.json();
-    
+
     if (!type || (type !== 'skill' && type !== 'course')) {
       return NextResponse.json(
         { error: 'Type must be either "skill" or "course"' },
@@ -128,9 +107,9 @@ export async function POST(request) {
       );
     }
 
-    await connectToDatabase();
-
+    const supabase = getSupabase();
     let newItem;
+
     if (type === 'skill') {
       if (!skillData.name || !skillData.category) {
         return NextResponse.json(
@@ -138,7 +117,13 @@ export async function POST(request) {
           { status: 400 }
         );
       }
-      newItem = new Skill(skillData);
+      const { data, error } = await supabase
+        .from('skills')
+        .insert(clientToRow(skillData))
+        .select('*')
+        .single();
+      if (error) throw error;
+      newItem = data;
     } else {
       if (!skillData.name || !skillData.courseType) {
         return NextResponse.json(
@@ -146,17 +131,21 @@ export async function POST(request) {
           { status: 400 }
         );
       }
-      // Map courseType to type for the Course model
+      // Map courseType to type for the Course table
       skillData.type = skillData.courseType;
       delete skillData.courseType;
-      newItem = new Course(skillData);
+      const { data, error } = await supabase
+        .from('courses')
+        .insert(clientToRow(skillData))
+        .select('*')
+        .single();
+      if (error) throw error;
+      newItem = data;
     }
 
-    await newItem.save();
-
-    return NextResponse.json({ 
-      message: `${type} created successfully`, 
-      [type]: newItem 
+    return NextResponse.json({
+      message: `${type} created successfully`,
+      [type]: rowToClient(newItem)
     }, { status: 201 });
 
   } catch (error) {
@@ -177,7 +166,7 @@ export async function PUT(request) {
     }
 
     const { type, id, ...updateData } = await request.json();
-    
+
     if (!type || !id) {
       return NextResponse.json(
         { error: 'Type and ID are required' },
@@ -185,33 +174,29 @@ export async function PUT(request) {
       );
     }
 
-    await connectToDatabase();
-
-    let updatedItem;
-    if (type === 'skill') {
-      updatedItem = await Skill.findByIdAndUpdate(
-        id,
-        { ...updateData, updatedAt: new Date() },
-        { new: true }
-      );
-    } else if (type === 'course') {
-      // Map courseType to type for the Course model if present
-      if (updateData.courseType) {
-        updateData.type = updateData.courseType;
-        delete updateData.courseType;
-      }
-      updatedItem = await Course.findByIdAndUpdate(
-        id,
-        { ...updateData, updatedAt: new Date() },
-        { new: true }
-      );
-    } else {
+    if (type !== 'skill' && type !== 'course') {
       return NextResponse.json(
         { error: 'Invalid type' },
         { status: 400 }
       );
     }
 
+    // Map courseType to type for the Course table if present
+    if (updateData.courseType) {
+      updateData.type = updateData.courseType;
+      delete updateData.courseType;
+    }
+
+    const supabase = getSupabase();
+    const table = type === 'skill' ? 'skills' : 'courses';
+    const { data: updatedItem, error } = await supabase
+      .from(table)
+      .update(clientToRow(updateData))
+      .eq('id', id)
+      .select('*')
+      .maybeSingle();
+
+    if (error) throw error;
     if (!updatedItem) {
       return NextResponse.json(
         { error: 'Item not found' },
@@ -219,9 +204,9 @@ export async function PUT(request) {
       );
     }
 
-    return NextResponse.json({ 
-      message: `${type} updated successfully`, 
-      [type]: updatedItem 
+    return NextResponse.json({
+      message: `${type} updated successfully`,
+      [type]: rowToClient(updatedItem)
     });
 
   } catch (error) {
@@ -244,7 +229,7 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
     const id = searchParams.get('id');
-    
+
     if (!type || !id) {
       return NextResponse.json(
         { error: 'Type and ID are required' },
@@ -252,19 +237,21 @@ export async function DELETE(request) {
       );
     }
 
-    await connectToDatabase();
-
-    let deletedItem;
-    if (type === 'skill') {
-      deletedItem = await Skill.findByIdAndDelete(id);
-    } else if (type === 'course') {
-      deletedItem = await Course.findByIdAndDelete(id);
-    } else {
+    if (type !== 'skill' && type !== 'course') {
       return NextResponse.json(
         { error: 'Invalid type' },
         { status: 400 }
       );
     }
+
+    const supabase = getSupabase();
+    const table = type === 'skill' ? 'skills' : 'courses';
+    const { data: deletedItem } = await supabase
+      .from(table)
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
 
     if (!deletedItem) {
       return NextResponse.json(
@@ -273,8 +260,8 @@ export async function DELETE(request) {
       );
     }
 
-    return NextResponse.json({ 
-      message: `${type} deleted successfully` 
+    return NextResponse.json({
+      message: `${type} deleted successfully`
     });
 
   } catch (error) {

@@ -199,7 +199,7 @@ export default function AdminContact() {
   if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-none h-16 w-16 border-4 border-base-content bg-primary"></div>
       </div>
     )
   }
@@ -212,11 +212,11 @@ export default function AdminContact() {
     <div className="min-h-screen bg-base-200">
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         {/* Enhanced Header */}
-        <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl shadow-xl border border-base-300/50 p-8">
+        <div className="bg-base-100 backdrop-blur-sm rounded-none shadow-[4px_4px_0_0_currentColor] border border-base-content p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-linear-to-r from-primary to-secondary rounded-xl">
+                <div className="p-3 bg-primary border-b-4 border-base-content rounded-none">
                   <User className="w-6 h-6 text-primary-content" />
                 </div>
                 <div>
@@ -231,7 +231,7 @@ export default function AdminContact() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowPreview(true)}
-                className="flex items-center gap-2 px-4 py-3 border border-base-300 text-base-content/80 rounded-xl font-medium hover:bg-base-200 transition-all duration-200"
+                className="flex items-center gap-2 px-4 py-3 border-2 border-base-content text-base-content/80 rounded-none font-medium hover:bg-base-200 transition-all duration-200"
               >
                 <Eye className="w-5 h-5" />
                 Preview
@@ -239,8 +239,8 @@ export default function AdminContact() {
               {message && (
                 <div className={`flex items-center gap-2 px-4 py-2  text-sm font-medium ${
                   message.includes('Error') || message.includes('error')
-                    ? 'bg-error/15 text-error border border-error/20'
-                    : 'bg-success/15 text-success border border-success/20'
+                    ? 'bg-base-100 text-error border border-base-content'
+                    : 'bg-base-100 text-success border border-base-content'
                 }`}>
                   {message.includes('Error') || message.includes('error') ? (
                     <AlertCircle className="w-4 h-4" />
@@ -255,12 +255,12 @@ export default function AdminContact() {
         </div>
 
         {/* Enhanced Contact Form */}
-        <div className="bg-base-100/90 backdrop-blur-sm rounded-2xl shadow-xl border border-base-300/50 p-8">
+        <div className="bg-base-100 backdrop-blur-sm rounded-none shadow-[4px_4px_0_0_currentColor] border border-base-content p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-base-300">
-                <div className="p-2 bg-primary/10 ">
+                <div className="p-2 bg-base-100 ">
                   <User className="w-5 h-5 text-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-base-content">Basic Information</h2>
@@ -277,7 +277,7 @@ export default function AdminContact() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="your.email@example.com"
                     required
                   />
@@ -293,7 +293,7 @@ export default function AdminContact() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
@@ -309,7 +309,7 @@ export default function AdminContact() {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                   placeholder="City, State/Country"
                 />
               </div>
@@ -318,7 +318,7 @@ export default function AdminContact() {
             {/* Home Page Image Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-base-300">
-                <div className="p-2 bg-secondary/10 ">
+                <div className="p-2 bg-base-100 ">
                   <ImageIcon className="w-5 h-5 text-secondary" />
                 </div>
                 <h2 className="text-xl font-bold text-base-content">Home Page Image</h2>
@@ -337,10 +337,10 @@ export default function AdminContact() {
                            name="homeImage"
                            value={formData.homeImage || ''}
                            onChange={handleInputChange}
-                           className="flex-1 px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
+                           className="flex-1 px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
                            placeholder="/uploads/my-image.jpg or https://..."
                         />
-                        <label className="cursor-pointer px-4 py-3 bg-base-200 hover:bg-base-300 text-base-content/80 rounded-xl font-medium transition-colors flex items-center gap-2">
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 hover:bg-base-300 text-base-content/80 rounded-none font-medium transition-colors flex items-center gap-2">
                            <Upload className="w-5 h-5" />
                            <span className="hidden sm:inline">Upload</span>
                            <input 
@@ -358,7 +358,7 @@ export default function AdminContact() {
                   
                   {formData.homeImage && (
                      <div className="shrink-0">
-                        <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-secondary/20 shadow-sm relative group bg-base-200">
+                        <div className="w-32 h-32 rounded-none overflow-hidden border-2 border-base-content shadow-[4px_4px_0_0_currentColor] relative group bg-base-200">
                            <img 
                               src={formData.homeImage} 
                               alt="Home Preview" 
@@ -375,7 +375,7 @@ export default function AdminContact() {
             {/* Social Links Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-base-300">
-                <div className="p-2 bg-primary/10 ">
+                <div className="p-2 bg-base-100 ">
                   <Globe className="w-5 h-5 text-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-base-content">Social Links & Portfolio</h2>
@@ -392,7 +392,7 @@ export default function AdminContact() {
                     name="linkedin"
                     value={formData.social.linkedin}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://linkedin.com/in/yourprofile"
                   />
                 </div>
@@ -407,7 +407,7 @@ export default function AdminContact() {
                     name="github"
                     value={formData.social.github}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://github.com/yourusername"
                   />
                 </div>
@@ -422,7 +422,7 @@ export default function AdminContact() {
                     name="twitter"
                     value={formData.twitter}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://twitter.com/yourusername"
                   />
                 </div>
@@ -437,7 +437,7 @@ export default function AdminContact() {
                     name="resumeLink"
                     value={formData.resumeLink}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://yourwebsite.com/resume.pdf"
                   />
                 </div>
@@ -447,7 +447,7 @@ export default function AdminContact() {
             {/* Bio/Description Section */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-base-300">
-                <div className="p-2 bg-primary/10 ">
+                <div className="p-2 bg-base-100 ">
                   <FileText className="w-5 h-5 text-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-base-content">Professional Bio</h2>
@@ -462,7 +462,7 @@ export default function AdminContact() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={6}
-                  className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 border-2 border-base-content rounded-none text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none"
                   placeholder="Brief description about yourself, your interests, or what you do..."
                 />
                 <p className="text-sm text-base-content/60">This will be displayed on your portfolio's contact section</p>
@@ -474,7 +474,7 @@ export default function AdminContact() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 px-8 py-4 bg-linear-to-r from-primary to-secondary hover:opacity-90 text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-8 py-4 bg-primary border-b-4 border-base-content hover:opacity-90 text-primary-content rounded-none font-medium shadow-[4px_4px_0_0_currentColor] hover:shadow-[4px_4px_0_0_currentColor] transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-5 h-5" />
                 {saving ? 'Saving Changes...' : 'Save Contact Information'}
@@ -485,12 +485,12 @@ export default function AdminContact() {
 
         {/* Preview Modal */}
         {showPreview && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-            <div className="bg-base-100 rounded-2xl shadow-2xl border border-base-300 w-full max-w-2xl max-h-[90vh] overflow-hidden animate-slide-up">
+          <div className="fixed inset-0 bg-base-100 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+            <div className="bg-base-100 rounded-none shadow-[4px_4px_0_0_currentColor] border-2 border-base-content w-full max-w-2xl max-h-[90vh] overflow-hidden animate-slide-up">
               {/* Modal Header */}
               <div className="sticky top-0 bg-base-100 border-b border-base-300 px-8 py-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-linear-to-r from-primary to-secondary ">
+                  <div className="p-2 bg-primary border-b-4 border-base-content ">
                     <Eye className="w-5 h-5 text-primary-content" />
                   </div>
                   <h2 className="text-2xl font-semibold text-base-content">
@@ -516,7 +516,7 @@ export default function AdminContact() {
                     <p className="text-base-content/60">This is how visitors will see your contact information</p>
                   </div>
 
-                  <div className="bg-primary/5 rounded-2xl p-8 space-y-6">
+                  <div className="bg-base-100 rounded-none p-8 space-y-6">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
                         <Mail className="w-5 h-5 text-primary" />
@@ -539,7 +539,7 @@ export default function AdminContact() {
                     </div>
 
                     {formData.description && (
-                      <div className="mt-6 p-4 bg-base-100/70 rounded-xl">
+                      <div className="mt-6 p-4 bg-base-100 rounded-none">
                         <p className="text-base-content/80 leading-relaxed">{formData.description}</p>
                       </div>
                     )}
@@ -550,7 +550,7 @@ export default function AdminContact() {
                           href={formData.social.linkedin}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-content  hover:bg-primary/90 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-content  hover:bg-base-100 transition-colors duration-200"
                         >
                           <FaLinkedin className="w-4 h-4" />
                           LinkedIn
@@ -562,7 +562,7 @@ export default function AdminContact() {
                           href={formData.social.github}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-neutral text-neutral-content  hover:bg-neutral/80 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-neutral text-neutral-content  hover:bg-base-100 transition-colors duration-200"
                         >
                           <FaGithub className="w-4 h-4" />
                           GitHub
@@ -574,7 +574,7 @@ export default function AdminContact() {
                           href={formData.twitter}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-content  hover:bg-secondary/90 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-content  hover:bg-base-100 transition-colors duration-200"
                         >
                           <FaTwitter className="w-4 h-4" />
                           Twitter
@@ -586,7 +586,7 @@ export default function AdminContact() {
                           href={formData.resumeLink}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-success text-success-content  hover:bg-success/90 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-success text-success-content  hover:bg-base-100 transition-colors duration-200"
                         >
                           <FileText className="w-4 h-4" />
                           Resume
@@ -598,7 +598,7 @@ export default function AdminContact() {
                   <div className="text-center">
                     <button
                       onClick={() => setShowPreview(false)}
-                      className="px-6 py-3 bg-linear-to-r from-primary to-secondary hover:opacity-90 text-primary-content rounded-xl font-medium transition-all duration-200"
+                      className="px-6 py-3 bg-primary border-b-4 border-base-content hover:opacity-90 text-primary-content rounded-none font-medium transition-all duration-200"
                     >
                       Close Preview
                     </button>

@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
-import connectToDatabase from '@/lib/mongodb';
-import Profile from '@/models/Profile';
+import getSupabase from '@/lib/supabase';
+import { rowToClient, clientToRow } from '@/lib/dbMapper';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET() {
   try {
-    await connectToDatabase();
-    
-    const profile = await Profile.findOne({ isActive: true }).lean();
-    
-    return NextResponse.json({ success: true, data: profile });
+    const supabase = getSupabase();
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('is_active', true)
+      .maybeSingle();
+
+    return NextResponse.json({ success: true, data: rowToClient(profile) });
   } catch (error) {
     console.error('Profile API GET Error:', error);
     return NextResponse.json(
@@ -30,26 +34,36 @@ export async function POST(request) {
       );
     }
 
-    await connectToDatabase();
-    
     const data = await request.json();
-    
+    const supabase = getSupabase();
+
     // Check if profile already exists
-    const existingProfile = await Profile.findOne({ isActive: true });
-    
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('is_active', true)
+      .maybeSingle();
+
     if (existingProfile) {
       // Update existing profile
-      const profile = await Profile.findByIdAndUpdate(
-        existingProfile._id,
-        data,
-        { new: true, runValidators: true }
-      );
-      return NextResponse.json({ success: true, data: profile });
-    } else {
-      // Create new profile
-      const profile = await Profile.create(data);
-      return NextResponse.json({ success: true, data: profile }, { status: 201 });
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .update(clientToRow(data))
+        .eq('id', existingProfile.id)
+        .select('*')
+        .single();
+      if (error) throw error;
+      return NextResponse.json({ success: true, data: rowToClient(profile) });
     }
+
+    // Create new profile
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .insert(clientToRow(data))
+      .select('*')
+      .single();
+    if (error) throw error;
+    return NextResponse.json({ success: true, data: rowToClient(profile) }, { status: 201 });
   } catch (error) {
     console.error('Profile API POST Error:', error);
     return NextResponse.json(
