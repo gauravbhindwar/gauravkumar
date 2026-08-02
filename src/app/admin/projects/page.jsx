@@ -682,7 +682,7 @@ const ProjectsAdmin = () => {
                     <Layout className="w-16 h-16" />
                   </div>
                 )}
-                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-base-200 border-2 border-base-content
+                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-base-200 border-b-4 border-base-content">
                    <div className="flex gap-2">
                      <span className={`px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wide bg-base-100 backdrop-blur-sm ${
                         viewingProject.status === 'completed' ? 'text-success' :

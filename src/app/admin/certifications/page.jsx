@@ -304,13 +304,13 @@ export default function AdminCertifications() {
             <div className="flex items-center gap-2 bg-base-200 p-1 rounded-none border border-base-content">
                <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 border-2 border-base-content transition-all ${viewMode === \'grid\' ? \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary\' : \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content\'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary' : 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content'}`}
                >
                   <Grid className="w-4 h-4" />
                </button>
                <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-2 border-2 border-base-content transition-all ${viewMode === \'list\' ? \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary\' : \'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content\'}`}
+                  className={`p-2 border-2 border-base-content transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-primary' : 'bg-base-100 shadow-[2px_2px_0_0_currentColor] text-base-content/40 hover:text-base-content'}`}
                >
                   <List className="w-4 h-4" />
                </button>
