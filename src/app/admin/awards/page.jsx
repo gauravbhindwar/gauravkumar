@@ -218,10 +218,10 @@ const AwardsAdmin = () => {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded-lg w-1/3"></div>
+          <div className="h-8 bg-base-300  w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-gray-200 rounded-2xl h-64"></div>
+              <div key={i} className="bg-base-300 rounded-2xl h-64"></div>
             ))}
           </div>
         </div>
@@ -230,12 +230,12 @@ const AwardsAdmin = () => {
   }
 
   return (
-    <div className="p-8 bg-gradient-to-br from-gray-50 to-white min-h-screen">
+    <div className="p-8 bg-base-200/50 min-h-screen">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-3xl p-8 mb-8 text-white shadow-2xl"
+        className="bg-primary border-4 border-base-content p-8 mb-8 text-base-100 shadow-[8px_8px_0_0_currentColor]"
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -243,20 +243,20 @@ const AwardsAdmin = () => {
               <Award className="w-10 h-10" />
               Awards Management
             </h1>
-            <p className="text-pink-100 text-lg">Manage and showcase your recognitions and honors</p>
+            <p className="text-primary-content/80 text-lg">Manage and showcase your recognitions and honors</p>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            
+            
             onClick={() => {
               resetForm()
               setIsModalOpen(true)
             }}
-            className="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             Add Award
-          </motion.button>
+          </button>
         </div>
       </motion.div>
 
@@ -265,22 +265,22 @@ const AwardsAdmin = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8"
+        className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] p-6 mb-8"
       >
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40 w-5 h-5" />
             <input
               type="text"
               placeholder="Search awards..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+              className="w-full pl-10 pr-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <div className="flex gap-4">
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40 w-5 h-5" />
               <select
                 className="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                 value={categoryFilter}
@@ -293,7 +293,7 @@ const AwardsAdmin = () => {
               </select>
             </div>
             <div className="relative">
-              <Crown className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-5 h-5" />
+              <Crown className="absolute left-3 top-1/2 transform -translate-y-1/2 text-base-content/40 w-5 h-5" />
               <select
                 className="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 bg-white text-gray-900"
                 value={levelFilter}
@@ -316,54 +316,54 @@ const AwardsAdmin = () => {
         transition={{ delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
       >
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+        <div className="bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-600 text-sm font-medium">Total Awards</p>
-              <p className="text-2xl font-bold text-blue-900">{awards.length}</p>
+              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">Total Awards</p>
+              <p className="text-2xl font-bold text-base-content">{awards.length}</p>
             </div>
-            <div className="bg-blue-500 p-3 rounded-lg">
+            <div className="bg-blue-500 p-3 ">
               <Award className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+        <div className="bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-600 text-sm font-medium">Featured</p>
-              <p className="text-2xl font-bold text-green-900">
+              <p className="text-green-600 dark:text-green-400 text-sm font-medium">Featured</p>
+              <p className="text-2xl font-bold text-base-content">
                 {awards.filter(a => a.isFeatured).length}
               </p>
             </div>
-            <div className="bg-green-500 p-3 rounded-lg">
+            <div className="bg-green-500 p-3 ">
               <Star className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+        <div className="bg-base-100 border-4 border-base-content p-6 shadow-[4px_4px_0_0_currentColor]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-600 text-sm font-medium">International</p>
-              <p className="text-2xl font-bold text-purple-900">
+              <p className="text-primary text-sm font-medium">International</p>
+              <p className="text-2xl font-bold text-base-content">
                 {awards.filter(a => a.level === 'International').length}
               </p>
             </div>
-            <div className="bg-purple-500 p-3 rounded-lg">
-              <Crown className="w-6 h-6 text-white" />
+            <div className="bg-primary p-3 ">
+              <Crown className="w-6 h-6 text-primary-content" />
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
+        <div className="bg-secondary/10 rounded-xl p-6 border border-secondary/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-orange-600 text-sm font-medium">Filtered Results</p>
-              <p className="text-2xl font-bold text-orange-900">{filteredAwards.length}</p>
+              <p className="text-secondary text-sm font-medium">Filtered Results</p>
+              <p className="text-2xl font-bold text-base-content">{filteredAwards.length}</p>
             </div>
-            <div className="bg-orange-500 p-3 rounded-lg">
-              <Eye className="w-6 h-6 text-white" />
+            <div className="bg-secondary p-3 ">
+              <Eye className="w-6 h-6 text-secondary-content" />
             </div>
           </div>
         </div>
@@ -384,10 +384,10 @@ const AwardsAdmin = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
-                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="bg-base-100 rounded-2xl shadow-lg border border-base-300/60 overflow-hidden hover:shadow-xl transition-all duration-300"
               >
                 {/* Award Header */}
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4 text-white">
+                <div className="bg-linear-to-r from-primary to-secondary p-4 text-primary-content">
                   <div className="flex items-center justify-between mb-2">
                     <Trophy className="w-6 h-6" />
                     {award.isFeatured && (
@@ -405,7 +405,7 @@ const AwardsAdmin = () => {
                 <div className="p-6">
                   {/* Award Image */}
                   {award.image && (
-                    <div className="w-full h-32 mb-4 rounded-xl overflow-hidden">
+                    <div className="w-full h-32 mb-4 border-2 border-base-content overflow-hidden">
                       <img
                         src={award.image}
                         alt={award.title}
@@ -414,14 +414,14 @@ const AwardsAdmin = () => {
                     </div>
                   )}
                   
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="text-lg font-bold text-base-content mb-2 line-clamp-2">
                     {award.title}
                   </h3>
 
                   {award.position && (
                     <div className="flex items-center gap-2 mb-3">
-                      <Medal className="w-4 h-4 text-yellow-500" />
-                      <span className="text-yellow-600 font-semibold text-sm">{award.position}</span>
+                      <Medal className="w-4 h-4 text-warning" />
+                      <span className="text-warning font-semibold text-sm">{award.position}</span>
                     </div>
                   )}
                   
@@ -429,23 +429,23 @@ const AwardsAdmin = () => {
                     <span className={`px-3 py-1 text-sm rounded-full border ${getCategoryColor(award.category)}`}>
                       {award.category}
                     </span>
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <div className="flex items-center gap-1 text-xs text-base-content/60">
                       <Calendar className="w-3 h-3" />
                       {new Date(award.date).toLocaleDateString()}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-gray-600 mb-3">
+                  <div className="flex items-center gap-2 text-base-content/70 mb-3">
                     <Building className="w-4 h-4" />
                     <span className="text-sm font-medium">{award.awardedBy}</span>
                   </div>
                   
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+                  <p className="text-base-content/70 text-sm mb-3 line-clamp-3">
                     {award.description}
                   </p>
 
                   {award.prizeValue && (
-                    <div className="bg-green-50 text-green-700 px-3 py-1 rounded-lg text-sm font-medium mb-3 flex items-center gap-2">
+                    <div className="bg-success/10 text-success px-3 py-1  text-sm font-medium mb-3 flex items-center gap-2">
                       <Gift className="w-4 h-4" />
                       {award.prizeValue}
                     </div>
@@ -454,64 +454,64 @@ const AwardsAdmin = () => {
                   {award.tags && award.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4">
                       {award.tags.slice(0, 3).map((tag, idx) => (
-                        <span key={idx} className="bg-gray-100 text-gray-600 px-2 py-1 rounded-lg text-xs">
+                        <span key={idx} className="bg-base-200 text-base-content/60 px-2 py-1  text-xs">
                           {tag}
                         </span>
                       ))}
                       {award.tags.length > 3 && (
-                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-lg text-xs">
+                        <span className="bg-base-200 text-base-content/60 px-2 py-1  text-xs">
                           +{award.tags.length - 3}
                         </span>
                       )}
                     </div>
                   )}
                   
-                  <div className="flex items-center space-x-2 pt-3 border-t border-gray-100">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                  <div className="flex items-center space-x-2 pt-3 border-t border-base-300/60">
+                    <button
+                      
+                      
                       onClick={() => handleEdit(award)}
-                      className="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
+                      className="flex-1 bg-base-100 text-base-content border-2 border-base-content px-4 py-2 font-mono font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2 shadow-[2px_2px_0_0_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
                     >
                       <Edit className="w-4 h-4" />
                       Edit
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    </button>
+                    <button
+                      
+                      
                       onClick={() => handleDelete(award._id)}
-                      className="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition-colors"
+                      className="bg-error text-base-100 border-2 border-base-content p-2 shadow-[2px_2px_0_0_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
-            <Award className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No awards found</h3>
-            <p className="text-gray-500 mb-6">
+          <div className="bg-base-100 border-4 border-base-content shadow-[8px_8px_0_0_currentColor] p-12 text-center">
+            <Award className="w-16 h-16 text-base-content/20 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-base-content mb-2">No awards found</h3>
+            <p className="text-base-content/60 mb-6">
               {searchTerm || categoryFilter !== 'all' || levelFilter !== 'all'
                 ? 'No awards match your current filters. Try adjusting your search.'
                 : "Start adding your awards and recognitions to showcase your achievements!"
               }
             </p>
             {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all') && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
+                
+                
                 onClick={() => {
                   setSearchTerm('')
                   setCategoryFilter('all')
                   setLevelFilter('all')
                 }}
-                className="bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+                className="bg-primary text-base-100 border-2 border-base-content px-6 py-2 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
               >
                 Clear Filters
-              </motion.button>
+              </button>
             )}
           </div>
         )}
@@ -524,7 +524,7 @@ const AwardsAdmin = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
             onClick={(e) => e.target === e.currentTarget && setIsModalOpen(false)}
           >
             <motion.div
@@ -532,23 +532,23 @@ const AwardsAdmin = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", damping: 20, stiffness: 300 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+              className="bg-base-100 border-4 border-base-content shadow-[12px_12px_0_0_currentColor] w-full max-w-4xl max-h-[90vh] flex flex-col"
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-6 text-white">
+              <div className="bg-primary p-6 text-base-100 border-b-4 border-base-content">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold flex items-center gap-3">
                     <Award className="w-8 h-8" />
                     {editingAward ? 'Edit Award' : 'Add New Award'}
                   </h2>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                  <button
+                    
+                    
                     onClick={() => setIsModalOpen(false)}
-                    className="bg-white bg-opacity-20 hover:bg-opacity-30 p-2 rounded-full transition-colors"
+                    className="bg-base-100 text-base-content border-2 border-base-content p-2 shadow-[2px_2px_0_0_currentColor] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
                   >
                     <X className="w-6 h-6" />
-                  </motion.button>
+                  </button>
                 </div>
               </div>
 
@@ -560,12 +560,12 @@ const AwardsAdmin = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Title */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Title *
                           </label>
                           <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             required
@@ -575,12 +575,12 @@ const AwardsAdmin = () => {
 
                         {/* Awarded By */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Awarded By *
                           </label>
                           <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.awardedBy}
                             onChange={(e) => setFormData({ ...formData, awardedBy: e.target.value })}
                             required
@@ -590,7 +590,7 @@ const AwardsAdmin = () => {
 
                         {/* Category */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Category *
                           </label>
                           <select
@@ -607,7 +607,7 @@ const AwardsAdmin = () => {
 
                         {/* Level */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Level
                           </label>
                           <select
@@ -623,12 +623,12 @@ const AwardsAdmin = () => {
 
                         {/* Date */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Date *
                           </label>
                           <input
                             type="date"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.date}
                             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                             required
@@ -637,13 +637,13 @@ const AwardsAdmin = () => {
 
                         {/* Position */}
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                             <Medal className="w-4 h-4" />
                             Position/Rank
                           </label>
                           <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.position}
                             onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                             placeholder="e.g., 1st Place, Winner, Finalist"
@@ -652,13 +652,13 @@ const AwardsAdmin = () => {
 
                         {/* Prize Value */}
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                             <Gift className="w-4 h-4" />
                             Prize Value
                           </label>
                           <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.prizeValue}
                             onChange={(e) => setFormData({ ...formData, prizeValue: e.target.value })}
                             placeholder="e.g., $1000, Gold Medal, Scholarship"
@@ -667,13 +667,13 @@ const AwardsAdmin = () => {
 
                         {/* Image URL */}
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                             <Image className="w-4 h-4" />
                             Image URL
                           </label>
                           <input
                             type="url"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.image}
                             onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                             placeholder="https://example.com/award-image.jpg"
@@ -682,13 +682,13 @@ const AwardsAdmin = () => {
 
                         {/* Certificate URL */}
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                             <FileText className="w-4 h-4" />
                             Certificate URL
                           </label>
                           <input
                             type="url"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.certificateUrl}
                             onChange={(e) => setFormData({ ...formData, certificateUrl: e.target.value })}
                             placeholder="https://example.com/certificate.pdf"
@@ -697,13 +697,13 @@ const AwardsAdmin = () => {
 
                         {/* Link */}
                         <div>
-                          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                          <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                             <Link className="w-4 h-4" />
                             Link
                           </label>
                           <input
                             type="url"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.link}
                             onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                             placeholder="https://example.com/award-details"
@@ -713,11 +713,11 @@ const AwardsAdmin = () => {
 
                       {/* Description */}
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-base-content/80 mb-2">
                           Description *
                         </label>
                         <textarea
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 h-24 resize-none text-gray-900 bg-white"
+                          className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 h-24 resize-none text-base-content bg-base-100"
                           value={formData.description}
                           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                           required
@@ -727,11 +727,11 @@ const AwardsAdmin = () => {
 
                       {/* Criteria */}
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-base-content/80 mb-2">
                           Criteria
                         </label>
                         <textarea
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 h-20 resize-none text-gray-900 bg-white"
+                          className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 h-20 resize-none text-base-content bg-base-100"
                           value={formData.criteria}
                           onChange={(e) => setFormData({ ...formData, criteria: e.target.value })}
                           placeholder="What were the criteria or requirements for this award?"
@@ -740,7 +740,7 @@ const AwardsAdmin = () => {
 
                       {/* Tags */}
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                        <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                           <Tag className="w-4 h-4" />
                           Tags
                         </label>
@@ -749,44 +749,44 @@ const AwardsAdmin = () => {
                             <div key={index} className="flex gap-2">
                               <input
                                 type="text"
-                                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                                className="flex-1 px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                                 value={tag}
                                 onChange={(e) => handleArrayFieldChange('tags', index, e.target.value)}
                                 placeholder="Enter tag"
                               />
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                              <button
+                                
+                                
                                 type="button"
                                 onClick={() => removeArrayField('tags', index)}
-                                className="bg-red-50 text-red-600 hover:bg-red-100 p-3 rounded-xl transition-colors"
+                                className="bg-error/10 text-error hover:bg-error/20 p-3 rounded-xl transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
-                              </motion.button>
+                              </button>
                             </div>
                           ))}
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                          <button
+                            
+                            
                             type="button"
                             onClick={() => addArrayField('tags')}
-                            className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
+                            className="bg-primary/10 text-primary hover:bg-primary/20 px-4 py-3 rounded-xl transition-colors font-medium flex items-center gap-2"
                           >
                             <Plus className="w-4 h-4" />
                             Add Tag
-                          </motion.button>
+                          </button>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Order */}
                         <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <label className="block text-sm font-semibold text-base-content/80 mb-2">
                             Display Order
                           </label>
                           <input
                             type="number"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-gray-900 bg-white"
+                            className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
                             value={formData.order}
                             onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
                             placeholder="0"
@@ -795,14 +795,14 @@ const AwardsAdmin = () => {
 
                         {/* Featured */}
                         <div className="flex items-center">
-                          <label className="flex items-center gap-3 cursor-pointer bg-gray-50 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors">
+                          <label className="flex items-center gap-3 cursor-pointer bg-base-200 px-4 py-3 rounded-xl hover:bg-base-300 transition-colors">
                             <input
                               type="checkbox"
-                              className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                              className="w-5 h-5 text-primary border-base-300 rounded focus:ring-primary"
                               checked={formData.isFeatured}
                               onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
                             />
-                            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span className="text-sm font-semibold text-base-content/80 flex items-center gap-2">
                               <Star className="w-4 h-4" />
                               Featured Award
                             </span>
@@ -813,29 +813,29 @@ const AwardsAdmin = () => {
                   </div>
 
                   {/* Form Actions - Fixed at bottom */}
-                  <div className="flex-shrink-0 border-t border-gray-200 p-6 bg-white rounded-b-3xl">
+                  <div className="shrink-0 border-t border-base-300 p-6 bg-base-100 rounded-b-3xl">
                     <div className="flex items-center justify-end gap-4">
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      <button
+                        
+                        
                         type="button"
                         onClick={() => {
                           setIsModalOpen(false)
                           resetForm()
                         }}
-                        className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                        className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
                       >
                         Cancel
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      </button>
+                      <button
+                        
+                        
                         type="submit"
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                        className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex items-center gap-2"
                       >
                         <Save className="w-4 h-4" />
                         {editingAward ? 'Update' : 'Create'} Award
-                      </motion.button>
+                      </button>
                     </div>
                   </div>
                 </form>

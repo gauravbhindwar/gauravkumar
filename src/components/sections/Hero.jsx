@@ -1,410 +1,238 @@
 'use client'
 
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import { useTheme } from '../theme-provider'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import Image from 'next/image'
-import { ReactTyped } from 'react-typed'
 import useFetch from '@/hooks/useFetch'
-import { useState, useEffect } from 'react'
-import { FiGithub, FiLinkedin, FiMail, FiDownload, FiArrowRight, FiCode, FiBriefcase, FiStar } from 'react-icons/fi'
+import { FiArrowRight, FiGithub, FiLinkedin, FiDownload } from 'react-icons/fi'
+import InterstellarCanvas from '@/components/canvas/InterstellarCanvas'
 
 export default function Hero() {
-  const { reducedMotion } = useTheme()
   const { data: contactData, loading: contactLoading } = useFetch('/api/contact')
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  
-  const transition = {
-    type: reducedMotion ? "tween" : "spring",
-    duration: reducedMotion ? 0.15 : 0.5,
-    stiffness: 260,
-    damping: 20
+
+  // 3D Tilt Logic for Portrait
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5 // -0.5 to 0.5
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5 // -0.5 to 0.5
+    mouseX.set(xPct)
+    mouseY.set(yPct)
   }
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  const handleMouseLeave = () => {
+    mouseX.set(0)
+    mouseY.set(0)
+  }
+
+  const springConfig = { damping: 20, stiffness: 300, mass: 0.5 }
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), springConfig)
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-15, 15]), springConfig)
+
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden pt-20 md:pt-24">
-      {/* Dynamic Background with Particles */}
-      <div className="absolute inset-0 bg-gradient-to-br from-base-100 via-base-200/50 to-base-300/30">
-        {/* Animated gradient orbs */}
-        <motion.div 
-          className="absolute top-20 left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl"
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-20 right-20 w-80 h-80 bg-secondary/20 rounded-full blur-3xl"
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 50, 0],
-            scale: [1.2, 1, 1.2],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent/15 rounded-full blur-3xl"
-          animate={{
-            x: [-50, 50, -50],
-            y: [-30, 30, -30],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Floating particles */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-primary/30 rounded-full"
-            style={{
-              left: `${20 + i * 15}%`,
-              top: `${30 + i * 10}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              delay: i * 0.5,
-            }}
-          />
-        ))}
-
-        {/* Interactive cursor follower */}
-        <motion.div
-          className="absolute w-6 h-6 bg-primary/20 rounded-full blur-sm pointer-events-none"
-          animate={{
-            x: mousePosition.x - 12,
-            y: mousePosition.y - 12,
-          }}
-          transition={{ type: "spring", damping: 30, stiffness: 200 }}
-        />
+    <section 
+      id="home" 
+      className="relative min-h-screen flex items-center justify-center bg-base-100 overflow-hidden pt-16"
+    >
+      {/* Cinematic Interstellar Deep Space Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <InterstellarCanvas />
       </div>
 
-      {/* Main Content */}
-      <motion.div 
-        className="container mx-auto px-4 sm:px-6 relative z-10 min-h-screen flex items-center"
-        style={{ y, opacity }}
-      >
-        <div className="w-full">
-          {/* Hero Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            
-            {/* Left Column - Text Content */}
-            <motion.div
-              className="space-y-8 text-center lg:text-left"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              {/* Status Badge */}
-              <motion.div 
-                className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 border border-success/20 rounded-full text-success font-medium"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                Available for Opportunities
-              </motion.div>
+      <div className="container mx-auto px-6 md:px-12 relative z-10 w-full h-full py-12 lg:py-0 flex flex-col justify-center pointer-events-none">
+        
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 relative z-10 pointer-events-auto">
+          
+          {/* Left Side: Creative Typography */}
+          <motion.div 
+            className="flex-1 flex flex-col justify-center space-y-3 text-center lg:text-left mt-8 lg:mt-0"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-base-300/40 border border-base-content/10 backdrop-blur-md w-fit mx-auto lg:mx-0 shadow-lg">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+              </span>
+              <span className="text-xs font-sans font-medium text-base-content/80 tracking-widest uppercase">
+                Available for New Opportunities
+              </span>
+            </div>
 
-              {/* Main Heading */}
-              <div className="space-y-4">
-                <motion.h1 
-                  className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.8 }}
-                >
-                  <span className="block text-base-content">Hello, I'm</span>
-                  <motion.span 
-                    className="block bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent"
-                    animate={{ 
-                      backgroundPosition: ['0%', '100%', '0%'] 
-                    }}
-                    transition={{ 
-                      duration: 5, 
-                      repeat: Infinity,
-                      ease: "easeInOut" 
-                    }}
-                    style={{
-                      backgroundSize: '200% 100%'
-                    }}
-                  >
-                    Gaurav Kumar
-                  </motion.span>
-                </motion.h1>
-
-                {/* Animated Role */}
-                <motion.div 
-                  className="text-xl md:text-2xl lg:text-3xl font-light text-base-content/80"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <ReactTyped
-                    strings={[
-                      'Full-Stack Developer 🚀',
-                      'AI/ML Engineer 🤖',
-                      'Data Science Enthusiast 📊',
-                      'Software Architect 🏗️',
-                      'Problem Solver 💡'
-                    ]}
-                    typeSpeed={80}
-                    backSpeed={50}
-                    loop
-                    className="text-secondary font-medium"
-                  />
-                </motion.div>
-              </div>
-
-              {/* Bio Text */}
-              <motion.p 
-                className="text-lg md:text-xl text-base-content/70 leading-relaxed max-w-2xl"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                Passionate software engineer crafting innovative solutions with{' '}
-                <span className="text-primary font-semibold hover:text-primary/80 transition-colors">
-                  cutting-edge technologies
+            <div className="space-y-2 relative">
+              <h1 className="text-[3rem] md:text-[4rem] lg:text-[5rem] font-display font-extrabold leading-[0.85] tracking-tighter text-base-content drop-shadow-2xl">
+                Gaurav<br />
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary relative">
+                  Kumar.
+                  {/* Decorative underline */}
+                  <svg className="absolute w-full h-4 -bottom-2 left-0 text-secondary/30" viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <path d="M0 10 Q 50 20 100 10" fill="none" stroke="currentColor" strokeWidth="4" />
+                  </svg>
                 </span>
-                . Specialized in full-stack development, AI/ML, and scalable system architecture.
-              </motion.p>
+              </h1>
+            </div>
 
-              {/* Tech Stack Pills */}
-              <motion.div 
-                className="flex flex-wrap gap-3 justify-center lg:justify-start"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0 }}
-              >
-                {[
-                  { name: 'React/Next.js', color: 'primary' },
-                  { name: 'Node.js', color: 'success' },
-                  { name: 'Python', color: 'info' },
-                  { name: 'AI/ML', color: 'secondary' },
-                  { name: 'MongoDB', color: 'accent' },
-                ].map((tech, index) => (
-                  <motion.span
-                    key={tech.name}
-                    className={`px-4 py-2 bg-${tech.color}/10 border border-${tech.color}/20 text-${tech.color} 
-                               rounded-full text-sm font-medium hover:bg-${tech.color}/20 transition-all duration-300
-                               cursor-pointer`}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.0 + (index * 0.1) }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {tech.name}
-                  </motion.span>
-                ))}
-              </motion.div>
+            <div className="flex items-center justify-center lg:justify-start gap-4 pt-2">
+              <div className="hidden lg:block h-[1px] w-12 bg-base-content/30"></div>
+              <p className="text-base md:text-lg font-sans font-light text-base-content/80 tracking-widest uppercase">
+                Software Architect <span className="text-accent font-bold mx-1">×</span> AI Engineer
+              </p>
+            </div>
 
-              {/* CTA Buttons */}
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 }}
-              >
-                <motion.a
-                  href="#contact"
-                  className="group inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-content 
-                            rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300 
-                            shadow-lg hover:shadow-xl hover:shadow-primary/25"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <FiMail className="mr-2 h-5 w-5" />
-                  Let's Work Together
-                  <motion.div
-                    className="ml-2"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    <FiArrowRight className="h-5 w-5" />
-                  </motion.div>
-                </motion.a>
-                
-                <motion.a
-                  href="#projects"
-                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-base-content/20 
-                            text-base-content rounded-xl font-semibold hover:border-primary hover:text-primary 
-                            transition-all duration-300 backdrop-blur-sm"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <FiCode className="mr-2 h-5 w-5" />
-                  View My Work
-                </motion.a>
-              </motion.div>
+            <p className="text-base md:text-lg font-sans text-base-content/70 max-w-lg mx-auto lg:mx-0 leading-relaxed drop-shadow-sm border-l-2 border-primary/30 pl-4 ml-2">
+              Crafting sophisticated digital experiences with precise engineering. 
+              Specializing in scalable architecture, intelligent systems, and modern web development.
+            </p>
 
-              {/* Social Links */}
-              <motion.div 
-                className="flex gap-4 justify-center lg:justify-start"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.4 }}
-              >
-                {[
-                  { icon: FiGithub, href: contactData?.github || '#', label: 'GitHub' },
-                  { icon: FiLinkedin, href: contactData?.linkedin || '#', label: 'LinkedIn' },
-                  { icon: FiDownload, href: contactData?.resumeLink || '#', label: 'Resume' },
-                ].map((social, index) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-base-200/50 hover:bg-primary hover:text-primary-content 
-                              rounded-xl transition-all duration-300 backdrop-blur-sm border border-base-300/30
-                              hover:border-primary hover:shadow-lg"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.9 }}
-                    title={social.label}
-                  >
-                    <social.icon className="h-5 w-5" />
-                  </motion.a>
-                ))}
-              </motion.div>
+            {/* Quick Statistics */}
+            <motion.div 
+              className="flex items-center justify-center lg:justify-start gap-8 pt-2 pb-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl font-display font-bold text-primary drop-shadow-[0_0_15px_rgba(255,175,211,0.5)]">2+</span>
+                <span className="text-[0.6rem] font-sans uppercase tracking-widest text-base-content/60 mt-1">Years Experience</span>
+              </div>
+              <div className="w-[1px] h-6 bg-base-content/10"></div>
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl font-display font-bold text-secondary drop-shadow-[0_0_15px_rgba(221,183,255,0.5)]">6+</span>
+                <span className="text-[0.6rem] font-sans uppercase tracking-widest text-base-content/60 mt-1">Projects</span>
+              </div>
+              <div className="w-[1px] h-6 bg-base-content/10"></div>
+              <div className="flex flex-col items-center lg:items-start">
+                <span className="text-2xl font-display font-bold text-accent drop-shadow-[0_0_15px_rgba(60,221,199,0.5)]">5+</span>
+                <span className="text-[0.6rem] font-sans uppercase tracking-widest text-base-content/60 mt-1">Technologies</span>
+              </div>
             </motion.div>
 
-            {/* Right Column - Image & Stats */}
-            <motion.div
-              className="relative flex flex-col items-center space-y-8"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              {/* Profile Image with Floating Elements */}
-              <div className="relative">
-                {/* Main Image Container */}
-                <motion.div 
-                  className="relative w-80 h-80 md:w-96 md:h-96 rounded-3xl overflow-hidden 
-                            shadow-2xl shadow-primary/20"
-                  whileHover={{ scale: 1.02, rotate: 1 }}
-                  transition={{ duration: 0.3 }}
+            {/* Floating Tech Stack Pills */}
+            <div className="flex flex-wrap gap-3 justify-center lg:justify-start pt-2">
+              {['React / Next.js', 'Node.js', 'Python', 'AI / ML', 'AWS', 'Docker'].map((tech, i) => (
+                <motion.span 
+                  key={i} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + (i * 0.1) }}
+                  className="px-4 py-2 bg-base-100 border-2 border-primary/50 text-base-content/90 text-xs font-mono font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-all duration-200 shadow-[3px_3px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
                 >
-                  {contactLoading ? (
-                    <div className="w-full h-full" />
-                  ) : contactData?.homeImage ? (
+                  {tech}
+                </motion.span>
+              ))}
+            </div>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+              <a
+                href="#contact"
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-base-100 border-2 border-primary text-primary font-mono text-xs font-bold uppercase tracking-[0.2em] transition-all duration-200 shadow-[6px_6px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px]"
+              >
+                  INITIATE_CONTACT
+                  <FiArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-2" />
+              </a>
+
+              {/* Minimal Social Links */}
+              <div className="flex items-center gap-4">
+                {[
+                  { icon: FiGithub, href: contactData?.github, color: 'hover:text-primary hover:border-primary' },
+                  { icon: FiLinkedin, href: contactData?.linkedin, color: 'hover:text-secondary hover:border-secondary' },
+                  { icon: FiDownload, href: contactData?.resumeLink, color: 'hover:text-accent hover:border-accent' }
+                ].map((item, i) => (
+                  <a 
+                    key={i}
+                    href={item.href || '#'} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className={`group p-3 bg-base-100 border-2 border-base-content/50 text-base-content font-mono transition-all duration-200 shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] ${item.color}`}
+                  >
+                    <item.icon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Brutalist Tech Portrait */}
+          <motion.div 
+            className="flex-1 flex justify-center lg:justify-end items-center perspective-1000 cursor-none"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+          >
+            <motion.div 
+              className="relative w-[220px] h-[280px] md:w-[280px] md:h-[360px] lg:w-[320px] lg:h-[420px] group"
+              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
+              {/* Technical Brackets */}
+              <div className="absolute -top-4 -left-4 w-12 h-12 border-t-4 border-l-4 border-base-content/40 transition-all duration-300 group-hover:border-primary group-hover:scale-110" style={{ transform: 'translateZ(20px)' }} />
+              <div className="absolute -top-4 -right-4 w-12 h-12 border-t-4 border-r-4 border-base-content/40 transition-all duration-300 group-hover:border-primary group-hover:scale-110" style={{ transform: 'translateZ(20px)' }} />
+              <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-4 border-l-4 border-base-content/40 transition-all duration-300 group-hover:border-primary group-hover:scale-110" style={{ transform: 'translateZ(20px)' }} />
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 border-b-4 border-r-4 border-base-content/40 transition-all duration-300 group-hover:border-primary group-hover:scale-110" style={{ transform: 'translateZ(20px)' }} />
+
+              <div className="w-full h-full relative overflow-hidden bg-base-content/5 border border-base-content/20 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                {contactLoading ? (
+                  <div className="w-full h-full bg-base-content/5 flex flex-col items-center justify-center gap-4">
+                    {/* Spinning AI Loading Core */}
+                    <motion.div 
+                      className="w-12 h-12 border-2 border-primary/20 border-t-primary border-r-primary rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    <span className="text-xs font-mono text-primary uppercase tracking-[0.2em] animate-pulse">Initializing Model...</span>
+                  </div>
+                ) : contactData?.homeImage ? (
+                  <>
                     <Image
                       src={contactData.homeImage}
-                      alt="Gaurav Kumar - Software Engineer"
+                      alt="Gaurav Kumar"
                       fill
                       priority
-                      sizes="(max-width: 768px) 320px, 384px"
-                      className="object-cover"
+                      sizes="(max-width: 768px) 280px, (max-width: 1024px) 340px, 400px"
+                      className="object-cover transition-all duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                     />
-                  ) : (
-                    <div className="w-full h-full bg-base-200/50 flex items-center justify-center">
-                      <span className="text-base-content/30 text-sm">No Image</span>
-                    </div>
-                  )}
-                  
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
-                  
-                  {/* Border Animation */}
-                  <motion.div
-                    className="absolute inset-0 rounded-3xl border-2"
-                    animate={{
-                      borderColor: ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--primary))']
-                    }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                  />
-                </motion.div>
-
-                {/* Floating Stats Cards */}
-                <motion.div 
-                  className="absolute -top-6 -right-6 bg-base-100/90 backdrop-blur-sm rounded-2xl p-4 
-                            shadow-lg border border-base-300/50"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0 }}
-                  whileHover={{ scale: 1.05, rotate: -2 }}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">30+</div>
-                    <div className="text-xs text-base-content/60">Projects</div>
+                    
+                    {/* Scanning Glitch Overlay on Hover */}
+                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mix-blend-overlay z-10" />
+                    
+                    <motion.div 
+                      className="absolute top-0 left-0 w-full h-[2px] bg-primary/80 shadow-[0_0_15px_rgba(255,175,211,1)] z-20"
+                      initial={{ y: "0%", opacity: 0 }}
+                      whileHover={{ y: ["0%", "480px", "0%"], opacity: 1 }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                    />
+                  </>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-base-content/5 gap-3">
+                    <svg className="w-16 h-16 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span className="text-[10px] font-mono text-base-content/40 uppercase tracking-widest">Avatar Offline</span>
                   </div>
-                </motion.div>
-
-                <motion.div 
-                  className="absolute -bottom-6 -left-6 bg-base-100/90 backdrop-blur-sm rounded-2xl p-4 
-                            shadow-lg border border-base-300/50"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.2 }}
-                  whileHover={{ scale: 1.05, rotate: 2 }}
-                >
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-secondary">5+</div>
-                    <div className="text-xs text-base-content/60">Years Exp</div>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  className="absolute top-1/2 -left-8 bg-base-100/90 backdrop-blur-sm rounded-2xl p-3 
-                            shadow-lg border border-base-300/50"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.4 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <FiStar className="h-6 w-6 text-accent" />
-                </motion.div>
+                )}
               </div>
-            </motion.div>
-          </div>
-
-          {/* Bottom Achievement Section */}
-          <motion.div
-            className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6 }}
-          >
-            {[
-              { number: '30+', label: 'Projects Completed', icon: FiCode },
-              { number: '5+', label: 'Years Experience', icon: FiBriefcase },
-              { number: '15+', label: 'Technologies', icon: FiStar },
-              { number: '24/7', label: 'Availability', icon: FiMail },
-            ].map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                className="group p-6 bg-base-100/50 backdrop-blur-sm rounded-2xl border border-base-300/30
-                          hover:border-primary/50 hover:shadow-lg transition-all duration-300"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.6 + (index * 0.1) }}
-                whileHover={{ scale: 1.02, y: -4 }}
+              
+              {/* Floating Tech Badge */}
+              <motion.div 
+                className="absolute -bottom-6 -left-6 md:bottom-10 md:-left-10 p-3 rounded-none bg-base-100/90 backdrop-blur-md border border-primary/50 flex items-center gap-3 shadow-[0_0_15px_rgba(255,175,211,0.2)]"
+                style={{ transform: 'translateZ(60px)' }}
               >
-                <stat.icon className="h-8 w-8 mx-auto mb-3 text-primary group-hover:text-secondary transition-colors" />
-                <div className="text-3xl font-bold text-base-content mb-2">{stat.number}</div>
-                <div className="text-sm text-base-content/60">{stat.label}</div>
+                <div className="w-10 h-10 flex items-center justify-center bg-primary text-base-100 font-display font-bold text-lg">
+                  AI
+                </div>
+                <div className="flex flex-col pr-4">
+                  <span className="text-[0.6rem] font-sans text-primary uppercase tracking-[0.2em]">Status: Online</span>
+                  <span className="text-sm font-sans font-bold text-base-content uppercase tracking-wider">AI Engineer</span>
+                </div>
               </motion.div>
-            ))}
+            </motion.div>
           </motion.div>
+
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }

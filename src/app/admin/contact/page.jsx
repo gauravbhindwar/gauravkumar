@@ -4,7 +4,8 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { User, Mail, Phone, MapPin, Linkedin, Github, Twitter, FileText, Globe, Save, CheckCircle, AlertCircle, Eye, Image as ImageIcon, Upload } from 'lucide-react'
+import { User, Mail, Phone, MapPin, FileText, Globe, Save, CheckCircle, AlertCircle, Eye, Image as ImageIcon, Upload } from 'lucide-react'
+import { FaGithub, FaTwitter, FaLinkedin } from 'react-icons/fa'
 
 export default function AdminContact() {
   const { data: session, status } = useSession()
@@ -197,8 +198,8 @@ export default function AdminContact() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-base-200 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     )
   }
@@ -208,21 +209,21 @@ export default function AdminContact() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-base-200">
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         {/* Enhanced Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+        <div className="bg-base-100/80 backdrop-blur-sm rounded-2xl shadow-xl border border-base-300/50 p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl">
-                  <User className="w-6 h-6 text-white" />
+                <div className="p-3 bg-linear-to-r from-primary to-secondary rounded-xl">
+                  <User className="w-6 h-6 text-primary-content" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                  <h1 className="text-3xl font-bold text-base-content">
                     Contact Information
                   </h1>
-                  <p className="text-gray-600">Manage your professional contact details and social links</p>
+                  <p className="text-base-content/60">Manage your professional contact details and social links</p>
                 </div>
               </div>
             </div>
@@ -230,16 +231,16 @@ export default function AdminContact() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowPreview(true)}
-                className="flex items-center gap-2 px-4 py-3 border border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all duration-200"
+                className="flex items-center gap-2 px-4 py-3 border border-base-300 text-base-content/80 rounded-xl font-medium hover:bg-base-200 transition-all duration-200"
               >
                 <Eye className="w-5 h-5" />
                 Preview
               </button>
               {message && (
-                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
+                <div className={`flex items-center gap-2 px-4 py-2  text-sm font-medium ${
                   message.includes('Error') || message.includes('error')
-                    ? 'bg-red-100 text-red-700 border border-red-200'
-                    : 'bg-green-100 text-green-700 border border-green-200'
+                    ? 'bg-error/15 text-error border border-error/20'
+                    : 'bg-success/15 text-success border border-success/20'
                 }`}>
                   {message.includes('Error') || message.includes('error') ? (
                     <AlertCircle className="w-4 h-4" />
@@ -254,20 +255,20 @@ export default function AdminContact() {
         </div>
 
         {/* Enhanced Contact Form */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+        <div className="bg-base-100/90 backdrop-blur-sm rounded-2xl shadow-xl border border-base-300/50 p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-                <div className="p-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg">
-                  <User className="w-5 h-5 text-blue-600" />
+              <div className="flex items-center gap-3 pb-4 border-b border-base-300">
+                <div className="p-2 bg-primary/10 ">
+                  <User className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Basic Information</h2>
+                <h2 className="text-xl font-bold text-base-content">Basic Information</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
                     <Mail className="w-4 h-4" />
                     Email Address *
                   </label>
@@ -276,14 +277,14 @@ export default function AdminContact() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="your.email@example.com"
                     required
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
                     <Phone className="w-4 h-4" />
                     Phone Number
                   </label>
@@ -292,14 +293,14 @@ export default function AdminContact() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
                   <MapPin className="w-4 h-4" />
                   Location
                 </label>
@@ -308,7 +309,7 @@ export default function AdminContact() {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                   placeholder="City, State/Country"
                 />
               </div>
@@ -316,17 +317,17 @@ export default function AdminContact() {
 
             {/* Home Page Image Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-                <div className="p-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg">
-                  <ImageIcon className="w-5 h-5 text-purple-600" />
+              <div className="flex items-center gap-3 pb-4 border-b border-base-300">
+                <div className="p-2 bg-secondary/10 ">
+                  <ImageIcon className="w-5 h-5 text-secondary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Home Page Image</h2>
+                <h2 className="text-xl font-bold text-base-content">Home Page Image</h2>
               </div>
               
               <div className="space-y-4">
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   <div className="flex-1 space-y-4 w-full">
-                     <label className="block text-sm font-semibold text-gray-700">
+                     <label className="block text-sm font-semibold text-base-content/80">
                         Profile/Hero Image
                      </label>
                      
@@ -336,10 +337,10 @@ export default function AdminContact() {
                            name="homeImage"
                            value={formData.homeImage || ''}
                            onChange={handleInputChange}
-                           className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                           className="flex-1 px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200"
                            placeholder="/uploads/my-image.jpg or https://..."
                         />
-                        <label className="cursor-pointer px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors flex items-center gap-2">
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 hover:bg-base-300 text-base-content/80 rounded-xl font-medium transition-colors flex items-center gap-2">
                            <Upload className="w-5 h-5" />
                            <span className="hidden sm:inline">Upload</span>
                            <input 
@@ -350,14 +351,14 @@ export default function AdminContact() {
                            />
                         </label>
                      </div>
-                     <p className="text-sm text-gray-500">
+                     <p className="text-sm text-base-content/60">
                         Upload an image to store it locally, or paste an external URL. Best size: 600x600px or larger.
                      </p>
                   </div>
                   
                   {formData.homeImage && (
                      <div className="shrink-0">
-                        <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-purple-100 shadow-sm relative group bg-gray-50">
+                        <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-secondary/20 shadow-sm relative group bg-base-200">
                            <img 
                               src={formData.homeImage} 
                               alt="Home Preview" 
@@ -373,17 +374,17 @@ export default function AdminContact() {
 
             {/* Social Links Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-                <div className="p-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg">
-                  <Globe className="w-5 h-5 text-blue-600" />
+              <div className="flex items-center gap-3 pb-4 border-b border-base-300">
+                <div className="p-2 bg-primary/10 ">
+                  <Globe className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Social Links & Portfolio</h2>
+                <h2 className="text-xl font-bold text-base-content">Social Links & Portfolio</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <Linkedin className="w-4 h-4 text-blue-600" />
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
+                    <FaLinkedin className="w-4 h-4 text-blue-600" />
                     LinkedIn Profile
                   </label>
                   <input
@@ -391,14 +392,14 @@ export default function AdminContact() {
                     name="linkedin"
                     value={formData.social.linkedin}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://linkedin.com/in/yourprofile"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <Github className="w-4 h-4 text-gray-900" />
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
+                    <FaGithub className="w-4 h-4 text-gray-900" />
                     GitHub Profile
                   </label>
                   <input
@@ -406,14 +407,14 @@ export default function AdminContact() {
                     name="github"
                     value={formData.social.github}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://github.com/yourusername"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                    <Twitter className="w-4 h-4 text-blue-400" />
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
+                    <FaTwitter className="w-4 h-4 text-blue-400" />
                     Twitter/X Profile
                   </label>
                   <input
@@ -421,13 +422,13 @@ export default function AdminContact() {
                     name="twitter"
                     value={formData.twitter}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://twitter.com/yourusername"
                   />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80">
                     <FileText className="w-4 h-4 text-green-600" />
                     Resume/CV URL
                   </label>
@@ -436,7 +437,7 @@ export default function AdminContact() {
                     name="resumeLink"
                     value={formData.resumeLink}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                     placeholder="https://yourwebsite.com/resume.pdf"
                   />
                 </div>
@@ -445,15 +446,15 @@ export default function AdminContact() {
 
             {/* Bio/Description Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-                <div className="p-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg">
-                  <FileText className="w-5 h-5 text-blue-600" />
+              <div className="flex items-center gap-3 pb-4 border-b border-base-300">
+                <div className="p-2 bg-primary/10 ">
+                  <FileText className="w-5 h-5 text-primary" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Professional Bio</h2>
+                <h2 className="text-xl font-bold text-base-content">Professional Bio</h2>
               </div>
               
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-sm font-semibold text-base-content/80">
                   Bio/Description
                 </label>
                 <textarea
@@ -461,19 +462,19 @@ export default function AdminContact() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 border border-base-300 rounded-xl text-base-content bg-base-100 focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none"
                   placeholder="Brief description about yourself, your interests, or what you do..."
                 />
-                <p className="text-sm text-gray-500">This will be displayed on your portfolio's contact section</p>
+                <p className="text-sm text-base-content/60">This will be displayed on your portfolio's contact section</p>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end pt-6 border-t border-gray-200">
+            <div className="flex justify-end pt-6 border-t border-base-300">
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-8 py-4 bg-linear-to-r from-primary to-secondary hover:opacity-90 text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-5 h-5" />
                 {saving ? 'Saving Changes...' : 'Save Contact Information'}
@@ -485,21 +486,21 @@ export default function AdminContact() {
         {/* Preview Modal */}
         {showPreview && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl max-h-[90vh] overflow-hidden animate-slide-up">
+            <div className="bg-base-100 rounded-2xl shadow-2xl border border-base-300 w-full max-w-2xl max-h-[90vh] overflow-hidden animate-slide-up">
               {/* Modal Header */}
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-center justify-between">
+              <div className="sticky top-0 bg-base-100 border-b border-base-300 px-8 py-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
-                    <Eye className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-linear-to-r from-primary to-secondary ">
+                    <Eye className="w-5 h-5 text-primary-content" />
                   </div>
-                  <h2 className="text-2xl font-semibold text-gray-900">
+                  <h2 className="text-2xl font-semibold text-base-content">
                     Contact Information Preview
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowPreview(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                  className="p-2 text-base-content/40 hover:text-base-content/70 hover:bg-base-200  transition-all duration-200"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -511,35 +512,35 @@ export default function AdminContact() {
               <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
                 <div className="space-y-6">
                   <div className="text-center">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">How it will appear on your portfolio</h3>
-                    <p className="text-gray-600">This is how visitors will see your contact information</p>
+                    <h3 className="text-xl font-bold text-base-content mb-2">How it will appear on your portfolio</h3>
+                    <p className="text-base-content/60">This is how visitors will see your contact information</p>
                   </div>
 
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 space-y-6">
+                  <div className="bg-primary/5 rounded-2xl p-8 space-y-6">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <Mail className="w-5 h-5 text-blue-600" />
-                        <span className="text-gray-900 font-medium">{formData.email || 'your.email@example.com'}</span>
+                        <Mail className="w-5 h-5 text-primary" />
+                        <span className="text-base-content font-medium">{formData.email || 'your.email@example.com'}</span>
                       </div>
                       
                       {formData.phone && (
                         <div className="flex items-center gap-3">
-                          <Phone className="w-5 h-5 text-green-600" />
-                          <span className="text-gray-900 font-medium">{formData.phone}</span>
+                          <Phone className="w-5 h-5 text-success" />
+                          <span className="text-base-content font-medium">{formData.phone}</span>
                         </div>
                       )}
                       
                       {formData.location && (
                         <div className="flex items-center gap-3">
-                          <MapPin className="w-5 h-5 text-red-600" />
-                          <span className="text-gray-900 font-medium">{formData.location}</span>
+                          <MapPin className="w-5 h-5 text-error" />
+                          <span className="text-base-content font-medium">{formData.location}</span>
                         </div>
                       )}
                     </div>
 
                     {formData.description && (
-                      <div className="mt-6 p-4 bg-white/70 rounded-xl">
-                        <p className="text-gray-700 leading-relaxed">{formData.description}</p>
+                      <div className="mt-6 p-4 bg-base-100/70 rounded-xl">
+                        <p className="text-base-content/80 leading-relaxed">{formData.description}</p>
                       </div>
                     )}
 
@@ -549,9 +550,9 @@ export default function AdminContact() {
                           href={formData.social.linkedin}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-content  hover:bg-primary/90 transition-colors duration-200"
                         >
-                          <Linkedin className="w-4 h-4" />
+                          <FaLinkedin className="w-4 h-4" />
                           LinkedIn
                         </a>
                       )}
@@ -561,9 +562,9 @@ export default function AdminContact() {
                           href={formData.social.github}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-neutral text-neutral-content  hover:bg-neutral/80 transition-colors duration-200"
                         >
-                          <Github className="w-4 h-4" />
+                          <FaGithub className="w-4 h-4" />
                           GitHub
                         </a>
                       )}
@@ -573,9 +574,9 @@ export default function AdminContact() {
                           href={formData.twitter}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-content  hover:bg-secondary/90 transition-colors duration-200"
                         >
-                          <Twitter className="w-4 h-4" />
+                          <FaTwitter className="w-4 h-4" />
                           Twitter
                         </a>
                       )}
@@ -585,7 +586,7 @@ export default function AdminContact() {
                           href={formData.resumeLink}
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-success text-success-content  hover:bg-success/90 transition-colors duration-200"
                         >
                           <FileText className="w-4 h-4" />
                           Resume
@@ -597,7 +598,7 @@ export default function AdminContact() {
                   <div className="text-center">
                     <button
                       onClick={() => setShowPreview(false)}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium transition-all duration-200"
+                      className="px-6 py-3 bg-linear-to-r from-primary to-secondary hover:opacity-90 text-primary-content rounded-xl font-medium transition-all duration-200"
                     >
                       Close Preview
                     </button>

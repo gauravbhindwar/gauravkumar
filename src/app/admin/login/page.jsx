@@ -291,14 +291,14 @@ function AdminLoginForm() {
   // Show loading if checking session
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center space-y-4"
         >
-          <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
-          <p className="text-blue-200 text-sm">Checking authentication...</p>
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-base-content/70 text-sm">Checking authentication...</p>
         </motion.div>
       </div>
     )
@@ -310,62 +310,47 @@ function AdminLoginForm() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), 
-                           radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), 
-                           radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%)`
-        }} />
-      </div>
+    <div className="min-h-screen relative overflow-hidden bg-base-200">
+      {/* Brutalist background grid */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--color-base-content) 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
 
       {/* Main Container */}
       <div className="min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.6, 
-            ease: [0.25, 0.46, 0.45, 0.94] // Smooth easing
-          }}
+          transition={{ duration: 0.4 }}
           className="max-w-md w-full"
         >
-          {/* Glass Card */}
-          <motion.div
-            className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl"
-            whileHover={{ 
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
-              transition: { duration: 0.3 }
-            }}
-          >
+          {/* Brutalist Card */}
+          <div className="bg-base-100 border-4 border-base-content p-8 shadow-[8px_8px_0px_0px_currentColor]">
             {/* Header */}
             <div className="text-center mb-8">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="mx-auto h-12 w-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg mb-4"
+                transition={{ delay: 0.2, duration: 0.4 }}
+                className="mx-auto h-16 w-16 flex items-center justify-center border-4 border-base-content bg-primary text-primary-content shadow-[4px_4px_0px_0px_currentColor] mb-6"
               >
-                <Shield className="h-6 w-6 text-white" />
+                <Shield className="h-8 w-8" />
               </motion.div>
               
               <motion.h1
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent"
+                transition={{ delay: 0.3, duration: 0.4 }}
+                className="text-2xl font-mono font-bold uppercase tracking-widest text-base-content"
               >
-                Admin Access
+                [ ADMIN_ACCESS ]
               </motion.h1>
               
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="mt-2 text-blue-200/70 text-sm"
+                transition={{ delay: 0.4, duration: 0.4 }}
+                className="mt-4 text-base-content/70 font-mono text-xs uppercase tracking-wider"
               >
-                Secure access to your portfolio dashboard
+                Secure access to portfolio dashboard
               </motion.p>
             </div>
 
@@ -385,11 +370,11 @@ function AdminLoginForm() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="rounded-lg bg-red-500/10 border border-red-500/20 p-4 backdrop-blur-sm"
+                    className=" bg-error/10 border border-error/20 p-4 backdrop-blur-sm"
                   >
                     <div className="flex items-start">
-                      <XCircle className="h-5 w-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <div className="text-sm text-red-200">{error}</div>
+                      <XCircle className="h-5 w-5 text-error mr-3 mt-0.5 shrink-0" />
+                      <div className="text-sm text-error">{error}</div>
                     </div>
                   </motion.div>
                 )}
@@ -403,11 +388,11 @@ function AdminLoginForm() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
                     transition={{ duration: 0.3 }}
-                    className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-4 backdrop-blur-sm"
+                    className=" bg-warning/10 border border-warning/20 p-4 backdrop-blur-sm"
                   >
                     <div className="flex items-start">
-                      <AlertTriangle className="h-5 w-5 text-yellow-400 mr-3 mt-0.5 flex-shrink-0" />
-                      <div className="text-sm text-yellow-200">
+                      <AlertTriangle className="h-5 w-5 text-warning mr-3 mt-0.5 shrink-0" />
+                      <div className="text-sm text-warning">
                         Account temporarily locked. Try again in {securityStatus.lockoutTime}s
                       </div>
                     </div>
@@ -418,13 +403,13 @@ function AdminLoginForm() {
               <div className="space-y-4">
                 {/* Email Field */}
                 <div>
-                  <label className="block text-sm font-medium text-blue-200/80 mb-2">
+                  <label className="block text-sm font-medium text-base-content/70 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
                     <motion.div
                       className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 ${
-                        focusedField === 'email' ? 'text-blue-400' : 'text-blue-300/60'
+                        focusedField === 'email' ? 'text-primary' : 'text-base-content/40'
                       }`}
                       animate={{
                         scale: focusedField === 'email' ? 1.05 : 1,
@@ -444,13 +429,13 @@ function AdminLoginForm() {
                       onChange={handleInputChange}
                       onFocus={() => handleFocus('email')}
                       onBlur={handleBlur}
-                      className={`w-full pl-11 pr-12 py-3 bg-white/5 border rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 transition-all duration-200 ${
+                      className={`w-full pl-11 pr-12 py-3 bg-base-100 border-2 rounded-none text-base-content font-mono text-sm placeholder-base-content/40 focus:outline-none transition-all duration-200 ${
                         fieldValidation.email.isValid === true
-                          ? 'border-green-500/50 focus:ring-green-500/30'
+                          ? 'border-success shadow-[4px_4px_0px_0px_var(--color-success)] -translate-y-1 -translate-x-1'
                           : fieldValidation.email.isValid === false
-                          ? 'border-red-500/50 focus:ring-red-500/30'
-                          : 'border-white/20 focus:ring-blue-500/30'
-                      } ${focusedField === 'email' ? 'bg-white/8 border-blue-400/50' : ''}`}
+                          ? 'border-error shadow-[4px_4px_0px_0px_var(--color-error)] -translate-y-1 -translate-x-1'
+                          : 'border-base-content focus:shadow-[4px_4px_0px_0px_currentColor] focus:-translate-y-1 focus:-translate-x-1'
+                      } ${focusedField === 'email' ? 'border-primary' : ''}`}
                       placeholder="Enter your email"
                       disabled={isLoading || securityStatus.isLocked}
                     />
@@ -466,9 +451,9 @@ function AdminLoginForm() {
                           className="absolute right-3 top-1/2 transform -translate-y-1/2"
                         >
                           {fieldValidation.email.isValid ? (
-                            <CheckCircle className="h-5 w-5 text-green-400" />
+                            <CheckCircle className="h-5 w-5 text-success" />
                           ) : (
-                            <XCircle className="h-5 w-5 text-red-400" />
+                            <XCircle className="h-5 w-5 text-error" />
                           )}
                         </motion.div>
                       )}
@@ -484,7 +469,7 @@ function AdminLoginForm() {
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.2 }}
                         className={`mt-2 text-xs ${
-                          fieldValidation.email.isValid ? 'text-green-400' : 'text-red-400'
+                          fieldValidation.email.isValid ? 'text-success' : 'text-error'
                         }`}
                       >
                         {fieldValidation.email.message}
@@ -495,13 +480,13 @@ function AdminLoginForm() {
 
                 {/* Password Field */}
                 <div>
-                  <label className="block text-sm font-medium text-blue-200/80 mb-2">
+                  <label className="block text-sm font-medium text-base-content/70 mb-2">
                     Password
                   </label>
                   <div className="relative">
                     <motion.div
                       className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-200 ${
-                        focusedField === 'password' ? 'text-blue-400' : 'text-blue-300/60'
+                        focusedField === 'password' ? 'text-primary' : 'text-base-content/40'
                       }`}
                       animate={{
                         scale: focusedField === 'password' ? 1.05 : 1,
@@ -521,13 +506,13 @@ function AdminLoginForm() {
                       onChange={handleInputChange}
                       onFocus={() => handleFocus('password')}
                       onBlur={handleBlur}
-                      className={`w-full pl-11 pr-20 py-3 bg-white/5 border rounded-lg text-white placeholder-blue-300/50 focus:outline-none focus:ring-2 transition-all duration-200 ${
+                      className={`w-full pl-11 pr-20 py-3 bg-base-100 border-2 rounded-none text-base-content font-mono text-sm placeholder-base-content/40 focus:outline-none transition-all duration-200 ${
                         fieldValidation.password.isValid === true
-                          ? 'border-green-500/50 focus:ring-green-500/30'
+                          ? 'border-success shadow-[4px_4px_0px_0px_var(--color-success)] -translate-y-1 -translate-x-1'
                           : fieldValidation.password.isValid === false
-                          ? 'border-red-500/50 focus:ring-red-500/30'
-                          : 'border-white/20 focus:ring-blue-500/30'
-                      } ${focusedField === 'password' ? 'bg-white/8 border-blue-400/50' : ''}`}
+                          ? 'border-error shadow-[4px_4px_0px_0px_var(--color-error)] -translate-y-1 -translate-x-1'
+                          : 'border-base-content focus:shadow-[4px_4px_0px_0px_currentColor] focus:-translate-y-1 focus:-translate-x-1'
+                      } ${focusedField === 'password' ? 'border-primary' : ''}`}
                       placeholder="Enter your password"
                       disabled={isLoading || securityStatus.isLocked}
                     />
@@ -535,7 +520,7 @@ function AdminLoginForm() {
                     {/* Show/Hide Password Button */}
                     <button
                       type="button"
-                      className="absolute right-12 top-1/2 transform -translate-y-1/2 text-blue-300/70 hover:text-blue-300 transition-colors duration-200"
+                      className="absolute right-12 top-1/2 transform -translate-y-1/2 text-base-content/50 hover:text-base-content/80 transition-colors duration-200"
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isLoading || securityStatus.isLocked}
                     >
@@ -557,9 +542,9 @@ function AdminLoginForm() {
                           className="absolute right-3 top-1/2 transform -translate-y-1/2"
                         >
                           {fieldValidation.password.isValid ? (
-                            <CheckCircle className="h-5 w-5 text-green-400" />
+                            <CheckCircle className="h-5 w-5 text-success" />
                           ) : (
-                            <XCircle className="h-5 w-5 text-red-400" />
+                            <XCircle className="h-5 w-5 text-error" />
                           )}
                         </motion.div>
                       )}
@@ -575,7 +560,7 @@ function AdminLoginForm() {
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.2 }}
                         className={`mt-2 text-xs ${
-                          fieldValidation.password.isValid ? 'text-green-400' : 'text-red-400'
+                          fieldValidation.password.isValid ? 'text-success' : 'text-error'
                         }`}
                       >
                         {fieldValidation.password.message}
@@ -586,38 +571,29 @@ function AdminLoginForm() {
 
                 {/* Remember Me */}
                 <div className="flex items-center">
-                  <motion.input
-                    whileTap={{ scale: 0.95 }}
+                  <input
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-white/20 rounded bg-white/10 transition-colors duration-200"
+                    className="h-4 w-4 text-primary focus:ring-0 border-2 border-base-content rounded-none bg-base-100 transition-colors duration-200"
                     disabled={isLoading || securityStatus.isLocked}
                   />
-                  <label htmlFor="remember-me" className="ml-2 text-sm text-blue-200/80">
+                  <label htmlFor="remember-me" className="ml-2 font-mono text-xs uppercase tracking-widest text-base-content">
                     Remember me for 30 days
                   </label>
                 </div>
               </div>
 
               {/* Login Button */}
-              <motion.button
+              <button
                 type="submit"
                 disabled={isLoading || securityStatus.isLocked}
-                whileHover={{ 
-                  scale: isLoading || securityStatus.isLocked ? 1 : 1.01,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ 
-                  scale: isLoading || securityStatus.isLocked ? 1 : 0.99,
-                  transition: { duration: 0.1 }
-                }}
-                className={`group relative w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white transition-all duration-200 ${
+                className={`group relative w-full flex justify-center items-center py-4 px-4 border-2 border-base-content rounded-none font-mono text-sm font-bold uppercase tracking-widest transition-all duration-200 ${
                   isLoading || securityStatus.isLocked
-                    ? 'bg-gray-600/50 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg hover:shadow-blue-500/25'
+                    ? 'bg-base-300 cursor-not-allowed text-base-content/50'
+                    : 'bg-primary text-base-100 shadow-[6px_6px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px]'
                 }`}
               >
                 {isLoading ? (
@@ -636,7 +612,7 @@ function AdminLoginForm() {
                     Sign In to Dashboard
                   </>
                 )}
-              </motion.button>
+              </button>
 
               {/* Security Status */}
               {!securityStatus.isLocked && securityStatus.remainingAttempts < 5 && (
@@ -645,28 +621,28 @@ function AdminLoginForm() {
                   animate={{ opacity: 1 }}
                   className="text-center"
                 >
-                  <p className="text-xs text-yellow-400">
+                  <p className="text-xs text-warning">
                     {securityStatus.remainingAttempts} attempt{securityStatus.remainingAttempts !== 1 ? 's' : ''} remaining
                   </p>
                 </motion.div>
               )}
 
               {/* Footer */}
-              <div className="text-center space-y-3">
-                <div className="flex items-center justify-center space-x-2 text-xs text-blue-200/60">
+              <div className="text-center space-y-4 pt-4 border-t-2 border-base-content/10">
+                <div className="flex items-center justify-center space-x-2 font-mono text-[10px] uppercase tracking-widest text-base-content/50">
                   <Shield className="h-3 w-3" />
-                  <span>Secured with enterprise-grade encryption</span>
+                  <span>SECURED_WITH_ENTERPRISE_ENCRYPTION</span>
                 </div>
                 
                 <Link 
                   href="/" 
-                  className="inline-flex items-center text-sm text-blue-300 hover:text-blue-200 transition-colors duration-200"
+                  className="inline-flex items-center font-mono text-xs font-bold uppercase tracking-widest text-base-content hover:text-primary transition-colors duration-200"
                 >
-                  ← Back to Portfolio
+                  {'< BACK_TO_PORTFOLIO'}
                 </Link>
               </div>
             </motion.form>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </div>
@@ -676,8 +652,8 @@ function AdminLoginForm() {
 export default function AdminLogin() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-base-200">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     }>
       <AdminLoginForm />

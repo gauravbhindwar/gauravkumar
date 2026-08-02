@@ -21,7 +21,8 @@ import {
   Save,
   Loader2,
   Users,
-  Zap
+  Zap,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function AdminCertifications() {
@@ -184,8 +185,8 @@ export default function AdminCertifications() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <Loader2 className="w-8 h-8 text-purple-600 animate-spin" />
+      <div className="flex items-center justify-center h-screen bg-base-200">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -195,7 +196,7 @@ export default function AdminCertifications() {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-gray-50/50 p-6 md:p-8 font-sans text-gray-900"
+      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
         
@@ -205,7 +206,7 @@ export default function AdminCertifications() {
             <motion.h1 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="text-3xl font-bold tracking-tight text-gray-900"
+              className="text-3xl font-bold tracking-tight text-base-content"
             >
               Certifications
             </motion.h1>
@@ -213,24 +214,24 @@ export default function AdminCertifications() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-gray-500 mt-1"
+              className="text-base-content/60 mt-1"
             >
               Manage your professional certifications and achievements.
             </motion.p>
           </div>
           
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            
+            
             onClick={() => {
               resetForm();
               setShowForm(true);
             }}
-            className="bg-purple-600 text-white px-5 py-2.5 rounded-xl hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/20 flex items-center gap-2 font-semibold"
+            className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
           >
             <Plus className="w-5 h-5" />
             <span>Add Certification</span>
-          </motion.button>
+          </button>
         </header>
 
         {/* Stats Cards - Bento Style */}
@@ -240,9 +241,9 @@ export default function AdminCertifications() {
               label: 'Total Certifications', 
               value: certifications.length, 
               icon: Award,
-              color: 'text-purple-600',
-              bg: 'bg-purple-50',
-              borderColor: 'border-purple-100'
+              color: 'text-primary',
+              bg: 'bg-primary/10',
+              borderColor: 'border-primary/20'
             },
             { 
               label: 'Active', 
@@ -273,7 +274,7 @@ export default function AdminCertifications() {
               key={stat.label}
               variants={item}
               whileHover={{ y: -5 }}
-              className={`bg-white p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
+              className={`bg-base-100 p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
             >
               <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
@@ -281,35 +282,35 @@ export default function AdminCertifications() {
                 </div>
               </div>
               <div>
-                <div className="text-3xl font-bold tracking-tight text-gray-900 mb-1">{stat.value}</div>
-                <div className="text-sm font-medium text-gray-500">{stat.label}</div>
+                <div className="text-3xl font-bold tracking-tight text-base-content mb-1">{stat.value}</div>
+                <div className="text-sm font-medium text-base-content/60">{stat.label}</div>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Search & Filter Bar */}
-        <motion.div variants={item} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <motion.div variants={item} className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
               <input 
                 type="text" 
                 placeholder="Search certifications..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all text-gray-900"
+                className="w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
               />
             </div>
-            <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100">
+            <div className="flex items-center gap-2 bg-base-200 p-1 rounded-xl border border-base-300/60">
                <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-2  transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
                >
                   <Grid className="w-4 h-4" />
                </button>
                <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-purple-600' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-2  transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
                >
                   <List className="w-4 h-4" />
                </button>
@@ -327,22 +328,22 @@ export default function AdminCertifications() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
-                className={`bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all p-6 group ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col'}`}
+                className={`bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-xl transition-all p-6 group ${viewMode === 'list' ? 'flex items-center gap-6' : 'flex flex-col'}`}
               >
                 <div className="flex justify-between items-start mb-4 w-full">
                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center shrink-0">
-                         <Award className="w-6 h-6 text-purple-600" />
+                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                         <Award className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                         <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors line-clamp-1">{cert.title}</h3>
-                         <p className="text-sm text-gray-500 font-medium">{cert.issuer}</p>
+                         <h3 className="text-lg font-bold text-base-content group-hover:text-primary transition-colors line-clamp-1">{cert.title}</h3>
+                         <p className="text-sm text-base-content/60 font-medium">{cert.issuer}</p>
                       </div>
                    </div>
                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
                          onClick={() => handleEdit(cert)}
-                         className="p-2 hover:bg-purple-50 text-gray-400 hover:text-purple-600 rounded-lg transition-colors"
+                         className="p-2 hover:bg-primary/10 text-base-content/40 hover:text-primary  transition-colors"
                       >
                          <Edit className="w-4 h-4" />
                       </button>
@@ -351,29 +352,29 @@ export default function AdminCertifications() {
                             setCertificationToDelete(cert);
                             setShowDeleteModal(true);
                          }}
-                         className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-colors"
+                         className="p-2 hover:bg-error/10 text-base-content/40 hover:text-error  transition-colors"
                       >
                          <Trash2 className="w-4 h-4" />
                       </button>
                    </div>
                 </div>
 
-                <div className={`space-y-3 ${viewMode === 'list' ? 'flex-1 grid grid-cols-2 gap-4 items-center !space-y-0' : ''}`}>
+                <div className={`space-y-3 ${viewMode === 'list' ? 'flex-1 grid grid-cols-2 gap-4 items-center space-y-0!' : ''}`}>
                    {cert.date && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                         <Calendar className="w-4 h-4 text-gray-400" />
+                      <div className="flex items-center gap-2 text-sm text-base-content/70">
+                         <Calendar className="w-4 h-4 text-base-content/40" />
                          <span>{formatDateForDisplay(cert.date)}</span>
                       </div>
                    )}
                    
                    <div className="flex items-center gap-3">
                       {(cert.credentialLink || cert.credentialUrl) && (
-                         <a href={cert.credentialLink || cert.credentialUrl} target="_blank" className="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg hover:bg-purple-100 transition-colors flex items-center gap-1">
+                         <a href={cert.credentialLink || cert.credentialUrl} target="_blank" className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1  hover:bg-primary/20 transition-colors flex items-center gap-1">
                             <Globe className="w-3 h-3" /> Credential
                          </a>
                       )}
                       {cert.pdfFile && (
-                         <a href={cert.pdfFile} target="_blank" className="text-xs font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg hover:bg-orange-100 transition-colors flex items-center gap-1">
+                         <a href={cert.pdfFile} target="_blank" className="text-xs font-semibold text-secondary bg-secondary/10 px-2.5 py-1  hover:bg-secondary/20 transition-colors flex items-center gap-1">
                             <FileText className="w-3 h-3" /> Certificate
                          </a>
                       )}
@@ -382,12 +383,12 @@ export default function AdminCertifications() {
                    {cert.skills && cert.skills.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                          {cert.skills.slice(0, 3).map((skill, i) => (
-                            <span key={i} className="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-xs font-medium text-gray-600">
+                            <span key={i} className="px-2 py-0.5 bg-base-200 border border-base-300/60 rounded text-xs font-medium text-base-content/70">
                                {skill}
                             </span>
                          ))}
                          {cert.skills.length > 3 && (
-                            <span className="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded text-xs font-medium text-gray-500">
+                            <span className="px-2 py-0.5 bg-base-200 border border-base-300/60 rounded text-xs font-medium text-base-content/60">
                                +{cert.skills.length - 3}
                             </span>
                          )}
@@ -414,14 +415,14 @@ export default function AdminCertifications() {
                initial={{ opacity: 0, scale: 0.95, y: 20 }}
                animate={{ opacity: 1, scale: 1, y: 0 }}
                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-               className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+               className="bg-base-100 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
             >
-               <div className="bg-purple-600 p-6 flex items-center justify-between text-white shrink-0">
+               <div className="bg-primary p-6 flex items-center justify-between text-primary-content shrink-0">
                   <h3 className="text-xl font-bold flex items-center gap-2">
                      <Award className="w-6 h-6" />
                      {editingCertification ? 'Edit Certification' : 'Add Certification'}
                   </h3>
-                  <button onClick={() => setShowForm(false)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                  <button onClick={() => setShowForm(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
                      <X className="w-5 h-5" />
                   </button>
                </div>
@@ -429,69 +430,69 @@ export default function AdminCertifications() {
                <div className="flex-1 overflow-y-auto p-6 md:p-8">
                   <form id="certForm" onSubmit={handleSubmit} className="space-y-6">
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Title</label>
+                        <label className="text-sm font-semibold text-base-content/80">Title</label>
                         <input 
                            required
                            type="text" 
                            value={formData.title}
                            onChange={(e) => setFormData({...formData, title: e.target.value})}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="AWS Certified Solutions Architect"
                         />
                      </div>
                      
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                           <label className="text-sm font-semibold text-gray-700">Issuer</label>
+                           <label className="text-sm font-semibold text-base-content/80">Issuer</label>
                            <input 
                               required
                               type="text" 
                               value={formData.issuer}
                               onChange={(e) => setFormData({...formData, issuer: e.target.value})}
-                              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="Amazon Web Services"
                            />
                         </div>
                         <div className="space-y-2">
-                           <label className="text-sm font-semibold text-gray-700">Date</label>
+                           <label className="text-sm font-semibold text-base-content/80">Date</label>
                            <input 
                               type="date" 
                               value={formData.date}
                               onChange={(e) => setFormData({...formData, date: e.target.value})}
-                              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                              className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            />
                         </div>
                      </div>
 
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Credential URL</label>
+                        <label className="text-sm font-semibold text-base-content/80">Credential URL</label>
                         <input 
                            type="url" 
                            value={formData.credentialLink}
                            onChange={(e) => setFormData({...formData, credentialLink: e.target.value})}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="https://..."
                         />
                      </div>
 
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Skills (comma separated)</label>
+                        <label className="text-sm font-semibold text-base-content/80">Skills (comma separated)</label>
                         <textarea 
                            rows={2}
                            value={Array.isArray(formData.skills) ? formData.skills.join(', ') : formData.skills}
                            onChange={(e) => setFormData({...formData, skills: e.target.value.split(',').map(s => s.trim())})}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all resize-none"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                            placeholder="Cloud Computing, React, Design..."
                         />
                      </div>
                   </form>
                </div>
 
-               <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0 flex justify-end gap-3">
+               <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
                   <button 
                      type="button" 
                      onClick={() => setShowForm(false)}
-                     className="px-6 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-200 transition-colors"
+                     className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                   >
                      Cancel
                   </button>
@@ -499,7 +500,7 @@ export default function AdminCertifications() {
                      type="submit" 
                      form="certForm"
                      disabled={isSubmitting}
-                     className="bg-purple-600 text-white px-8 py-2.5 rounded-xl font-semibold hover:bg-purple-700 transition-colors shadow-lg shadow-purple-500/20 flex items-center gap-2 disabled:opacity-70"
+                     className="bg-primary text-primary-content px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70"
                   >
                      {isSubmitting ? 'Saving...' : 'Save Certification'}
                   </button>
@@ -523,25 +524,25 @@ export default function AdminCertifications() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
+                  className="bg-base-100 rounded-2xl shadow-xl max-w-sm w-full p-6 text-center"
                >
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                     <AlertTriangle className="w-8 h-8 text-red-600" />
+                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4">
+                     <AlertTriangle className="w-8 h-8 text-error" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Certification?</h3>
-                  <p className="text-gray-500 mb-6">
-                     Are you sure you want to delete <span className="font-semibold text-gray-900">"{certificationToDelete?.title}"</span>? This action cannot be undone.
+                  <h3 className="text-xl font-bold text-base-content mb-2">Delete Certification?</h3>
+                  <p className="text-base-content/60 mb-6">
+                     Are you sure you want to delete <span className="font-semibold text-base-content">"{certificationToDelete?.title}"</span>? This action cannot be undone.
                   </p>
                   <div className="flex gap-3 justify-center">
                      <button 
                         onClick={() => setShowDeleteModal(false)}
-                        className="px-5 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                        className="px-5 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-200 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleDelete}
-                        className="bg-red-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20"
+                        className="bg-error text-error-content px-5 py-2.5 rounded-xl font-semibold hover:bg-error/90 transition-colors shadow-lg shadow-error/20"
                      >
                         Delete
                      </button>

@@ -64,11 +64,7 @@ async function connectToDatabase() {
       // Network and performance optimizations
       compressors: ['zlib'],
       zlibCompressionLevel: 6,
-      
-      // Modern driver settings
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-      
+
       // Additional network resilience
       family: 4, // Use IPv4
       

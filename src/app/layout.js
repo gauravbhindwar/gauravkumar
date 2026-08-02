@@ -1,20 +1,19 @@
-import { Geist, Montserrat, Space_Grotesk } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthProvider from "@/components/AuthProvider";
+import CustomCursor from "@/components/CustomCursor";
 
-const geist = Geist({ subsets: ["latin"] });
-
-const montserrat = Montserrat({ 
+const inter = Inter({ 
   subsets: ["latin"],
   display: 'swap',
-  variable: '--font-montserrat'
+  variable: '--font-inter'
 });
 
-const spaceGrotesk = Space_Grotesk({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: 'swap',
-  variable: '--font-space'
+  variable: '--font-jakarta'
 });
 
 export const metadata = {
@@ -27,8 +26,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="light">
-      <body className={`${montserrat.variable} ${spaceGrotesk.variable} font-sans`}>
+    <html lang="en" data-theme="dark">
+      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans bg-base-100 text-base-content`}>
+        <CustomCursor />
         <AuthProvider>
           <ThemeProvider>
             {children}

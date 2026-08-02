@@ -47,7 +47,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                   <FaTimes className="w-5 h-5" />
                 </button>
 
-                <div className="relative h-64 bg-gradient-to-br from-primary/20 to-secondary/20">
+                <div className="relative h-64 bg-linear-to-br from-primary/20 to-secondary/20">
                   {project.image ? (
                     <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
                   ) : (
@@ -57,7 +57,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                       </div>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-base-100 via-transparent to-transparent" />
                 </div>
 
                 <div className="p-8 space-y-6 overflow-y-auto max-h-[50vh]">
@@ -75,7 +75,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                       <div className="grid gap-3">
                         {project.features.map((feature, idx) => (
                           <div key={idx} className="flex items-start gap-3 p-3 bg-base-200/50 rounded-lg">
-                            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                            <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0" />
                             <span className="text-base-content/80">{feature}</span>
                           </div>
                         ))}
@@ -107,7 +107,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                     )}
                     {project.live && project.live !== "#" && (
                       <a href={project.live} target="_blank" rel="noopener noreferrer"
-                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all">
+                         className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-secondary text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all">
                         <FaRocket className="w-5 h-5" />
                         Live Demo
                       </a>
@@ -124,6 +124,11 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
 }
 
 export default function ViewAllProjects() {
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTech, setSelectedTech] = useState('all')
+  const [showFilters, setShowFilters] = useState(false)
+
   // Navigate back on ESC when no modal is open
   useEffect(() => {
     const onKey = (e) => {
@@ -136,11 +141,6 @@ export default function ViewAllProjects() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [selectedProject])
-
-  const [selectedProject, setSelectedProject] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedTech, setSelectedTech] = useState('all')
-  const [showFilters, setShowFilters] = useState(false)
   
   const { data, loading, error } = useFetch('/api/projects', {
     revalidate: 600000,
@@ -212,7 +212,7 @@ export default function ViewAllProjects() {
             
             <div className="text-center mb-8">
               <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
+                <span className="bg-linear-to-r from-primary to-secondary text-transparent bg-clip-text">
                   All Projects
                 </span>
               </h1>
@@ -280,7 +280,7 @@ export default function ViewAllProjects() {
                         onClick={() => setSelectedTech(tech)}
                         className={`px-4 py-2 rounded-lg font-medium transition-all ${
                           selectedTech === tech
-                            ? 'bg-gradient-to-r from-primary to-secondary text-primary-content shadow-lg scale-105'
+                            ? 'bg-linear-to-r from-primary to-secondary text-primary-content shadow-lg scale-105'
                             : 'bg-base-200 hover:bg-base-300 text-base-content hover:scale-105'
                         }`}
                       >
@@ -366,7 +366,7 @@ const ProjectCard = ({ project, index, onClick }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.6 }}
       whileHover={{ y: -8 }}
-      className="group bg-gradient-to-br from-base-100 to-base-200/50 rounded-2xl overflow-hidden 
+      className="group bg-linear-to-br from-base-100 to-base-200/50 rounded-2xl overflow-hidden 
                border border-base-content/10 hover:border-primary/30 shadow-lg hover:shadow-2xl 
                transition-all duration-500 cursor-pointer"
       onClick={() => onClick(project)}
@@ -382,14 +382,14 @@ const ProjectCard = ({ project, index, onClick }) => {
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+          <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary/10 to-secondary/10">
             <div className="text-5xl font-bold text-primary/30">
               {project.title.substring(0, 2).toUpperCase()}
             </div>
           </div>
         )}
         
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent 
                       opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
         {/* Quick view overlay */}
@@ -455,7 +455,7 @@ const ProjectCard = ({ project, index, onClick }) => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-secondary 
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-linear-to-r from-primary to-secondary 
                        text-primary-content rounded-lg font-medium transition-all text-sm"
             >
               <FaExternalLinkAlt className="w-4 h-4" />

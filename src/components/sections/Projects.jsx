@@ -3,26 +3,44 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaCode, FaRocket, FaStar, FaEye, FaArrowRight } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import useFetch from '@/hooks/useFetch'
 import { ProjectsSkeleton } from '@/components/ui/SkeletonCard'
+import TiltCard from '@/components/ui/TiltCard'
+import TechBadge from '@/components/ui/TechBadge'
+import GlassCard from '@/components/ui/GlassCard'
+import SectionHeading from '@/components/ui/SectionHeading'
 
-// Enhanced Project Modal with better design
 const ProjectModal = ({ isOpen, onClose, project }) => {
-  if (!isOpen || !project) return null
+  const [mounted, setMounted] = useState(false)
 
-  // Close on ESC
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Close on ESC and lock body scroll
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === 'Escape') onClose()
     }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [onClose])
 
-  return (
+    if (isOpen) {
+      window.addEventListener('keydown', handleKey)
+      document.body.style.overflow = 'hidden' // Prevent background scrolling
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKey)
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, onClose])
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
-      {isOpen && (
+      {(isOpen && project) && (
         <>
           {/* Backdrop */}
           <motion.div
@@ -30,55 +48,58 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100]"
           />
-          
+
           {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 30 }}
-            className="fixed inset-0 z-50 overflow-y-auto"
+            className="fixed inset-0 z-[100] overflow-y-auto"
+            onClick={onClose}
           >
             <div className="min-h-screen px-4 flex items-center justify-center py-8">
-              <div className="relative bg-base-100 rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
+              <div
+                className="relative bg-base-300/95 backdrop-blur-md border border-base-content/20 shadow-[0_0_50px_rgba(255,175,211,0.1)] max-w-5xl w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Close Button */}
                 <button
                   onClick={onClose}
-                  className="absolute top-6 right-6 z-10 w-12 h-12 rounded-full bg-base-200/80 hover:bg-base-300 
-                           flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  className="group absolute top-4 right-4 z-10 inline-flex items-center justify-center px-4 py-2 bg-base-100 border-2 border-base-content/50 text-base-content font-mono text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-[3px_3px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
                 >
-                  <FaTimes className="w-5 h-5" />
+                  CLOSE
                 </button>
 
                 {/* Project Image */}
-                <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20">
+                <div className="relative h-72 border-b border-base-content/20">
                   {project.image ? (
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-700"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-8xl font-bold text-primary/30">
+                    <div className="w-full h-full flex items-center justify-center bg-base-300/30">
+                      <div className="text-8xl font-display font-black text-primary/10 tracking-tighter">
                         {project.title.substring(0, 2).toUpperCase()}
                       </div>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-transparent to-transparent" />
-                  
+                  <div className="absolute inset-0 bg-linear-to-t from-base-300/90 via-transparent to-transparent pointer-events-none" />
+
                   {/* Project category badge */}
                   <div className="absolute top-6 left-6">
-                    <span className="px-4 py-2 bg-base-100/90 backdrop-blur-sm text-base-content 
-                                   rounded-full text-sm font-medium border border-base-content/10">
-                      {project.category || 'Web Development'}
+                    <span className="px-3 py-1 bg-base-100/90 text-primary 
+                                   text-[10px] font-mono uppercase tracking-widest border border-primary/30">
+                      {project.category || 'SYSTEM'}
                     </span>
                   </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-8 space-y-8 overflow-y-auto max-h-[50vh]">
+                <div className="p-8 space-y-8">
                   {/* Title & Description */}
                   <div>
                     <h2 className="text-3xl font-bold text-base-content mb-4">
@@ -92,23 +113,20 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                   {/* Features */}
                   {project.features && project.features.length > 0 && (
                     <div>
-                      <h3 className="text-xl font-bold text-base-content mb-6 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                          <FaStar className="text-primary w-4 h-4" />
-                        </div>
-                        Key Features
+                      <h3 className="text-sm font-mono text-primary uppercase tracking-widest mb-6 border-b border-primary/20 pb-2">
+                        [ SYS.FEATURES ]
                       </h3>
-                      <div className="grid gap-4">
+                      <div className="grid gap-3">
                         {project.features.map((feature, idx) => (
                           <motion.div
                             key={idx}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className="flex items-start gap-4 p-4 bg-base-200/50 rounded-xl hover:bg-base-200/70 transition-colors"
+                            className="flex items-start gap-4 p-4 border border-base-content/10 bg-base-200/30 hover:border-primary/30 hover:bg-base-200/50 transition-colors"
                           >
-                            <div className="w-2 h-2 bg-primary rounded-full mt-3 flex-shrink-0" />
-                            <span className="text-base-content/90">{feature}</span>
+                            <div className="text-primary font-mono text-xs mt-0.5 shrink-0">&gt;</div>
+                            <span className="text-base-content/80 font-mono text-sm leading-relaxed">{feature}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -117,40 +135,33 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
 
                   {/* Technologies */}
                   <div>
-                    <h3 className="text-xl font-bold text-base-content mb-6 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center">
-                        <FaCode className="text-secondary w-4 h-4" />
-                      </div>
-                      Tech Stack
+                    <h3 className="text-sm font-mono text-primary uppercase tracking-widest mb-6 border-b border-primary/20 pb-2">
+                      [ SYS.STACK ]
                     </h3>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {project.tech?.map((tech, idx) => (
-                        <motion.span
+                        <motion.div
                           key={idx}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: idx * 0.05 }}
-                          className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium 
-                                   border border-primary/20 hover:bg-primary/20 transition-colors"
                         >
-                          {tech}
-                        </motion.span>
+                          <TechBadge variant="neutral">{tech}</TechBadge>
+                        </motion.div>
                       ))}
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-4 pt-6 border-t border-base-300">
+                  <div className="flex gap-4 pt-6 mt-4 border-t border-base-content/20">
                     {project.github && (
                       <a
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-base-200 hover:bg-base-300 
-                                 rounded-xl font-medium transition-all hover:scale-105"
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-base-200/50 hover:bg-primary/20 border border-base-content/20 hover:border-primary/50 text-base-content font-mono text-xs uppercase tracking-widest transition-all"
                       >
-                        <FaGithub className="w-5 h-5" />
-                        View Code
+                        [ VIEW_SOURCE ]
                       </a>
                     )}
                     {project.live && (
@@ -158,11 +169,9 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                         href={project.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-primary to-secondary 
-                                 text-primary-content rounded-xl font-medium shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-primary/10 text-primary border border-primary/50 hover:bg-primary/30 font-mono text-xs uppercase tracking-widest transition-all"
                       >
-                        <FaRocket className="w-5 h-5" />
-                        Live Demo
+                        [ EXECUTE_DEMO ]
                       </a>
                     )}
                   </div>
@@ -172,7 +181,8 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
 
@@ -193,117 +203,90 @@ const ProjectCard = ({ project, index }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1, duration: 0.6 }}
         whileHover={{ y: -8 }}
-        className="group relative bg-gradient-to-br from-base-100 to-base-200/50 rounded-2xl overflow-hidden 
-                 border border-base-content/10 hover:border-primary/30 shadow-lg hover:shadow-2xl 
-                 transition-all duration-500"
       >
-        {/* Project Image */}
-        <div className="relative h-56 bg-gradient-to-br from-primary/10 to-secondary/10 overflow-hidden">
-          {project.image && !imageError ? (
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              onError={handleImageError}
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-5xl font-bold text-primary/30">
-                {project.title.substring(0, 2).toUpperCase()}
+        <TiltCard maxTilt={8}>
+          <GlassCard hover={true} className="h-full flex flex-col group">
+            {/* Project Image */}
+            <div className="relative h-56 bg-base-300/30 border-b border-base-content/10 overflow-hidden">
+              {project.image && !imageError ? (
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover opacity-80 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100"
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-5xl font-display font-black text-primary/20 tracking-tighter">
+                    {project.title.substring(0, 2).toUpperCase()}
+                  </div>
+                </div>
+              )}
+
+              {/* Overlay with gradient */}
+              <div className="absolute inset-0 bg-linear-to-t from-base-300/90 via-transparent to-transparent pointer-events-none" />
+
+              {/* Category badge */}
+              <div className="absolute top-4 left-4">
+                <span className="px-2 py-1 bg-base-300/90 text-primary 
+                           text-[10px] font-mono uppercase tracking-widest border border-primary/30">
+                  {project.category || 'SYSTEM'}
+                </span>
               </div>
             </div>
-          )}
-          
-          {/* Overlay with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
-                        opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          {/* Quick view control: compact circular button with subtle hover label */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-3">
-            <span className="hidden md:inline-block whitespace-nowrap text-sm bg-base-100/90 px-3 py-1 rounded-md text-base-content/80 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-              Quick view
-            </span>
 
-            <button
-              onClick={openModal}
-              aria-label={`Quick view ${project.title}`}
-              title="Quick view"
-              type="button"
-              className="w-11 h-11 rounded-full bg-base-200/90 flex items-center justify-center shadow-md hover:shadow-lg 
-                         transition-transform duration-200 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-            >
-              <FaEye className="w-4 h-4 text-primary" />
-            </button>
-          </div>
+            {/* Content */}
+            <div className="p-6 space-y-5 flex-1 flex flex-col">
+              <div className="flex-1">
+                <h3 className="text-2xl font-display font-black uppercase tracking-tight text-base-content mb-3 group-hover:text-primary transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-base-content/70 font-mono text-xs leading-relaxed line-clamp-3">
+                  {project.description}
+                </p>
+              </div>
 
-          {/* Category badge */}
-          <div className="absolute top-4 left-4">
-            <span className="px-3 py-1 bg-base-100/90 backdrop-blur-sm text-base-content/80 
-                           rounded-full text-xs font-medium border border-base-content/10">
-              {project.category || 'Web Development'}
-            </span>
-          </div>
-        </div>
+              {/* Tech Stack - Show only top 4 */}
+              <div className="flex flex-wrap gap-2">
+                {project.tech?.slice(0, 4).map((tech, idx) => (
+                  <TechBadge key={idx} variant="neutral">{tech}</TechBadge>
+                ))}
+                {project.tech?.length > 4 && (
+                  <TechBadge>+{project.tech.length - 4}</TechBadge>
+                )}
+              </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-4">
-          <div>
-            <h3 className="text-xl font-bold text-base-content mb-3 group-hover:text-primary transition-colors">
-              {project.title}
-            </h3>
-            <p className="text-base-content/70 text-sm leading-relaxed line-clamp-3">
-              {project.description}
-            </p>
-          </div>
+              {/* Actions */}
+              <div className="flex gap-3 pt-4 border-t border-base-content/10">
+                <button
+                  onClick={openModal}
+                  className="group flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-base-100 border-2 border-primary text-primary font-mono text-[10px] font-bold uppercase tracking-widest transition-all duration-200 shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+                >
+                  INSPECT
+                </button>
+                {project.live && project.live !== "#" && (
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-base-100 border-2 border-secondary text-secondary font-mono text-[10px] font-bold uppercase tracking-widest transition-all duration-200 shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]"
+                  >
+                    RUN
+                    <svg className="w-3 h-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
 
-          {/* Tech Stack - Show only top 4 */}
-          <div className="flex flex-wrap gap-2">
-            {project.tech?.slice(0, 4).map((tech, idx) => (
-              <span
-                key={idx}
-                className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-lg font-medium 
-                         border border-primary/20 hover:bg-primary/20 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.tech?.length > 4 && (
-              <span className="px-3 py-1 bg-base-200 text-base-content/60 text-xs rounded-lg font-medium">
-                +{project.tech.length - 4} more
-              </span>
-            )}
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3 pt-4">
-            <button
-              onClick={openModal}
-              className="flex-1 px-4 py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl 
-                       font-medium transition-all text-sm hover:scale-105"
-            >
-              View Details
-            </button>
-            {project.live && project.live !== "#" && (
-              <a
-                href={project.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-primary to-secondary text-primary-content 
-                         rounded-xl font-medium hover:shadow-lg transition-all text-sm flex items-center 
-                         justify-center gap-2 hover:scale-105"
-              >
-                <FaExternalLinkAlt className="w-3 h-3" />
-                Demo
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Decorative element */}
-        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-secondary/10 
-                      rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 
+            {/* Decorative element */}
+            <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-primary/10 to-secondary/10
+                      rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500
                       transform translate-x-8 -translate-y-8" />
+          </GlassCard>
+        </TiltCard>
       </motion.div>
 
       <ProjectModal
@@ -318,16 +301,16 @@ const ProjectCard = ({ project, index }) => {
 export default function Projects() {
   const { data, loading, error } = useFetch('/api/projects')
   const [selectedCategory, setSelectedCategory] = useState('all')
-  
+
   const projects = Array.isArray(data?.projects) ? data.projects : []
   const categories = ['all', 'web', 'mobile', 'ai/ml', 'backend']
 
   const filteredProjects = selectedCategory === 'all'
     ? projects
-    : projects.filter(p => 
-        p.category?.toLowerCase() === selectedCategory ||
-        p.tech?.some(tech => tech.toLowerCase().includes(selectedCategory))
-      )
+    : projects.filter(p =>
+      p.category?.toLowerCase() === selectedCategory ||
+      p.tech?.some(tech => tech.toLowerCase().includes(selectedCategory))
+    )
 
   if (loading) return <ProjectsSkeleton />
 
@@ -347,80 +330,21 @@ export default function Projects() {
   return (
     <section className="py-24 bg-base-100 relative overflow-hidden" id="projects">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-base-200/50 to-base-100/50"></div>
-      
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-20"
-        >
-          <motion.h2 
-            className="text-5xl md:text-6xl font-bold mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-              Featured Projects
-            </span>
-          </motion.h2>
-          <motion.p 
-            className="text-lg md:text-xl text-base-content/70 max-w-3xl mx-auto mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            Showcase of my best work in web development, mobile apps, and innovative solutions
-          </motion.p>
-          
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex justify-center gap-8 text-center"
-          >
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-primary">{projects.length}+</span>
-              <span className="text-sm text-base-content/60">Projects</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-secondary">5+</span>
-              <span className="text-sm text-base-content/60">Technologies</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-accent">2+</span>
-              <span className="text-sm text-base-content/60">Years Experience</span>
-            </div>
-          </motion.div>
-        </motion.div>
+      <div className="absolute inset-0 bg-linear-to-b from-base-200/50 to-base-100/50"></div>
 
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="flex justify-center gap-3 mb-16 flex-wrap"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-primary to-secondary text-primary-content shadow-lg scale-105'
-                  : 'bg-base-200 hover:bg-base-300 text-base-content hover:scale-105'
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
-        </motion.div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <SectionHeading
+          icon={FaCode}
+          eyebrow="PORTFOLIO_PROJECTS"
+          title="Featured Projects"
+          description="Showcase of my best work in web development, mobile apps, and innovative solutions."
+        />
+
+
 
         {/* Projects Grid */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -448,14 +372,14 @@ export default function Projects() {
           >
             <Link href="/projects">
               <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-content 
-                         rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 
-                         flex items-center gap-3 mx-auto"
+                whileHover={{ y: 0 }}
+                whileTap={{ scale: 0.98 }}
+                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-base-100 border-2 border-primary text-primary font-mono text-sm font-bold uppercase tracking-[0.2em] transition-all duration-200 shadow-[6px_6px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px]"
               >
-                View All {projects.length} Projects
-                <FaArrowRight className="w-4 h-4" />
+                VIEW_ALL_PROJECTS
+                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
               </motion.button>
             </Link>
           </motion.div>

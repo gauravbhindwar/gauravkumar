@@ -95,7 +95,7 @@ export default function SecurityDashboard() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full"
+          className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full"
         />
       </div>
     )
@@ -106,11 +106,11 @@ export default function SecurityDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Shield className="mr-3 h-8 w-8 text-blue-600" />
+          <h1 className="text-2xl font-bold text-base-content flex items-center">
+            <Shield className="mr-3 h-8 w-8 text-primary" />
             Security Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">Monitor and manage admin panel security</p>
+          <p className="text-base-content/60 mt-1">Monitor and manage admin panel security</p>
         </div>
       </div>
 
@@ -119,64 +119,64 @@ export default function SecurityDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
+          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Successful Logins</p>
+              <p className="text-sm font-medium text-base-content/60">Successful Logins</p>
               <p className="text-2xl font-bold text-green-600">24</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-500" />
           </div>
-          <p className="text-xs text-gray-500 mt-2">↑ 12% from last week</p>
+          <p className="text-xs text-base-content/50 mt-2">↑ 12% from last week</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
+          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Failed Attempts</p>
+              <p className="text-sm font-medium text-base-content/60">Failed Attempts</p>
               <p className="text-2xl font-bold text-red-600">8</p>
             </div>
             <XCircle className="h-8 w-8 text-red-500" />
           </div>
-          <p className="text-xs text-gray-500 mt-2">↓ 5% from last week</p>
+          <p className="text-xs text-base-content/50 mt-2">↓ 5% from last week</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
+          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Blocked IPs</p>
+              <p className="text-sm font-medium text-base-content/60">Blocked IPs</p>
               <p className="text-2xl font-bold text-yellow-600">{securityData.blockedIPs.length}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-yellow-500" />
           </div>
-          <p className="text-xs text-gray-500 mt-2">Active blocks</p>
+          <p className="text-xs text-base-content/50 mt-2">Active blocks</p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
+          className="bg-base-100 rounded-xl p-6 shadow-sm border border-base-300/60"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Active Sessions</p>
+              <p className="text-sm font-medium text-base-content/60">Active Sessions</p>
               <p className="text-2xl font-bold text-blue-600">{securityData.activeSessions.length}</p>
             </div>
             <Monitor className="h-8 w-8 text-blue-500" />
           </div>
-          <p className="text-xs text-gray-500 mt-2">Currently online</p>
+          <p className="text-xs text-base-content/50 mt-2">Currently online</p>
         </motion.div>
       </div>
 
@@ -185,19 +185,19 @@ export default function SecurityDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200"
+        className="bg-base-100 rounded-xl shadow-sm border border-base-300/60"
       >
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Login Attempts</h2>
+        <div className="p-6 border-b border-base-300">
+          <h2 className="text-lg font-semibold text-base-content">Recent Login Attempts</h2>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-base-300">
           {securityData.loginAttempts.map((attempt, index) => (
             <motion.div
               key={attempt.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 + index * 0.1 }}
-              className="p-6 hover:bg-gray-50 transition-colors"
+              className="p-6 hover:bg-base-200 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
@@ -205,8 +205,8 @@ export default function SecurityDashboard() {
                     attempt.success ? 'bg-green-500' : 'bg-red-500'
                   }`} />
                   <div>
-                    <p className="font-medium text-gray-900">{attempt.email}</p>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <p className="font-medium text-base-content">{attempt.email}</p>
+                    <div className="flex items-center space-x-4 text-sm text-base-content/60">
                       <span className="flex items-center">
                         <MapPin className="w-4 h-4 mr-1" />
                         {attempt.ip}
@@ -221,8 +221,8 @@ export default function SecurityDashboard() {
                 <div className="text-right">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     attempt.success 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-success/15 text-success' 
+                      : 'bg-error/15 text-error'
                   }`}>
                     {attempt.success ? 'Success' : 'Failed'}
                   </span>
@@ -238,12 +238,12 @@ export default function SecurityDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-white rounded-xl shadow-sm border border-gray-200"
+        className="bg-base-100 rounded-xl shadow-sm border border-base-300/60"
       >
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Blocked IP Addresses</h2>
+        <div className="p-6 border-b border-base-300">
+          <h2 className="text-lg font-semibold text-base-content">Blocked IP Addresses</h2>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-base-300">
           {securityData.blockedIPs.length > 0 ? (
             securityData.blockedIPs.map((block, index) => (
               <motion.div
@@ -251,16 +251,16 @@ export default function SecurityDashboard() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7 + index * 0.1 }}
-                className="p-6 hover:bg-gray-50 transition-colors"
+                className="p-6 hover:bg-base-200 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">{block.ip}</p>
-                    <p className="text-sm text-gray-500">{block.reason}</p>
+                    <p className="font-medium text-base-content">{block.ip}</p>
+                    <p className="text-sm text-base-content/60">{block.reason}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-red-600">{block.attempts} attempts</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-error">{block.attempts} attempts</p>
+                    <p className="text-xs text-base-content/50">
                       Blocked {new Date(block.blockedAt).toLocaleString()}
                     </p>
                   </div>
@@ -268,8 +268,8 @@ export default function SecurityDashboard() {
               </motion.div>
             ))
           ) : (
-            <div className="p-6 text-center text-gray-500">
-              <Shield className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="p-6 text-center text-base-content/50">
+              <Shield className="mx-auto h-8 w-8 text-base-content/30" />
               <p className="mt-2">No blocked IPs</p>
             </div>
           )}

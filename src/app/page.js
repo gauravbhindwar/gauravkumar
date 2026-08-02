@@ -1,12 +1,11 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
 import ConditionalNavbar from '@/components/ConditionalNavbar'
 
 const Hero = dynamic(() => import('@/components/sections/Hero'), {
   ssr: false,
-  loading: () => <div className="min-h-screen" />
+  loading: () => <div className="min-h-screen bg-base-100" />
 })
 
 // Import these statically for debugging
@@ -21,32 +20,15 @@ const AdminAccess = dynamic(() => import('@/components/AdminAccess'), { ssr: fal
 import Certifications from '@/components/sections/Certifications'
 
 export default function Home() {
-  const [resumeType, setResumeType] = useState('both')
-
-  const shouldShowSection = (sectionType) => {
-    const show = (() => {
-      if (resumeType === 'both') return true
-      if (resumeType === 'fullstack' && ['experience', 'projects', 'skills', 'education'].includes(sectionType)) return true
-      if (resumeType === 'ai' && ['projects', 'skills', 'education'].includes(sectionType)) return true
-      return false
-    })()
-    console.log(`🔍 Page: Should show ${sectionType}? ${show} (resumeType: ${resumeType})`)
-    return show
-  }
-
   return (
-    <main className="min-h-screen">
-      <ConditionalNavbar 
-        onResumeTypeChange={setResumeType}
-        currentResumeType={resumeType}
-      />
+    <main className="min-h-screen bg-base-100 text-base-content selection:bg-primary selection:text-primary-content">
+      <ConditionalNavbar />
       
       <Hero />
-
-      {shouldShowSection('experience') && <Experience />}
-      {shouldShowSection('projects') && <Projects />}
-      {shouldShowSection('skills') && <Skills />}
-      {shouldShowSection('education') && <Education />}
+      <Experience />
+      <Projects />
+      <Skills />
+      <Education />
       <Certifications />
       <Achievements />
       <Contact />

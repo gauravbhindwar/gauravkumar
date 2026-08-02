@@ -10,7 +10,6 @@ import {
   Filter, 
   Eye,
   ExternalLink,
-  Github,
   Star,
   Code,
   Zap,
@@ -22,6 +21,7 @@ import {
   Layers,
   CheckCircle
 } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 
 const ProjectsAdmin = () => {
@@ -194,8 +194,8 @@ const ProjectsAdmin = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center h-screen bg-base-200">
+        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -205,7 +205,7 @@ const ProjectsAdmin = () => {
       initial="hidden"
       animate="show"
       variants={container}
-      className="min-h-screen bg-gray-50/50 p-6 md:p-8 font-sans text-gray-900"
+      className="min-h-screen bg-base-200/50 p-6 md:p-8 font-sans text-base-content"
     >
       <div className="max-w-7xl mx-auto space-y-8">
 
@@ -215,7 +215,7 @@ const ProjectsAdmin = () => {
             <motion.h1 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="text-3xl font-bold tracking-tight text-gray-900"
+              className="text-3xl font-bold tracking-tight text-base-content"
             >
               Projects
             </motion.h1>
@@ -223,27 +223,27 @@ const ProjectsAdmin = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-gray-500 mt-1"
+              className="text-base-content/60 mt-1"
             >
               Showcase your work and portfolio.
             </motion.p>
           </div>
           
-          <motion.button
+          <button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            
+            
             onClick={() => {
               resetForm();
               setIsModalOpen(true);
             }}
-            className="bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2 font-semibold"
+            className="bg-primary text-primary-content px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 font-semibold"
           >
             <Plus className="w-5 h-5" />
             <span>Add Project</span>
-          </motion.button>
+          </button>
         </header>
 
         {/* Stats Cards - Bento Style */}
@@ -253,9 +253,9 @@ const ProjectsAdmin = () => {
               label: 'Total Projects', 
               value: projects.length, 
               icon: Layout,
-              color: 'text-blue-600',
-              bg: 'bg-blue-50',
-              borderColor: 'border-blue-100'
+              color: 'text-primary',
+              bg: 'bg-primary/10',
+              borderColor: 'border-primary/20'
             },
             { 
               label: 'Completed', 
@@ -286,7 +286,7 @@ const ProjectsAdmin = () => {
               key={stat.label}
               variants={item}
               whileHover={{ y: -5 }}
-              className={`bg-white p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
+              className={`bg-base-100 p-6 rounded-2xl border ${stat.borderColor} shadow-sm hover:shadow-md transition-all`}
             >
               <div className="flex justify-between items-start mb-4">
                 <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
@@ -294,8 +294,8 @@ const ProjectsAdmin = () => {
                 </div>
               </div>
               <div>
-                <div className="text-3xl font-bold tracking-tight text-gray-900 mb-1">{stat.value}</div>
-                <div className="text-sm font-medium text-gray-500">{stat.label}</div>
+                <div className="text-3xl font-bold tracking-tight text-base-content mb-1">{stat.value}</div>
+                <div className="text-sm font-medium text-base-content/60">{stat.label}</div>
               </div>
             </motion.div>
           ))}
@@ -304,29 +304,29 @@ const ProjectsAdmin = () => {
         {/* Search & Filter Bar */}
         <motion.div 
           variants={item}
-          className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center"
+          className="bg-base-100 p-4 rounded-2xl border border-base-300/60 shadow-sm flex flex-col md:flex-row gap-4 items-center"
         >
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
             <input 
               type="text" 
               placeholder="Search projects by title, tech, or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900"
+              className="w-full pl-10 pr-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content"
             />
           </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <div className="flex items-center bg-gray-50 p-1 rounded-xl border border-gray-100">
+            <div className="flex items-center bg-base-200 p-1 rounded-xl border border-base-300/60">
                <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-2  transition-all ${viewMode === 'grid' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
                >
                   <Grid className="w-4 h-4" />
                </button>
                <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`p-2  transition-all ${viewMode === 'list' ? 'bg-base-100 shadow-sm text-primary' : 'text-base-content/40 hover:text-base-content/60'}`}
                >
                   <List className="w-4 h-4" />
                </button>
@@ -334,7 +334,7 @@ const ProjectsAdmin = () => {
             <select 
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 cursor-pointer"
+              className="px-4 py-2 bg-base-200 border border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-base-content cursor-pointer"
             >
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -354,16 +354,16 @@ const ProjectsAdmin = () => {
                 variants={item}
                 whileHover={{ y: -5 }}
                 onClick={() => setViewingProject(project)}
-                className={`bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all overflow-hidden group cursor-pointer ${
+                className={`bg-base-100 rounded-2xl border border-base-300/60 shadow-sm hover:shadow-xl transition-all overflow-hidden group cursor-pointer ${
                    viewMode === 'list' ? 'flex items-center p-4 gap-6' : 'flex flex-col'
                 }`}
               >
                 {/* Image Section */}
-                <div className={`${viewMode === 'grid' ? 'h-48 w-full' : 'h-24 w-40 flex-shrink-0'} bg-gray-100 relative overflow-hidden`}>
+                <div className={`${viewMode === 'grid' ? 'h-48 w-full' : 'h-24 w-40 shrink-0'} bg-base-200 relative overflow-hidden`}>
                    {project.image ? (
                       <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300">
+                      <div className="w-full h-full flex items-center justify-center bg-base-200 text-base-content/20">
                          <Layout className="w-12 h-12" />
                       </div>
                    )}
@@ -378,18 +378,18 @@ const ProjectsAdmin = () => {
                 <div className={`flex-1 ${viewMode === 'grid' ? 'p-6' : ''}`}>
                    <div className="flex justify-between items-start mb-2">
                       <div className="space-y-1">
-                         <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">{project.title}</h3>
+                         <h3 className="text-xl font-bold text-base-content group-hover:text-primary transition-colors line-clamp-1">{project.title}</h3>
                          <div className="flex items-center gap-2">
                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide ${
-                              project.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
-                              project.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
-                              project.status === 'planned' ? 'bg-gray-100 text-gray-600' :
-                              'bg-gray-100 text-gray-600'
+                              project.status === 'completed' ? 'bg-success/15 text-success' :
+                              project.status === 'in-progress' ? 'bg-blue-500/15 text-blue-500' :
+                              project.status === 'planned' ? 'bg-base-300 text-base-content/60' :
+                              'bg-base-300 text-base-content/60'
                            }`}>
                               {(project.status || 'In Progress').replace('-', ' ')}
                            </span>
-                           {project.githubUrl && <a href={project.githubUrl} onClick={(e) => e.stopPropagation()} target="_blank" className="text-gray-400 hover:text-gray-800"><Github className="w-4 h-4" /></a>}
-                           {project.liveUrl && <a href={project.liveUrl} onClick={(e) => e.stopPropagation()} target="_blank" className="text-gray-400 hover:text-blue-600"><ExternalLink className="w-4 h-4" /></a>}
+                           {project.githubUrl && <a href={project.githubUrl} onClick={(e) => e.stopPropagation()} target="_blank" className="text-base-content/40 hover:text-base-content"><FaGithub className="w-4 h-4" /></a>}
+                           {project.liveUrl && <a href={project.liveUrl} onClick={(e) => e.stopPropagation()} target="_blank" className="text-base-content/40 hover:text-primary"><ExternalLink className="w-4 h-4" /></a>}
                          </div>
                       </div>
                       <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
@@ -413,7 +413,7 @@ const ProjectsAdmin = () => {
                               setFeaturesInput((project.features || []).join('\n'));
                               setIsModalOpen(true);
                             }}
-                            className="p-2 hover:bg-blue-50 text-gray-400 hover:text-blue-600 rounded-lg transition-colors"
+                            className="p-2 hover:bg-primary/10 text-base-content/40 hover:text-primary  transition-colors"
                          >
                             <Edit className="w-4 h-4" />
                          </button>
@@ -422,26 +422,26 @@ const ProjectsAdmin = () => {
                               e.stopPropagation();
                               handleDelete(project._id || project.id);
                             }}
-                            className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-colors"
+                            className="p-2 hover:bg-error/10 text-base-content/40 hover:text-error  transition-colors"
                          >
                             <Trash2 className="w-4 h-4" />
                          </button>
                       </div>
                    </div>
                    
-                   <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                   <p className="text-base-content/70 text-sm leading-relaxed mb-4 line-clamp-2">
                       {project.description}
                    </p>
 
                    {project.tech?.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-auto">
                          {project.tech.slice(0, 4).map((tech, i) => (
-                            <span key={i} className="px-2 py-1 bg-gray-50 border border-gray-100 rounded-md text-xs font-medium text-gray-600">
+                            <span key={i} className="px-2 py-1 bg-base-200 border border-base-300/60 rounded-md text-xs font-medium text-base-content/70">
                                {tech}
                             </span>
                          ))}
                          {project.tech.length > 4 && (
-                            <span className="px-2 py-1 bg-gray-50 border border-gray-100 rounded-md text-xs font-medium text-gray-500">
+                            <span className="px-2 py-1 bg-base-200 border border-base-300/60 rounded-md text-xs font-medium text-base-content/60">
                                +{project.tech.length - 4}
                             </span>
                          )}
@@ -452,12 +452,12 @@ const ProjectsAdmin = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full bg-white rounded-2xl shadow-sm border border-dashed border-gray-300 p-12 text-center">
-               <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Layers className="w-8 h-8 text-gray-400" />
+            <div className="col-span-full bg-base-100 rounded-2xl shadow-sm border border-dashed border-base-300 p-12 text-center">
+               <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Layers className="w-8 h-8 text-base-content/40" />
                </div>
-               <h3 className="text-lg font-bold text-gray-900 mb-2">No projects found</h3>
-               <p className="text-gray-500 mb-6 max-w-md mx-auto">
+               <h3 className="text-lg font-bold text-base-content mb-2">No projects found</h3>
+               <p className="text-base-content/60 mb-6 max-w-md mx-auto">
                   {searchTerm || statusFilter !== 'all' 
                      ? 'Try adjusting your search criteria.' 
                      : 'Start building your portfolio by adding your first project.'}
@@ -468,7 +468,7 @@ const ProjectsAdmin = () => {
                         resetForm();
                         setIsModalOpen(true);
                      }}
-                     className="bg-blue-600 text-white px-6 py-2.5 rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-lg shadow-blue-500/20 inline-flex items-center gap-2"
+                     className="bg-primary text-primary-content px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors font-medium shadow-lg shadow-primary/20 inline-flex items-center gap-2"
                   >
                      <Plus className="w-5 h-5" />
                      <span>Add First Project</span>
@@ -493,14 +493,14 @@ const ProjectsAdmin = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
             >
-              <div className="bg-blue-600 p-6 flex items-center justify-between text-white shrink-0">
+              <div className="bg-primary p-6 flex items-center justify-between text-primary-content shrink-0">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Code className="w-6 h-6" />
                   {editingProject ? 'Edit Project' : 'Add New Project'}
                 </h3>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-primary-content/20 rounded-full transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -510,22 +510,22 @@ const ProjectsAdmin = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Project Title *</label>
+                        <label className="text-sm font-semibold text-base-content/80">Project Title *</label>
                         <input
                            type="text"
                            required
                            value={formData.title}
                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="e.g. Portfolio v2"
                         />
                      </div>
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Project Status</label>
+                        <label className="text-sm font-semibold text-base-content/80">Project Status</label>
                         <select
                            value={formData.status}
                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                         >
                            <option value="completed">Completed</option>
                            <option value="in-progress">In Progress</option>
@@ -535,30 +535,30 @@ const ProjectsAdmin = () => {
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-sm font-semibold text-gray-700">Description *</label>
+                     <label className="text-sm font-semibold text-base-content/80">Description *</label>
                      <textarea
                         required
                         rows={4}
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
+                        className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                         placeholder="What did you build and why?"
                      />
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-sm font-semibold text-gray-700">Image URL</label>
+                     <label className="text-sm font-semibold text-base-content/80">Image URL</label>
                      <div className="flex gap-2">
                         <input
                            type="url"
                            value={formData.image}
                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                           className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                           className="flex-1 px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="https://example.com/cover.png"
                         />
                      </div>
                      {formData.image && (
-                        <div className="mt-2 h-32 w-full bg-gray-100 rounded-xl overflow-hidden">
+                        <div className="mt-2 h-32 w-full bg-base-200 border-2 border-base-content overflow-hidden">
                            <img src={formData.image} alt="Preview" className="w-full h-full object-cover opacity-80" />
                         </div>
                      )}
@@ -566,27 +566,27 @@ const ProjectsAdmin = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">GitHub URL</label>
+                        <label className="text-sm font-semibold text-base-content/80">GitHub URL</label>
                         <div className="relative">
-                           <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                           <FaGithub className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/40" />
                            <input
                               type="url"
                               value={formData.githubUrl}
                               onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                              className="w-full pl-10 pr-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="https://github.com/..."
                            />
                         </div>
                      </div>
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">Live Demo URL</label>
+                        <label className="text-sm font-semibold text-base-content/80">Live Demo URL</label>
                         <div className="relative">
-                           <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                           <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/40" />
                            <input
                               type="url"
                               value={formData.liveUrl}
                               onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
-                              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                              className="w-full pl-10 pr-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                               placeholder="https://..."
                            />
                         </div>
@@ -595,36 +595,36 @@ const ProjectsAdmin = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 block">Technologies</label>
+                        <label className="text-sm font-semibold text-base-content/80 block">Technologies</label>
                         <textarea
                            rows={3}
                            value={techInput}
                            onChange={(e) => setTechInput(e.target.value)}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="React, Tailwind, Node.js (comma separated)"
                         />
                      </div>
                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700 block">Key Features</label>
+                        <label className="text-sm font-semibold text-base-content/80 block">Key Features</label>
                         <textarea
                            rows={3}
                            value={featuresInput}
                            onChange={(e) => setFeaturesInput(e.target.value)}
-                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                           className="w-full px-4 py-3 bg-base-200 border border-base-300 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="Authentication&#10;Dark Mode&#10;(one per line)"
                         />
                      </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-4 border border-blue-100 bg-blue-50 rounded-xl">
+                  <div className="flex items-center gap-3 p-4 border border-primary/20 bg-primary/10 rounded-xl">
                      <input 
                         type="checkbox" 
                         id="featured"
                         checked={formData.featured}
                         onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                        className="w-5 h-5 text-primary rounded focus:ring-primary border-base-300"
                      />
-                     <label htmlFor="featured" className="text-sm font-medium text-blue-800 cursor-pointer flex items-center gap-2">
+                     <label htmlFor="featured" className="text-sm font-medium text-primary cursor-pointer flex items-center gap-2">
                         <Star className="w-4 h-4 fill-current" />
                         Feature this project on profile homepage
                      </label>
@@ -633,11 +633,11 @@ const ProjectsAdmin = () => {
                 </form>
               </div>
 
-              <div className="p-6 border-t border-gray-100 bg-gray-50 shrink-0 flex justify-end gap-3">
+              <div className="p-6 border-t border-base-300/60 bg-base-200 shrink-0 flex justify-end gap-3">
                  <button 
                     type="button" 
                     onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-200 transition-colors"
+                    className="px-6 py-2.5 rounded-xl font-medium text-base-content/70 hover:bg-base-300 transition-colors"
                  >
                     Cancel
                  </button>
@@ -645,7 +645,7 @@ const ProjectsAdmin = () => {
                     type="submit" 
                     form="projectForm"
                     disabled={isSubmitting}
-                    className="bg-blue-600 text-white px-8 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="bg-primary text-primary-content px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                  >
                     {isSubmitting ? 'Saving...' : 'Save Project'}
                  </button>
@@ -671,22 +671,22 @@ const ProjectsAdmin = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+              className="bg-base-100 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
             >
-              <div className="relative h-48 md:h-64 bg-gray-100">
+              <div className="relative h-48 md:h-64 bg-base-200">
                 {viewingProject.image ? (
                   <img src={viewingProject.image} alt={viewingProject.title} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300">
+                  <div className="w-full h-full flex items-center justify-center bg-base-200 text-base-content/20">
                     <Layout className="w-16 h-16" />
                   </div>
                 )}
-                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
+                <div className="absolute top-0 inset-x-0 p-4 flex justify-between items-start bg-linear-to-b from-black/50 to-transparent">
                    <div className="flex gap-2">
                      <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-white/90 backdrop-blur-sm ${
-                        viewingProject.status === 'completed' ? 'text-emerald-700' :
-                        viewingProject.status === 'in-progress' ? 'text-blue-700' :
-                        'text-gray-600'
+                        viewingProject.status === 'completed' ? 'text-success' :
+                        viewingProject.status === 'in-progress' ? 'text-blue-500' :
+                        'text-base-content/60'
                      }`}>
                         {(viewingProject.status || 'In Progress').replace('-', ' ')}
                      </span>
@@ -709,34 +709,34 @@ const ProjectsAdmin = () => {
                  <div className="flex flex-col md:flex-row gap-8">
                     <div className="flex-1 space-y-6">
                        <div>
-                          <h2 className="text-3xl font-bold text-gray-900 mb-2">{viewingProject.title}</h2>
+                          <h2 className="text-3xl font-bold text-base-content mb-2">{viewingProject.title}</h2>
                           <div className="flex items-center gap-4">
                              {viewingProject.githubUrl && (
-                                <a href={viewingProject.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                                   <Github className="w-5 h-5" /> GitHub
+                                <a href={viewingProject.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-base-content/70 hover:text-base-content font-medium transition-colors">
+                                   <FaGithub className="w-5 h-5" /> GitHub
                                 </a>
                              )}
                              {viewingProject.liveUrl && (
-                                <a href={viewingProject.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                                <a href={viewingProject.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors">
                                    <ExternalLink className="w-5 h-5" /> Live Demo
                                 </a>
                              )}
                           </div>
                        </div>
                        
-                       <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed">
+                       <div className="prose max-w-none text-base-content/70 leading-relaxed">
                           <p className="whitespace-pre-line">{viewingProject.description}</p>
                        </div>
 
                        {viewingProject.features && viewingProject.features.length > 0 && (
                           <div>
-                             <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                <Zap className="w-5 h-5 text-yellow-500" /> Key Features
+                             <h3 className="text-lg font-bold text-base-content mb-3 flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-warning" /> Key Features
                              </h3>
                              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {viewingProject.features.map((feature, idx) => (
-                                   <li key={idx} className="flex items-start gap-2 text-gray-600 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-1 shrink-0" />
+                                   <li key={idx} className="flex items-start gap-2 text-base-content/70 bg-base-200 p-3 rounded-xl border border-base-300/60">
+                                      <CheckCircle className="w-4 h-4 text-success mt-1 shrink-0" />
                                       <span className="text-sm">{feature}</span>
                                    </li>
                                 ))}
@@ -746,13 +746,13 @@ const ProjectsAdmin = () => {
                     </div>
 
                     <div className="w-full md:w-80 shrink-0 space-y-6">
-                       <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                          <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-                             <Code className="w-4 h-4 text-blue-500" /> Technologies
+                       <div className="bg-base-200 rounded-2xl p-6 border border-base-300/60">
+                          <h3 className="text-sm font-bold text-base-content uppercase tracking-wider mb-4 flex items-center gap-2">
+                             <Code className="w-4 h-4 text-primary" /> Technologies
                           </h3>
                           <div className="flex flex-wrap gap-2">
                              {viewingProject.tech && viewingProject.tech.map((t, idx) => (
-                                <span key={idx} className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 shadow-sm">
+                                <span key={idx} className="px-3 py-1.5 bg-base-100 border border-base-300  text-sm font-medium text-base-content/80 shadow-sm">
                                    {t}
                                 </span>
                              ))}
@@ -762,7 +762,7 @@ const ProjectsAdmin = () => {
                  </div>
               </div>
               
-              <div className="p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">
+              <div className="p-6 border-t border-base-300/60 bg-base-200/50 flex justify-end">
                  <button 
                     onClick={() => {
                        setEditingProject(viewingProject);
@@ -783,7 +783,7 @@ const ProjectsAdmin = () => {
                        setViewingProject(null);
                        setIsModalOpen(true);
                     }}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-white text-gray-700 font-medium rounded-xl hover:bg-gray-50 border border-gray-200 transition-all shadow-sm hover:shadow"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-base-100 text-base-content/80 font-medium rounded-xl hover:bg-base-200 border border-base-300 transition-all shadow-sm hover:shadow"
                  >
                     <Edit className="w-4 h-4" /> Edit Project
                  </button>
@@ -806,25 +806,25 @@ const ProjectsAdmin = () => {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
+                  className="bg-base-100 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center"
                >
-                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                  <div className="w-16 h-16 bg-error/15 rounded-full flex items-center justify-center mx-auto mb-4 text-error">
                      <Trash2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Project?</h3>
-                  <p className="text-gray-500 mb-6">Are you sure you want to delete <span className="font-semibold text-gray-900">{projects.find(p => p._id === itemToDelete || p.id === itemToDelete)?.title}</span>? This action cannot be undone.</p>
+                  <h3 className="text-xl font-bold text-base-content mb-2">Delete Project?</h3>
+                  <p className="text-base-content/60 mb-6">Are you sure you want to delete <span className="font-semibold text-base-content">{projects.find(p => p._id === itemToDelete || p.id === itemToDelete)?.title}</span>? This action cannot be undone.</p>
                   
                   <div className="flex gap-3">
                      <button 
                         onClick={() => setIsDeleteModalOpen(false)}
-                        className="flex-1 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                        className="flex-1 py-2.5 bg-base-200 text-base-content/80 font-medium rounded-xl hover:bg-base-300 transition-colors"
                      >
                         Cancel
                      </button>
                      <button 
                         onClick={handleConfirmDelete}
                         disabled={deletingId === itemToDelete}
-                        className="flex-1 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-error text-error-content font-medium rounded-xl hover:bg-error/90 transition-colors shadow-lg shadow-error/20 flex items-center justify-center gap-2"
                      >
                         {deletingId === itemToDelete ? 'Deleting...' : 'Delete'}
                      </button>
