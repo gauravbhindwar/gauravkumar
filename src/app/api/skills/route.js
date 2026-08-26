@@ -84,7 +84,7 @@ export async function GET() {
 // Helper function to check admin authentication
 async function checkAdminAuth() {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user || session.user.role !== 'admin') {
+  if (!session || !session.user || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
     return false;
   }
   return true;

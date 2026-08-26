@@ -21,7 +21,10 @@ import {
   Zap,
   CheckCircle,
   TrendingUp,
-  Award
+  Award,
+  Upload,
+  AlertCircle,
+  Globe
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
@@ -37,7 +40,9 @@ const ExperiencesAdmin = () => {
   const [editingExperience, setEditingExperience] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [formError, setFormError] = useState('');
+
   const [formData, setFormData] = useState({
     company: '',
     position: '',
@@ -104,6 +109,36 @@ const ExperiencesAdmin = () => {
       order: 0
     });
     setEditingExperience(null);
+    setFormError('');
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      setUploadingLogo(true);
+      setFormError('');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, companyLogo: data.url }));
+      } else {
+        setFormError('Failed to upload logo');
+      }
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      setFormError('Error uploading logo');
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -111,26 +146,31 @@ const ExperiencesAdmin = () => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
+    setFormError('');
     try {
-      const url = editingExperience 
+      const url = editingExperience
         ? `/api/experiences/${editingExperience._id}`
         : '/api/experiences';
-      
+
       const method = editingExperience ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         await fetchExperiences();
         setIsModalOpen(false);
         resetForm();
+      } else {
+        const errorBody = await response.json().catch(() => ({}));
+        setFormError(errorBody.error || 'Failed to save experience');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setFormError('Error saving experience');
     } finally {
       setIsSubmitting(false);
     }
@@ -597,6 +637,50 @@ const ExperiencesAdmin = () => {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-base-content/80">Company Logo</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          value={formData.companyLogo}
+                          onChange={(e) => setFormData({ ...formData, companyLogo: e.target.value })}
+                          className="flex-1 px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                          placeholder="https://example.com/logo.png or upload below"
+                        />
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors flex items-center gap-2 shrink-0">
+                          <Upload className="w-5 h-5" />
+                          <span className="hidden sm:inline">{uploadingLogo ? 'Uploading...' : 'Upload'}</span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            disabled={uploadingLogo}
+                            onChange={handleLogoUpload}
+                          />
+                        </label>
+                        {formData.companyLogo && (
+                          <div className="w-12 h-12 shrink-0 border-2 border-base-content bg-base-100 overflow-hidden">
+                            <img src={formData.companyLogo} alt="Logo preview" className="w-full h-full object-contain" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-base-content/80">Company Website</label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/40" />
+                        <input
+                          type="url"
+                          value={formData.companyWebsite}
+                          onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })}
+                          className="w-full pl-10 pr-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                          placeholder="https://company.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-base-content/80">Description *</label>
                     <textarea
@@ -607,6 +691,37 @@ const ExperiencesAdmin = () => {
                       className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                       placeholder="Describe your role, achievements, and impact..."
                     />
+                  </div>
+
+                  <div className="space-y-3">
+                     <label className="text-sm font-semibold text-base-content/80 block">Key Responsibilities</label>
+                     <div className="space-y-2">
+                        {formData.responsibilities.map((resp, index) => (
+                           <div key={index} className="flex gap-2">
+                              <input
+                                 type="text"
+                                 value={resp}
+                                 onChange={(e) => handleArrayFieldChange('responsibilities', index, e.target.value)}
+                                 className="flex-1 px-4 py-2.5 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm"
+                                 placeholder="e.g. Led migration of legacy services to a microservice architecture"
+                              />
+                              <button
+                                 type="button"
+                                 onClick={() => removeArrayField('responsibilities', index)}
+                                 className="px-3 border-2 border-base-content text-base-content/60 hover:text-error hover:bg-base-200 transition-colors shrink-0"
+                              >
+                                 <X className="w-4 h-4" />
+                              </button>
+                           </div>
+                        ))}
+                     </div>
+                     <button
+                        type="button"
+                        onClick={() => addArrayField('responsibilities')}
+                        className="px-4 py-2 bg-base-200 border-2 border-base-content text-base-content/70 font-medium text-sm hover:bg-base-300 transition-colors"
+                     >
+                        + Add Responsibility
+                     </button>
                   </div>
 
                   <div className="space-y-4">
@@ -657,22 +772,27 @@ const ExperiencesAdmin = () => {
                 </form>
               </div>
 
-              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
-                 <button 
-                    type="button" 
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
-                 >
-                    Cancel
-                 </button>
-                 <button 
-                    type="submit" 
-                    form="experienceForm"
-                    disabled={isSubmitting}
-                    className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                 >
-                    {isSubmitting ? 'Saving...' : 'Save Experience'}
-                 </button>
+              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex items-center justify-between gap-3">
+                 {formError ? (
+                    <p className="text-error text-sm font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4 shrink-0" />{formError}</p>
+                 ) : <span />}
+                 <div className="flex gap-3 shrink-0">
+                    <button
+                       type="button"
+                       onClick={() => setIsModalOpen(false)}
+                       className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                    >
+                       Cancel
+                    </button>
+                    <button
+                       type="submit"
+                       form="experienceForm"
+                       disabled={isSubmitting}
+                       className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                       {isSubmitting ? 'Saving...' : 'Save Experience'}
+                    </button>
+                 </div>
               </div>
 
             </motion.div>

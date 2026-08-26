@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { FaSun, FaMoon, FaFileDownload } from 'react-icons/fa'
 import { FiMenu, FiX } from 'react-icons/fi'
 import useFetch from '@/hooks/useFetch'
+import ResumePreview from './ResumePreview'
 
 // Throttle function for performance optimization
 const throttle = (func, limit) => {
@@ -99,41 +100,6 @@ const ThemeToggle = ({ toggleTheme, theme }) => (
     </AnimatePresence>
   </motion.button>
 )
-
-const ResumePreviewTooltip = ({ resumeLink }) => {
-  if (!resumeLink) return null;
-  const previewUrl = resumeLink.includes('drive.google.com/file/d/') 
-    ? resumeLink.replace(/\/view.*$/, '/preview') 
-    : resumeLink;
-
-  return (
-    <div className="absolute top-full right-0 mt-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none origin-top-right">
-      <div className="relative w-64 aspect-[1/1.4] transform group-hover:-translate-y-2 transition-transform duration-300">
-        {/* Background card 2 */}
-        <div className="absolute inset-0 bg-base-300 border-2 border-base-content translate-x-3 translate-y-3 z-0" />
-        {/* Background card 1 */}
-        <div className="absolute inset-0 bg-base-200 border-2 border-base-content translate-x-1.5 translate-y-1.5 z-10" />
-        {/* Main card */}
-        <div className="absolute inset-0 bg-base-100 border-2 border-base-content z-20 overflow-hidden flex flex-col">
-          <div className="bg-primary px-2 py-1 flex items-center justify-center border-b-2 border-base-content">
-            <span className="text-[10px] font-mono font-bold text-primary-content uppercase tracking-widest">RESUME_PREVIEW</span>
-          </div>
-          <div className="flex-1 bg-base-200 relative">
-            <div className="absolute inset-0 flex items-center justify-center z-0">
-               <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-            </div>
-            <iframe 
-              src={previewUrl}
-              className="absolute inset-0 w-full h-full z-10 bg-transparent border-0 pointer-events-none"
-              title="Resume Preview"
-              loading="lazy"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme()
@@ -246,10 +212,11 @@ export default function Navbar() {
               <div className="w-[2px] h-6 bg-base-content/20 mx-4" />
               
               <div className="flex items-center gap-4">
-                <button
-                  onClick={downloadResume}
-                  className="group relative px-6 py-2 bg-base-100 border-2 border-base-content text-base-content font-mono text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] flex items-center gap-2"
+                <ResumePreview
+                  resumeUrl={contactData?.resumeLink}
+                  onTriggerClick={downloadResume}
                   disabled={loading || !contactData}
+                  triggerClassName="group relative px-6 py-2 bg-base-100 border-2 border-base-content text-base-content font-mono text-xs font-bold uppercase tracking-widest transition-all duration-200 shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] flex items-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-base-content/30 border-t-base-content rounded-full animate-spin"></div>
@@ -257,8 +224,7 @@ export default function Navbar() {
                     <FaFileDownload className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
                   )}
                   <span>RESUME</span>
-                  <ResumePreviewTooltip resumeLink={contactData?.resumeLink} />
-                </button>
+                </ResumePreview>
                 <div className="border-l-2 border-base-content/20 pl-4">
                   <ThemeToggle toggleTheme={toggleTheme} theme={theme} />
                 </div>
@@ -267,15 +233,13 @@ export default function Navbar() {
 
             {/* Mobile Navigation Header */}
             <div className="flex lg:hidden items-center gap-4">
-              <button
-                onClick={downloadResume}
-                className="group relative w-10 h-10 flex items-center justify-center border-2 border-base-content bg-base-100 text-base-content shadow-[2px_2px_0px_0px_currentColor] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+              <ResumePreview
+                resumeUrl={contactData?.resumeLink}
+                onTriggerClick={downloadResume}
+                triggerClassName="relative w-10 h-10 flex items-center justify-center border-2 border-base-content bg-base-100 text-base-content shadow-[2px_2px_0px_0px_currentColor] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
               >
                 <FaFileDownload className="w-4 h-4" />
-                <div className="hidden lg:block">
-                  <ResumePreviewTooltip resumeLink={contactData?.resumeLink} />
-                </div>
-              </button>
+              </ResumePreview>
               <button
                 className="w-10 h-10 flex items-center justify-center border-2 border-primary bg-primary text-primary-content shadow-[2px_2px_0px_0px_var(--color-base-content)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                 onClick={() => setIsOpen(prev => !prev)}
@@ -334,16 +298,15 @@ export default function Navbar() {
               transition={{ delay: 0.4 }}
             >
                <ThemeToggle toggleTheme={toggleTheme} theme={theme} />
-               <button
-                  onClick={downloadResume}
-                  className="group relative w-full max-w-xs px-6 py-4 border-2 border-base-content bg-base-100 text-base-content shadow-[6px_6px_0px_0px_currentColor] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] flex items-center justify-center gap-3 font-mono font-bold uppercase tracking-widest"
+               <ResumePreview
+                  resumeUrl={contactData?.resumeLink}
+                  onTriggerClick={downloadResume}
+                  wrapperClassName="w-full max-w-xs"
+                  triggerClassName="relative w-full px-6 py-4 border-2 border-base-content bg-base-100 text-base-content shadow-[6px_6px_0px_0px_currentColor] active:shadow-none active:translate-x-[6px] active:translate-y-[6px] flex items-center justify-center gap-3 font-mono font-bold uppercase tracking-widest"
                 >
                   <FaFileDownload className="w-5 h-5" />
                   <span>FETCH_RESUME</span>
-                  <div className="hidden lg:block">
-                    <ResumePreviewTooltip resumeLink={contactData?.resumeLink} />
-                  </div>
-                </button>
+                </ResumePreview>
             </motion.div>
           </motion.div>
         )}

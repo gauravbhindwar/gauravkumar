@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import { FiBriefcase, FiCalendar, FiMapPin, FiCheckCircle } from 'react-icons/fi'
+import { FiBriefcase, FiCalendar, FiMapPin, FiCheckCircle, FiGlobe } from 'react-icons/fi'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionHeading from '@/components/ui/SectionHeading'
 import TechBadge from '@/components/ui/TechBadge'
 import VerticalTimeline from '@/components/ui/VerticalTimeline'
+import useFetch from '@/hooks/useFetch'
+import { optimizeImageUrl } from '@/utils/imageOptimization'
 
 const ExperienceModal = ({ isOpen, onClose, exp }) => {
   const [mounted, setMounted] = useState(false)
@@ -65,9 +67,30 @@ const ExperienceModal = ({ isOpen, onClose, exp }) => {
                   CLOSE
                 </button>
 
-                <div className="mb-6 mt-4 md:mt-0">
-                  <h2 className="text-3xl font-display font-black uppercase text-base-content mb-2">{exp.position}</h2>
-                  <div className="text-primary font-mono text-sm tracking-widest">{exp.company}</div>
+                <div className="mb-6 mt-4 md:mt-0 flex items-start gap-4">
+                  {exp.companyLogo && (
+                    <img
+                      src={optimizeImageUrl(exp.companyLogo, { width: 100 })}
+                      alt={`${exp.company} logo`}
+                      className="w-14 h-14 object-contain bg-base-100 border border-base-content/20 p-1.5 shrink-0"
+                    />
+                  )}
+                  <div>
+                    <h2 className="text-3xl font-display font-black uppercase text-base-content mb-2">{exp.position}</h2>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="text-primary font-mono text-sm tracking-widest">{exp.company}</span>
+                      {exp.companyWebsite && (
+                        <a
+                          href={exp.companyWebsite}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-mono text-base-content/50 hover:text-primary transition-colors"
+                        >
+                          <FiGlobe className="w-3 h-3" /> WEBSITE
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-4 text-xs font-mono text-base-content/60 mb-8 pb-4 border-b border-base-content/10">
@@ -127,17 +150,45 @@ const ExperienceCard = ({ exp, side, isLatest, onInspect }) => {
     <GlassCard
       className="group relative p-6 md:p-8 shadow-lg border border-base-content/10 hover:border-primary/50 transition-all duration-500"
     >
-      <div className="flex flex-col gap-4 mb-6 items-start">
-        {/* Company - Brutalist Stop */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-3">
-          <div className="inline-block w-fit px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all break-all sm:break-normal whitespace-pre-wrap">
-            [ STOP_{new Date(exp.startDate).getFullYear()}: {exp.company.toUpperCase().replace(/\s+/g, '_')} ]
+      <div className="flex flex-col gap-4 mb-6 items-start w-full min-w-0">
+        <div className="flex flex-col gap-3 w-full min-w-0">
+          {/* Top Row: System Tags */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center justify-center px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest shrink-0 h-fit w-fit">
+              [ STOP_{new Date(exp.startDate).getFullYear()} ]
+            </div>
+            {isLatest && (
+              <div className="inline-flex items-center justify-center px-2 py-1 bg-secondary text-base-100 font-mono text-[10px] sm:text-xs uppercase tracking-widest border-2 border-base-content shadow-[4px_4px_0_0_currentColor] animate-pulse shrink-0 h-fit w-fit">
+                [ LATEST ]
+              </div>
+            )}
           </div>
-          {isLatest && (
-            <span className="inline-block w-fit px-2 py-1 bg-secondary text-base-100 font-mono text-[10px] sm:text-xs uppercase tracking-widest border-2 border-base-content shadow-[4px_4px_0_0_currentColor] animate-pulse">
-              [ LATEST ]
-            </span>
-          )}
+
+          {/* Second Row: Company Identity */}
+          <div className="flex flex-row items-center gap-3 w-full min-w-0">
+            {exp.companyLogo && (
+              <img
+                src={optimizeImageUrl(exp.companyLogo, { width: 80 })}
+                alt={`${exp.company} logo`}
+                className="w-8 h-8 object-contain bg-base-100 border-2 border-base-content shadow-[4px_4px_0_0_currentColor] shrink-0"
+              />
+            )}
+            <div className="inline-flex items-center px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all flex-1 min-w-0 break-words whitespace-normal h-fit w-full">
+              {exp.company.toUpperCase().replace(/\s+/g, '_').replace(/_/g, '_\u200B')}
+            </div>
+            {exp.companyWebsite && (
+              <a
+                href={exp.companyWebsite}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center justify-center p-1.5 bg-base-100 text-base-content/60 hover:text-primary border-2 border-base-content shadow-[4px_4px_0_0_currentColor] transition-all shrink-0 h-fit"
+                title={`${exp.company} website`}
+              >
+                <FiGlobe className="w-4 h-4" />
+              </a>
+            )}
+          </div>
         </div>
 
         <div>
@@ -196,12 +247,12 @@ const ExperienceCard = ({ exp, side, isLatest, onInspect }) => {
 }
 
 const Experience = () => {
-  const [experiences, setExperiences] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [selectedExp, setSelectedExp] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const containerRef = useRef(null)
+
+  const { data, loading, error } = useFetch('/api/experiences', { revalidate: 600000 })
+  const experiences = Array.isArray(data) ? data : []
 
   const openModal = (exp) => {
     setSelectedExp(exp)
@@ -213,32 +264,6 @@ const Experience = () => {
     // small delay to allow exit animation before clearing data
     setTimeout(() => setSelectedExp(null), 300)
   }
-
-  useEffect(() => {
-    const fetchExperiences = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        const timestamp = new Date().getTime()
-        const response = await fetch(`/api/experiences?t=${timestamp}`, {
-          cache: 'no-store',
-        })
-        
-        if (!response.ok) throw new Error('Failed to fetch experiences')
-        
-        const data = await response.json()
-        setExperiences(Array.isArray(data) ? data : [])
-      } catch (err) {
-        console.error('Error fetching experiences:', err)
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchExperiences()
-  }, [])
 
   if (loading) {
     return (

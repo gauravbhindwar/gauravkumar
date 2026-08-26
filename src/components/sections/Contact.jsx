@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, useInView, useSpring, useTransform } from 'framer-motion'
-import { FaGithub, FaLinkedin, FaEnvelope, FaPhone, FaPaperPlane, FaCheckCircle, FaExclamationCircle, FaRocket, FaShareAlt, FaQuoteLeft, FaStar, FaLightbulb, FaLock } from 'react-icons/fa'
+import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaPhone, FaPaperPlane, FaCheckCircle, FaExclamationCircle, FaRocket, FaShareAlt, FaQuoteLeft, FaStar, FaLightbulb, FaLock } from 'react-icons/fa'
 import useFetch from '@/hooks/useFetch'
-import emailjs from '@emailjs/browser'
 import ParticleFieldCanvas from '@/components/canvas/ParticleFieldCanvas'
 import { useTheme } from '@/components/theme-provider'
 import SectionHeading from '@/components/ui/SectionHeading'
@@ -12,12 +11,8 @@ import SectionHeading from '@/components/ui/SectionHeading'
 const socialIcons = {
   github: FaGithub,
   linkedin: FaLinkedin,
+  twitter: FaTwitter,
 }
-
-// Set up EmailJS with environment variables
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
 export default function Contact() {
   const { reducedMotion } = useTheme()
@@ -25,8 +20,10 @@ export default function Contact() {
     name: '',
     email: '',
     message: '',
+    company: '', // honeypot - real visitors never see or fill this field
   })
   const [formStatus, setFormStatus] = useState(null) // 'success', 'error', 'submitting', or null
+  const [submitError, setSubmitError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
   const [focusedField, setFocusedField] = useState(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -144,81 +141,36 @@ export default function Contact() {
     
     try {
       setFormStatus('submitting')
-      
-      // Enhanced EmailJS template parameters for better email formatting
-      const templateParams = {
-        // Basic contact info
-        from_name: formState.name,
-        from_email: formState.email,
-        message: formState.message,
-        
-        // IMPORTANT: Reply-To configuration for EmailJS
-        reply_to: formState.email,
-        to_email: formState.email, // Alternative parameter name
-        user_email: formState.email, // Another alternative
-        
-        // Enhanced parameters for better email templates
-        to_name: "Gaurav Kumar",
-        subject: `New Portfolio Contact: ${formState.name}`,
-        
-        // Additional context for rich email templates
-        timestamp: new Date().toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+
+      const response = await fetch('/api/send-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          company: formState.company,
         }),
-        
-        // Formatted message with better structure
-        formatted_message: `
-Hi Gaurav!
+      })
 
-You've received a new message through your portfolio contact form.
-
-From: ${formState.name}
-Email: ${formState.email}
-Date: ${new Date().toLocaleDateString('en-US', { 
-  weekday: 'long', 
-  year: 'numeric', 
-  month: 'long', 
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit'
-})}
-
-Message:
-${formState.message}
-
----
-Reply directly to: ${formState.email}
-        `.trim(),
-        
-        // Short preview for subject line
-        message_preview: formState.message.length > 50 
-          ? formState.message.substring(0, 50) + '...' 
-          : formState.message,
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body.error || 'Failed to send message')
       }
-      
-      await emailjs.send(
-        EMAILJS_SERVICE_ID, 
-        EMAILJS_TEMPLATE_ID, 
-        templateParams,
-        EMAILJS_PUBLIC_KEY
-      )
-      
+
       setFormStatus('success')
-      setFormState({ name: '', email: '', message: '' })
-      
+      setSubmitError('')
+      setFormState({ name: '', email: '', message: '', company: '' })
+
       // Reset success message after 8 seconds
       setTimeout(() => setFormStatus(null), 8000)
-      
+
     } catch (error) {
       console.error('Error submitting form:', error)
+      setSubmitError(error.message || 'Transmission failed. Please retry.')
       setFormStatus('error')
-      // Reset error message after 5 seconds
-      setTimeout(() => setFormStatus(null), 5000)
+      // Reset error message after 8 seconds
+      setTimeout(() => setFormStatus(null), 8000)
     }
   }
 
@@ -276,11 +228,6 @@ Reply directly to: ${formState.email}
         </div>
       </section>
     )
-  }
-  
-  // Configure EmailJS
-  if (typeof window !== 'undefined') {
-    emailjs.init(EMAILJS_PUBLIC_KEY)
   }
 
   return (
@@ -342,7 +289,10 @@ Reply directly to: ${formState.email}
             <div>
               <h4 className="font-mono text-xs text-base-content/50 uppercase tracking-widest mb-4">Find_Me_Online</h4>
               <div className="flex gap-4">
-                {contactData?.social && Object.entries(contactData.social).map(([platform, url]) => {
+                {Object.entries({
+                  ...contactData?.social,
+                  ...(contactData?.twitter ? { twitter: contactData.twitter } : {}),
+                }).map(([platform, url]) => {
                   const Icon = socialIcons[platform]
                   return (
                     <a
@@ -451,11 +401,23 @@ Reply directly to: ${formState.email}
                   />
                 </div>
 
+                {/* Honeypot - hidden from real visitors, bots tend to fill every field */}
+                <input
+                  type="text"
+                  name="company"
+                  value={formState.company}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="absolute -left-[9999px] w-px h-px opacity-0"
+                  aria-hidden="true"
+                />
+
                 {/* Status Messages */}
                 {formStatus === 'error' && !Object.keys(fieldErrors).length && (
                   <div className="p-4 bg-error/10 border-l-4 border-error text-error font-mono text-xs uppercase tracking-widest flex items-center gap-3">
                     <FaExclamationCircle className="w-4 h-4" />
-                    <span>[ SYS.ERROR ]: Transmission failed. Please retry.</span>
+                    <span>[ SYS.ERROR ]: {submitError || 'Transmission failed. Please retry.'}</span>
                   </div>
                 )}
                 

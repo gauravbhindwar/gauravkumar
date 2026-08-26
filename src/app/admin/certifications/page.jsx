@@ -22,7 +22,8 @@ import {
   Loader2,
   Users,
   Zap,
-  AlertTriangle
+  AlertTriangle,
+  Upload
 } from 'lucide-react';
 
 export default function AdminCertifications() {
@@ -48,6 +49,8 @@ export default function AdminCertifications() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [certificationToDelete, setCertificationToDelete] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [formError, setFormError] = useState('');
 
   // Helper functions
   const parseDate = (dateString) => {
@@ -95,17 +98,47 @@ export default function AdminCertifications() {
     }
   };
 
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      setUploadingPdf(true);
+      setFormError('');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, pdfFile: data.url }));
+      } else {
+        setFormError('Failed to upload file');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setFormError('Error uploading file');
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError('');
 
     try {
       const url = '/api/certifications';
       const method = editingCertification ? 'PUT' : 'POST';
-      const payload = editingCertification 
+      const payload = editingCertification
         ? { id: editingCertification._id, ...formData }
         : formData;
-      
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -116,9 +149,13 @@ export default function AdminCertifications() {
         await fetchCertifications();
         resetForm();
         setShowForm(false);
+      } else {
+        const errorBody = await response.json().catch(() => ({}));
+        setFormError(errorBody.error || 'Failed to save certification');
       }
     } catch (error) {
       console.error('Error saving certification:', error);
+      setFormError('Error saving certification');
     } finally {
       setIsSubmitting(false);
     }
@@ -157,6 +194,7 @@ export default function AdminCertifications() {
       order: 0
     });
     setEditingCertification(null);
+    setFormError('');
   };
 
   const handleEdit = (cert) => {
@@ -466,13 +504,37 @@ export default function AdminCertifications() {
 
                      <div className="space-y-2">
                         <label className="text-sm font-semibold text-base-content/80">Credential URL</label>
-                        <input 
-                           type="url" 
+                        <input
+                           type="url"
                            value={formData.credentialLink}
                            onChange={(e) => setFormData({...formData, credentialLink: e.target.value})}
                            className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                            placeholder="https://..."
                         />
+                     </div>
+
+                     <div className="space-y-2">
+                        <label className="text-sm font-semibold text-base-content/80">Certificate PDF</label>
+                        <div className="flex gap-2">
+                           <input
+                              type="url"
+                              value={formData.pdfFile}
+                              onChange={(e) => setFormData({...formData, pdfFile: e.target.value})}
+                              className="flex-1 px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                              placeholder="https://example.com/certificate.pdf or upload below"
+                           />
+                           <label className="cursor-pointer px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors flex items-center gap-2 shrink-0">
+                              <Upload className="w-5 h-5" />
+                              <span className="hidden sm:inline">{uploadingPdf ? 'Uploading...' : 'Upload'}</span>
+                              <input
+                                 type="file"
+                                 className="hidden"
+                                 accept="application/pdf,image/*"
+                                 disabled={uploadingPdf}
+                                 onChange={handlePdfUpload}
+                              />
+                           </label>
+                        </div>
                      </div>
 
                      <div className="space-y-2">
@@ -488,22 +550,27 @@ export default function AdminCertifications() {
                   </form>
                </div>
 
-               <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
-                  <button 
-                     type="button" 
-                     onClick={() => setShowForm(false)}
-                     className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
-                  >
-                     Cancel
-                  </button>
-                  <button 
-                     type="submit" 
-                     form="certForm"
-                     disabled={isSubmitting}
-                     className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                     {isSubmitting ? 'Saving...' : 'Save Certification'}
-                  </button>
+               <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex items-center justify-between gap-3">
+                  {formError ? (
+                     <p className="text-error text-sm font-medium flex items-center gap-2"><AlertTriangle className="w-4 h-4 shrink-0" />{formError}</p>
+                  ) : <span />}
+                  <div className="flex gap-3 shrink-0">
+                     <button
+                        type="button"
+                        onClick={() => setShowForm(false)}
+                        className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                     >
+                        Cancel
+                     </button>
+                     <button
+                        type="submit"
+                        form="certForm"
+                        disabled={isSubmitting}
+                        className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                     >
+                        {isSubmitting ? 'Saving...' : 'Save Certification'}
+                     </button>
+                  </div>
                </div>
 
             </motion.div>

@@ -21,7 +21,9 @@ import {
   TrendingUp,
   Link,
   Image,
-  Tag
+  Tag,
+  Upload,
+  AlertCircle
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
@@ -47,6 +49,10 @@ const AchievementsAdmin = () => {
     order: 0,
     isFeatured: false
   })
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [formError, setFormError] = useState('')
 
   const categories = ['Academic', 'Professional', 'Technical', 'Leadership', 'Community', 'Sports', 'Other']
 
@@ -80,14 +86,48 @@ const AchievementsAdmin = () => {
     fetchAchievements()
   }, [])
 
+  // Handle image upload to storage bucket
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    const uploadData = new FormData()
+    uploadData.append('file', file)
+
+    try {
+      setUploadingImage(true)
+      setFormError('')
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setFormData(prev => ({ ...prev, image: data.url }))
+      } else {
+        setFormError('Failed to upload image')
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      setFormError('Error uploading image')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
+    setFormError('')
+
     try {
       const url = editingAchievement ? `/api/achievements/${editingAchievement._id}` : '/api/achievements'
       const method = editingAchievement ? 'PUT' : 'POST'
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -104,10 +144,14 @@ const AchievementsAdmin = () => {
         setIsModalOpen(false)
         resetForm()
       } else {
-        console.error('Error saving achievement')
+        const errorBody = await response.json().catch(() => ({}))
+        setFormError(errorBody.error || 'Failed to save achievement')
       }
     } catch (error) {
       console.error('Error saving achievement:', error)
+      setFormError('Error saving achievement')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -128,6 +172,7 @@ const AchievementsAdmin = () => {
       isFeatured: false
     })
     setEditingAchievement(null)
+    setFormError('')
   }
 
   // Handle edit
@@ -552,19 +597,32 @@ const AchievementsAdmin = () => {
                       />
                     </div>
 
-                    {/* Image URL */}
+                    {/* Image */}
                     <div>
                       <label className="flex items-center gap-2 text-sm font-semibold text-base-content/80 mb-2">
                         <Image className="w-4 h-4" />
-                        Image URL
+                        Image
                       </label>
-                      <input
-                        type="url"
-                        className="w-full px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        placeholder="https://example.com/image.jpg"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          className="flex-1 px-4 py-3 border-2 border-base-content focus:outline-none focus:ring-0 focus:border-primary font-mono transition-all duration-300 text-base-content bg-base-100"
+                          value={formData.image}
+                          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors flex items-center gap-2 shrink-0">
+                          <Upload className="w-5 h-5" />
+                          <span className="hidden sm:inline">{uploadingImage ? 'Uploading...' : 'Upload'}</span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            disabled={uploadingImage}
+                            onChange={handleImageUpload}
+                          />
+                        </label>
+                      </div>
                     </div>
 
                     {/* Link */}
@@ -700,28 +758,30 @@ const AchievementsAdmin = () => {
 
                   {/* Form Actions - Fixed at bottom */}
                   <div className="shrink-0 border-t border-base-300 p-6 bg-base-100 rounded-b-3xl">
-                    <div className="flex items-center justify-end gap-4">
-                      <button
-                        
-                        
-                        type="button"
-                        onClick={() => {
-                          setIsModalOpen(false)
-                          resetForm()
-                        }}
-                        className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        
-                        
-                        type="submit"
-                        className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex items-center gap-2"
-                      >
-                        <Save className="w-4 h-4" />
-                        {editingAchievement ? 'Update' : 'Create'} Achievement
-                      </button>
+                    <div className="flex items-center justify-between gap-4">
+                      {formError ? (
+                        <p className="text-error text-sm font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4 shrink-0" />{formError}</p>
+                      ) : <span />}
+                      <div className="flex items-center gap-4 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsModalOpen(false)
+                            resetForm()
+                          }}
+                          className="bg-base-100 text-base-content border-2 border-base-content px-6 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <Save className="w-4 h-4" />
+                          {isSubmitting ? 'Saving...' : `${editingAchievement ? 'Update' : 'Create'} Achievement`}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </form>

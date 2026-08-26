@@ -12,7 +12,7 @@ export default function AdminAccess() {
   // Only show for authenticated admin users or when explicitly requested
   if (!isVisible && !session?.user) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-24 right-6 z-50">
         <button
           onClick={() => setIsVisible(true)}
           className="p-2.5 bg-base-300/60 text-base-content/60 rounded-full shadow-sm hover:bg-base-300 hover:text-base-content transition-all opacity-30 hover:opacity-100"
@@ -26,7 +26,7 @@ export default function AdminAccess() {
 
   if (session?.user) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-24 right-6 z-50">
         <Link
           href="/admin/dashboard"
           className="flex items-center gap-2 px-4 py-2 border border-primary bg-primary/10 text-primary hover:bg-primary/30 font-mono text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(255,175,211,0.1)] transition-all"
@@ -39,7 +39,7 @@ export default function AdminAccess() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-24 right-6 z-50">
       <div className="bg-base-100 rounded-lg shadow-lg border border-base-300 p-4 min-w-[200px]">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-base-content">Admin Access</h3>

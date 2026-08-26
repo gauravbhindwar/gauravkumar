@@ -17,6 +17,7 @@ import {
   X,
   User,
   Settings,
+  Image,
   Users,
   ExternalLink,
   Eye,
@@ -108,6 +109,12 @@ const sidebarItems = [
         href: '/admin/contact',
         icon: Mail,
         description: 'Contact information'
+      },
+      {
+        name: 'Media',
+        href: '/admin/media',
+        icon: Image,
+        description: 'Resume files and profile pictures'
       },
       {
         name: 'Admins',

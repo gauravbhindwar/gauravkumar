@@ -32,6 +32,9 @@ export async function POST(request) {
       .upload(path, buffer, {
         contentType: file.type || 'application/octet-stream',
         upsert: false,
+        // Paths are UUID-named and never reused, so the object is immutable -
+        // safe to cache at the CDN/browser for a year.
+        cacheControl: '31536000',
       });
 
     if (uploadError) throw uploadError;

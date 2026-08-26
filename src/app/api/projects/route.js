@@ -8,14 +8,17 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 // (now the `slug` column); the Postgres uuid primary key is exposed as `_id`.
 function projectToClient(row) {
   if (!row) return row;
-  const { slug, ...rest } = rowToClient(row);
-  return { ...rest, id: slug };
+  const { slug, github, live, ...rest } = rowToClient(row);
+  return { ...rest, id: slug, github, live, githubUrl: github, liveUrl: live };
 }
 
 function projectFromClient(data) {
-  const { id, _id, ...rest } = data;
+  const { id, _id, githubUrl, liveUrl, ...rest } = data;
   const row = clientToRow(rest);
   if (id !== undefined) row.slug = id;
+  // Frontend forms use githubUrl/liveUrl; the column names are github/live.
+  if (githubUrl !== undefined) row.github = githubUrl;
+  if (liveUrl !== undefined) row.live = liveUrl;
   return row;
 }
 

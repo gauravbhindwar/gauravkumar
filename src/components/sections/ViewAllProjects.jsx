@@ -2,13 +2,32 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaSearch, FaFilter, FaTimes, FaCode, FaRocket, FaStar } from 'react-icons/fa'
+import { FiCopy, FiCheck, FiBookOpen, FiLock } from 'react-icons/fi'
 import Link from 'next/link'
 import { useState, useEffect, useMemo } from 'react'
 import useFetch from '@/hooks/useFetch'
+import { optimizeImageUrl } from '@/utils/imageOptimization'
+import dynamic from 'next/dynamic'
+
+// react-markdown + mermaid are heavy and only needed once someone opens a
+// README, so keep them out of the initial bundle for this page.
+const ReadmeModal = dynamic(() => import('@/components/ui/ReadmeModal'), { ssr: false })
 
 // Enhanced Project Modal for the projects page
 const ProjectModal = ({ isOpen, onClose, project }) => {
-  if (!isOpen || !project) return null
+  const [readmeOpen, setReadmeOpen] = useState(false)
+  const [showCredentials, setShowCredentials] = useState(false)
+  const [copiedField, setCopiedField] = useState('')
+
+  const copyToClipboard = async (text, field) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(field)
+      setTimeout(() => setCopiedField(''), 1500)
+    } catch {
+      // clipboard API unavailable — credentials remain visible on screen either way
+    }
+  }
 
   // close on ESC
   useEffect(() => {
@@ -19,7 +38,18 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  // Don't leak a previously revealed project's credentials into the next one
+  useEffect(() => {
+    if (!isOpen) {
+      setShowCredentials(false)
+      setCopiedField('')
+    }
+  }, [isOpen])
+
+  if (!isOpen || !project) return null
+
   return (
+    <>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -49,7 +79,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
 
                 <div className="relative h-64 bg-linear-to-br from-primary/20 to-secondary/20">
                   {project.image ? (
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                    <img src={optimizeImageUrl(project.image, { width: 900, quality: 80 })} alt={project.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <div className="text-6xl font-bold text-primary/30">
@@ -63,7 +93,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                 <div className="p-8 space-y-6 overflow-y-auto max-h-[50vh]">
                   <div>
                     <h2 className="text-3xl font-bold text-base-content mb-4">{project.title}</h2>
-                    <p className="text-base-content/80 text-lg leading-relaxed">{project.description}</p>
+                    <p className="text-base-content/80 text-lg leading-relaxed whitespace-pre-line">{project.description}</p>
                   </div>
 
                   {project.features && project.features.length > 0 && (
@@ -97,7 +127,60 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 pt-6 border-t border-base-300">
+                  {project.codeImages?.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-base-content mb-4 flex items-center gap-2">
+                        <FaCode className="text-primary" />
+                        Code Preview
+                      </h3>
+                      <p className="text-sm text-base-content/50 mb-3">Repo is private — screenshots instead of a live browse.</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {project.codeImages.map((url, idx) => (
+                          <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="block aspect-video border-2 border-base-content overflow-hidden hover:opacity-80 transition-opacity">
+                            <img src={optimizeImageUrl(url, { width: 400, quality: 75 })} alt={`Code screenshot ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(project.demoUsername || project.demoPassword) && (
+                    <div>
+                      <h3 className="text-xl font-bold text-base-content mb-4 flex items-center gap-2">
+                        <FiLock className="text-primary" />
+                        Demo Credentials
+                      </h3>
+                      {!showCredentials ? (
+                        <button
+                          onClick={() => setShowCredentials(true)}
+                          className="px-6 py-3 bg-base-100 text-base-content border-2 border-base-content font-mono font-bold uppercase tracking-widest text-xs shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200"
+                        >
+                          Reveal Credentials
+                        </button>
+                      ) : (
+                        <div className="space-y-2">
+                          {project.demoUsername && (
+                            <div className="flex items-center justify-between gap-3 p-3 bg-base-200/50 border-2 border-base-content">
+                              <span className="text-sm text-base-content/70 truncate">Username: <span className="text-base-content font-semibold">{project.demoUsername}</span></span>
+                              <button onClick={() => copyToClipboard(project.demoUsername, 'user')} className="text-primary shrink-0">
+                                {copiedField === 'user' ? <FiCheck className="w-4 h-4" /> : <FiCopy className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          )}
+                          {project.demoPassword && (
+                            <div className="flex items-center justify-between gap-3 p-3 bg-base-200/50 border-2 border-base-content">
+                              <span className="text-sm text-base-content/70 truncate">Password: <span className="text-base-content font-semibold">{project.demoPassword}</span></span>
+                              <button onClick={() => copyToClipboard(project.demoPassword, 'pass')} className="text-primary shrink-0">
+                                {copiedField === 'pass' ? <FiCheck className="w-4 h-4" /> : <FiCopy className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-4 pt-6 border-t border-base-300">
                     {project.github && (
                       <a href={project.github} target="_blank" rel="noopener noreferrer"
                          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-base-100 text-base-content border-2 border-base-content font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
@@ -112,6 +195,14 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                         Live Demo
                       </a>
                     )}
+                    {project.readme && (
+                      <button
+                        onClick={() => setReadmeOpen(true)}
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-base-100 text-base-content border-2 border-base-content font-mono font-bold uppercase tracking-widest shadow-[4px_4px_0_0_currentColor] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                        <FiBookOpen className="w-5 h-5" />
+                        View README
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -120,6 +211,14 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
         </>
       )}
     </AnimatePresence>
+    <ReadmeModal
+      isOpen={readmeOpen}
+      onClose={() => setReadmeOpen(false)}
+      title={project.title}
+      readme={project.readme}
+      githubUrl={project.github}
+    />
+    </>
   )
 }
 
@@ -373,8 +472,8 @@ const ProjectCard = ({ project, index, onClick }) => {
       {/* Project Image */}
       <div className="relative h-64 overflow-hidden">
         {project.image && !imageError ? (
-          <img 
-            src={project.image} 
+          <img
+            src={optimizeImageUrl(project.image, { width: 600, quality: 75 })}
             alt={project.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             onError={() => setImageError(true)}
@@ -414,7 +513,7 @@ const ProjectCard = ({ project, index, onClick }) => {
           <h2 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
             {project.title}
           </h2>
-          <p className="text-base-content/70 text-sm leading-relaxed line-clamp-3">
+          <p className="text-base-content/70 text-sm leading-relaxed line-clamp-3 whitespace-pre-line">
             {project.description}
           </p>
         </div>

@@ -8,6 +8,7 @@
   color-scheme: dark;
   /* Cyber Brutalist Dark Palette */
   --color-primary: #39ff14; /* Neon Green */
+  --color-primary-content: #04170a; /* Near-black - neon green is too bright for white text */
   --color-secondary: #06b6d4; /* Cyber Cyan */
   --color-accent: #fbbf24; /* Caution Yellow */
   --color-neutral: #171f33;
@@ -26,6 +27,7 @@
   color-scheme: light;
   /* Cyber Brutalist Light Palette */
   --color-primary: #15803d; /* Darker Green for contrast */
+  --color-primary-content: #f0fdf4; /* Near-white - dark green needs light text */
   --color-secondary: #0284c7; /* Darker Cyan */
   --color-accent: #d97706; /* Darker Yellow */
   --color-neutral: #e2e8f0;

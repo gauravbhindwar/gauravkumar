@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import Image from 'next/image'
 import { FiArrowRight, FiGithub, FiLinkedin, FiDownload } from 'react-icons/fi'
 import InterstellarCanvas from '@/components/canvas/InterstellarCanvas'
+import ResumePreview from '@/components/ResumePreview'
 
 export default function Hero({ contact }) {
   const contactData = contact
@@ -137,18 +138,24 @@ export default function Hero({ contact }) {
                 {[
                   { icon: FiGithub, href: contactData?.github, color: 'hover:text-primary hover:border-primary' },
                   { icon: FiLinkedin, href: contactData?.linkedin, color: 'hover:text-secondary hover:border-secondary' },
-                  { icon: FiDownload, href: contactData?.resumeLink, color: 'hover:text-accent hover:border-accent' }
                 ].map((item, i) => (
-                  <a 
+                  <a
                     key={i}
-                    href={item.href || '#'} 
-                    target="_blank" 
-                    rel="noreferrer" 
+                    href={item.href || '#'}
+                    target="_blank"
+                    rel="noreferrer"
                     className={`group p-2 lg:p-3 bg-base-100 border-2 border-base-content/50 text-base-content font-mono transition-all duration-200 shadow-[3px_3px_0px_0px_currentColor] lg:shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[3px] lg:hover:translate-x-[4px] hover:translate-y-[3px] lg:hover:translate-y-[4px] ${item.color}`}
                   >
                     <item.icon className="w-3.5 h-3.5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
                   </a>
                 ))}
+                <ResumePreview
+                  resumeUrl={contactData?.resumeLink}
+                  onTriggerClick={() => window.open(contactData?.resumeLink || '#', '_blank', 'noopener,noreferrer')}
+                  triggerClassName="group p-2 lg:p-3 bg-base-100 border-2 border-base-content/50 text-base-content font-mono transition-all duration-200 shadow-[3px_3px_0px_0px_currentColor] lg:shadow-[4px_4px_0px_0px_currentColor] hover:shadow-none hover:translate-x-[3px] lg:hover:translate-x-[4px] hover:translate-y-[3px] lg:hover:translate-y-[4px] hover:text-accent hover:border-accent"
+                >
+                  <FiDownload className="w-3.5 h-3.5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
+                </ResumePreview>
               </div>
             </div>
           </motion.div>

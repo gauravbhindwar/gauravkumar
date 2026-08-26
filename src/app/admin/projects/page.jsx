@@ -19,10 +19,19 @@ import {
   List,
   Layout,
   Layers,
-  CheckCircle
+  CheckCircle,
+  Upload,
+  AlertCircle,
+  Lock,
+  FileCode,
+  BookOpen,
+  Trash
 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
+
+const ReadmeModal = dynamic(() => import('@/components/ui/ReadmeModal'), { ssr: false });
 
 const ProjectsAdmin = () => {
   const { data: session } = useSession();
@@ -49,11 +58,26 @@ const ProjectsAdmin = () => {
     liveUrl: '',
     status: 'completed',
     featured: false,
-    order: 0
+    order: 0,
+    demoUsername: '',
+    demoPassword: '',
+    codeImages: [],
+    readme: ''
   });
-  
+
   const [techInput, setTechInput] = useState('');
   const [featuresInput, setFeaturesInput] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingCodeImage, setUploadingCodeImage] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [readmePreviewOpen, setReadmePreviewOpen] = useState(false);
+
+  const slugify = (str) =>
+    (str || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
 
   // Filter projects
   const filteredProjects = projects.filter(project => {
@@ -98,11 +122,92 @@ const ProjectsAdmin = () => {
       liveUrl: '',
       status: 'completed',
       featured: false,
-      order: 0
+      order: 0,
+      demoUsername: '',
+      demoPassword: '',
+      codeImages: [],
+      readme: ''
     });
     setTechInput('');
     setFeaturesInput('');
     setEditingProject(null);
+    setFormError('');
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      setUploadingImage(true);
+      setFormError('');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, image: data.url }));
+      } else {
+        setFormError('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setFormError('Error uploading image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleCodeImageUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    setUploadingCodeImage(true);
+    setFormError('');
+    try {
+      for (const file of files) {
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadData,
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setFormData(prev => ({ ...prev, codeImages: [...prev.codeImages, data.url] }));
+        } else {
+          setFormError('Failed to upload one or more code screenshots');
+        }
+      }
+    } catch (error) {
+      console.error('Error uploading code screenshots:', error);
+      setFormError('Error uploading code screenshots');
+    } finally {
+      setUploadingCodeImage(false);
+      e.target.value = '';
+    }
+  };
+
+  const removeCodeImage = (index) => {
+    setFormData(prev => ({ ...prev, codeImages: prev.codeImages.filter((_, i) => i !== index) }));
+  };
+
+  const handleReadmeFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData(prev => ({ ...prev, readme: reader.result }));
+    };
+    reader.onerror = () => setFormError('Failed to read README file');
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const handleSubmit = async (e) => {
@@ -110,28 +215,26 @@ const ProjectsAdmin = () => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
-    
+    setFormError('');
+
     try {
       // Process tech and features from text inputs
       const techArray = techInput.split(',').map(t => t.trim()).filter(t => t !== '');
       const featuresArray = featuresInput.split('\n').map(f => f.trim()).filter(f => f !== '');
-      
+
       const submitData = {
         ...formData,
         tech: techArray,
-        features: featuresArray
+        features: featuresArray,
+        // The API keys projects by `id` (slug), not `_id` (uuid). New projects
+        // derive the slug from the title; edits keep the existing slug so the
+        // PUT lookup (`.eq('slug', id)`) still resolves.
+        id: editingProject ? editingProject.id : slugify(formData.title),
       };
 
-      const url = editingProject 
-        ? `/api/projects`
-        : '/api/projects';
-      
+      const url = '/api/projects';
       const method = editingProject ? 'PUT' : 'POST';
-      
-      if (editingProject) {
-        submitData._id = editingProject._id;
-      }
-      
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -139,14 +242,18 @@ const ProjectsAdmin = () => {
         },
         body: JSON.stringify(submitData),
       });
-      
+
       if (response.ok) {
         await fetchProjects();
         setIsModalOpen(false);
         resetForm();
+      } else {
+        const errorBody = await response.json().catch(() => ({}));
+        setFormError(errorBody.error || 'Failed to save project');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setFormError('Error saving project');
     } finally {
       setIsSubmitting(false);
     }
@@ -408,7 +515,11 @@ const ProjectsAdmin = () => {
                                 liveUrl: project.liveUrl || project.live || '',
                                 status: project.status || 'completed',
                                 featured: project.featured || project.preview || false,
-                                order: project.order || 0
+                                order: project.order || 0,
+                                demoUsername: project.demoUsername || '',
+                                demoPassword: project.demoPassword || '',
+                                codeImages: project.codeImages || [],
+                                readme: project.readme || ''
                               });
                               setTechInput((project.tech || []).join(', '));
                               setFeaturesInput((project.features || []).join('\n'));
@@ -548,15 +659,26 @@ const ProjectsAdmin = () => {
                   </div>
 
                   <div className="space-y-2">
-                     <label className="text-sm font-semibold text-base-content/80">Image URL</label>
+                     <label className="text-sm font-semibold text-base-content/80">Cover Image</label>
                      <div className="flex gap-2">
                         <input
                            type="url"
                            value={formData.image}
                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                            className="flex-1 px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                           placeholder="https://example.com/cover.png"
+                           placeholder="https://example.com/cover.png or upload below"
                         />
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors flex items-center gap-2 shrink-0">
+                           <Upload className="w-5 h-5" />
+                           <span className="hidden sm:inline">{uploadingImage ? 'Uploading...' : 'Upload'}</span>
+                           <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              disabled={uploadingImage}
+                              onChange={handleImageUpload}
+                           />
+                        </label>
                      </div>
                      {formData.image && (
                         <div className="mt-2 h-32 w-full bg-base-200 border-2 border-base-content overflow-hidden">
@@ -592,6 +714,96 @@ const ProjectsAdmin = () => {
                            />
                         </div>
                      </div>
+                  </div>
+
+                  <div className="space-y-2 bg-base-200 border-2 border-base-content p-4">
+                     <label className="text-sm font-semibold text-base-content/80 flex items-center gap-2">
+                        <Lock className="w-4 h-4" /> Demo Credentials <span className="text-xs font-normal text-base-content/50">(optional — shown to visitors via a &quot;View Demo Credentials&quot; button)</span>
+                     </label>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input
+                           type="text"
+                           value={formData.demoUsername}
+                           onChange={(e) => setFormData({ ...formData, demoUsername: e.target.value })}
+                           className="w-full px-4 py-3 bg-base-100 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           placeholder="Demo username / email"
+                        />
+                        <input
+                           type="text"
+                           value={formData.demoPassword}
+                           onChange={(e) => setFormData({ ...formData, demoPassword: e.target.value })}
+                           className="w-full px-4 py-3 bg-base-100 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                           placeholder="Demo password"
+                        />
+                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                     <label className="text-sm font-semibold text-base-content/80 flex items-center gap-2">
+                        <FileCode className="w-4 h-4" /> Code Screenshots <span className="text-xs font-normal text-base-content/50">(useful if the repo is private and can&apos;t be browsed on GitHub)</span>
+                     </label>
+                     <label className="cursor-pointer inline-flex px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors items-center gap-2">
+                        <Upload className="w-5 h-5" />
+                        {uploadingCodeImage ? 'Uploading...' : 'Upload Screenshots'}
+                        <input
+                           type="file"
+                           className="hidden"
+                           accept="image/*"
+                           multiple
+                           disabled={uploadingCodeImage}
+                           onChange={handleCodeImageUpload}
+                        />
+                     </label>
+                     {formData.codeImages.length > 0 && (
+                        <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mt-3">
+                           {formData.codeImages.map((url, idx) => (
+                              <div key={idx} className="relative group h-24 bg-base-200 border-2 border-base-content overflow-hidden">
+                                 <img src={url} alt={`Code screenshot ${idx + 1}`} className="w-full h-full object-cover" />
+                                 <button
+                                    type="button"
+                                    onClick={() => removeCodeImage(idx)}
+                                    className="absolute top-1 right-1 p-1 bg-error text-error-content opacity-0 group-hover:opacity-100 transition-opacity"
+                                 >
+                                    <Trash className="w-3 h-3" />
+                                 </button>
+                              </div>
+                           ))}
+                        </div>
+                     )}
+                  </div>
+
+                  <div className="space-y-2">
+                     <label className="text-sm font-semibold text-base-content/80 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" /> README <span className="text-xs font-normal text-base-content/50">(rendered with Markdown + Mermaid diagram support)</span>
+                     </label>
+                     <div className="flex gap-2 flex-wrap">
+                        <label className="cursor-pointer px-4 py-3 bg-base-200 border-2 border-base-content hover:bg-base-300 text-base-content/80 font-medium transition-colors flex items-center gap-2">
+                           <Upload className="w-5 h-5" />
+                           Upload README.md
+                           <input
+                              type="file"
+                              className="hidden"
+                              accept=".md,.markdown,text/markdown,text/plain"
+                              onChange={handleReadmeFileUpload}
+                           />
+                        </label>
+                        {formData.readme && (
+                           <button
+                              type="button"
+                              onClick={() => setReadmePreviewOpen(true)}
+                              className="px-4 py-3 bg-base-100 border-2 border-base-content hover:bg-base-200 text-base-content/80 font-medium transition-colors flex items-center gap-2"
+                           >
+                              <Eye className="w-5 h-5" /> Preview
+                           </button>
+                        )}
+                     </div>
+                     <textarea
+                        rows={6}
+                        value={formData.readme}
+                        onChange={(e) => setFormData({ ...formData, readme: e.target.value })}
+                        className="w-full px-4 py-3 bg-base-200 border-2 border-base-content rounded-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono text-sm"
+                        placeholder="# Project README&#10;&#10;Paste or upload README.md content here..."
+                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -634,22 +846,27 @@ const ProjectsAdmin = () => {
                 </form>
               </div>
 
-              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex justify-end gap-3">
-                 <button 
-                    type="button" 
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
-                 >
-                    Cancel
-                 </button>
-                 <button 
-                    type="submit" 
-                    form="projectForm"
-                    disabled={isSubmitting}
-                    className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                 >
-                    {isSubmitting ? 'Saving...' : 'Save Project'}
-                 </button>
+              <div className="p-6 border-t border-base-content bg-base-200 shrink-0 flex items-center justify-between gap-3">
+                 {formError ? (
+                    <p className="text-error text-sm font-medium flex items-center gap-2"><AlertCircle className="w-4 h-4 shrink-0" />{formError}</p>
+                 ) : <span />}
+                 <div className="flex gap-3 shrink-0">
+                    <button
+                       type="button"
+                       onClick={() => setIsModalOpen(false)}
+                       className="px-6 py-2.5 rounded-none font-medium text-base-content/70 hover:bg-base-300 transition-colors"
+                    >
+                       Cancel
+                    </button>
+                    <button
+                       type="submit"
+                       form="projectForm"
+                       disabled={isSubmitting}
+                       className="bg-primary text-base-100 border-2 border-base-content px-8 py-3 font-mono font-bold uppercase tracking-widest flex items-center gap-2 shadow-[4px_4px_0_0_currentColor] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                       {isSubmitting ? 'Saving...' : 'Save Project'}
+                    </button>
+                 </div>
               </div>
 
             </motion.div>
@@ -777,7 +994,11 @@ const ProjectsAdmin = () => {
                           liveUrl: viewingProject.liveUrl || viewingProject.live || '',
                           status: viewingProject.status || 'completed',
                           featured: viewingProject.featured || viewingProject.preview || false,
-                          order: viewingProject.order || 0
+                          order: viewingProject.order || 0,
+                          demoUsername: viewingProject.demoUsername || '',
+                          demoPassword: viewingProject.demoPassword || '',
+                          codeImages: viewingProject.codeImages || [],
+                          readme: viewingProject.readme || ''
                        });
                        setTechInput((viewingProject.tech || []).join(', '));
                        setFeaturesInput((viewingProject.features || []).join('\n'));
@@ -834,6 +1055,14 @@ const ProjectsAdmin = () => {
             </motion.div>
          )}
       </AnimatePresence>
+
+      <ReadmeModal
+         isOpen={readmePreviewOpen}
+         onClose={() => setReadmePreviewOpen(false)}
+         title={formData.title || 'README'}
+         readme={formData.readme}
+         githubUrl={formData.githubUrl}
+      />
 
     </motion.div>
   );

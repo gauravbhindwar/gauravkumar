@@ -2,18 +2,38 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { FaGithub, FaExternalLinkAlt, FaTimes, FaCode, FaRocket, FaStar, FaEye, FaArrowRight } from 'react-icons/fa'
+import { FiCopy, FiCheck, FiBookOpen, FiLock } from 'react-icons/fi'
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import useFetch from '@/hooks/useFetch'
+import { optimizeImageUrl } from '@/utils/imageOptimization'
 import { ProjectsSkeleton } from '@/components/ui/SkeletonCard'
 import TiltCard from '@/components/ui/TiltCard'
 import TechBadge from '@/components/ui/TechBadge'
 import GlassCard from '@/components/ui/GlassCard'
 import SectionHeading from '@/components/ui/SectionHeading'
+import dynamic from 'next/dynamic'
+
+// react-markdown + mermaid are heavy and only needed once someone opens a
+// README, so keep them out of the initial homepage bundle.
+const ReadmeModal = dynamic(() => import('@/components/ui/ReadmeModal'), { ssr: false })
 
 const ProjectModal = ({ isOpen, onClose, project }) => {
   const [mounted, setMounted] = useState(false)
+  const [readmeOpen, setReadmeOpen] = useState(false)
+  const [showCredentials, setShowCredentials] = useState(false)
+  const [copiedField, setCopiedField] = useState('')
+
+  const copyToClipboard = async (text, field) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(field)
+      setTimeout(() => setCopiedField(''), 1500)
+    } catch {
+      // clipboard API unavailable — silently ignore, credentials are still visible on screen
+    }
+  }
 
   useEffect(() => {
     setMounted(true)
@@ -36,9 +56,18 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
     }
   }, [isOpen, onClose])
 
+  // Don't leak a previously revealed project's credentials into the next one
+  useEffect(() => {
+    if (!isOpen) {
+      setShowCredentials(false)
+      setCopiedField('')
+    }
+  }, [isOpen])
+
   if (!mounted) return null;
 
   return createPortal(
+    <>
     <AnimatePresence>
       {(isOpen && project) && (
         <>
@@ -76,7 +105,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                 <div className="relative h-72 border-b border-base-content/20">
                   {project.image ? (
                     <img
-                      src={project.image}
+                      src={optimizeImageUrl(project.image, { width: 900, quality: 80 })}
                       alt={project.title}
                       className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all duration-700"
                     />
@@ -105,7 +134,7 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                     <h2 className="text-3xl font-bold text-base-content mb-4">
                       {project.title}
                     </h2>
-                    <p className="text-base-content/80 text-lg leading-relaxed">
+                    <p className="text-base-content/80 text-lg leading-relaxed whitespace-pre-line">
                       {project.description}
                     </p>
                   </div>
@@ -152,8 +181,71 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                     </div>
                   </div>
 
+                  {/* Code Screenshots - fallback preview when the repo is private */}
+                  {project.codeImages?.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-mono text-primary uppercase tracking-widest mb-6 border-b border-primary/20 pb-2">
+                        [ SYS.CODE_PREVIEW ]
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {project.codeImages.map((url, idx) => (
+                          <a
+                            key={idx}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block aspect-video border border-base-content/10 overflow-hidden hover:border-primary/50 transition-colors"
+                          >
+                            <img
+                              src={optimizeImageUrl(url, { width: 400, quality: 75 })}
+                              alt={`Code screenshot ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Demo Credentials */}
+                  {(project.demoUsername || project.demoPassword) && (
+                    <div>
+                      <h3 className="text-sm font-mono text-primary uppercase tracking-widest mb-4 border-b border-primary/20 pb-2 flex items-center gap-2">
+                        <FiLock className="w-3.5 h-3.5" /> [ SYS.DEMO_ACCESS ]
+                      </h3>
+                      {!showCredentials ? (
+                        <button
+                          onClick={() => setShowCredentials(true)}
+                          className="px-6 py-3 bg-base-200/50 hover:bg-primary/20 border border-base-content/20 hover:border-primary/50 text-base-content font-mono text-xs uppercase tracking-widest transition-all"
+                        >
+                          [ REVEAL_DEMO_CREDENTIALS ]
+                        </button>
+                      ) : (
+                        <div className="space-y-2 font-mono text-sm">
+                          {project.demoUsername && (
+                            <div className="flex items-center justify-between gap-3 p-3 bg-base-200/50 border border-base-content/10">
+                              <span className="text-base-content/60 truncate">Username: <span className="text-base-content">{project.demoUsername}</span></span>
+                              <button onClick={() => copyToClipboard(project.demoUsername, 'user')} className="text-primary hover:text-primary/70 shrink-0">
+                                {copiedField === 'user' ? <FiCheck className="w-4 h-4" /> : <FiCopy className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          )}
+                          {project.demoPassword && (
+                            <div className="flex items-center justify-between gap-3 p-3 bg-base-200/50 border border-base-content/10">
+                              <span className="text-base-content/60 truncate">Password: <span className="text-base-content">{project.demoPassword}</span></span>
+                              <button onClick={() => copyToClipboard(project.demoPassword, 'pass')} className="text-primary hover:text-primary/70 shrink-0">
+                                {copiedField === 'pass' ? <FiCheck className="w-4 h-4" /> : <FiCopy className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Action Buttons */}
-                  <div className="flex gap-4 pt-6 mt-4 border-t border-base-content/20">
+                  <div className="flex flex-wrap gap-4 pt-6 mt-4 border-t border-base-content/20">
                     {project.github && (
                       <a
                         href={project.github}
@@ -174,6 +266,14 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
                         [ EXECUTE_DEMO ]
                       </a>
                     )}
+                    {project.readme && (
+                      <button
+                        onClick={() => setReadmeOpen(true)}
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-base-200/50 hover:bg-primary/20 border border-base-content/20 hover:border-primary/50 text-base-content font-mono text-xs uppercase tracking-widest transition-all"
+                      >
+                        <FiBookOpen className="w-4 h-4" /> [ VIEW_README ]
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -181,7 +281,17 @@ const ProjectModal = ({ isOpen, onClose, project }) => {
           </motion.div>
         </>
       )}
-    </AnimatePresence>,
+    </AnimatePresence>
+    {project && (
+      <ReadmeModal
+        isOpen={readmeOpen}
+        onClose={() => setReadmeOpen(false)}
+        title={project.title}
+        readme={project.readme}
+        githubUrl={project.github}
+      />
+    )}
+    </>,
     document.body
   )
 }
@@ -210,7 +320,7 @@ const ProjectCard = ({ project, index }) => {
             <div className="relative h-56 bg-base-300/30 border-b border-base-content/10 overflow-hidden">
               {project.image && !imageError ? (
                 <img
-                  src={project.image}
+                  src={optimizeImageUrl(project.image, { width: 500, quality: 75 })}
                   alt={project.title}
                   className="w-full h-full object-cover opacity-80 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100"
                   onError={handleImageError}
@@ -242,7 +352,7 @@ const ProjectCard = ({ project, index }) => {
                 <h3 className="text-2xl font-display font-black uppercase tracking-tight text-base-content mb-3 group-hover:text-primary transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-base-content/70 font-mono text-xs leading-relaxed line-clamp-3">
+                <p className="text-base-content/70 font-mono text-xs leading-relaxed line-clamp-3 whitespace-pre-line">
                   {project.description}
                 </p>
               </div>

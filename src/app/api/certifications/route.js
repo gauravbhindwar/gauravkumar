@@ -65,7 +65,7 @@ export async function GET() {
 // Helper function to check admin authentication
 async function checkAdminAuth() {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user || session.user.role !== 'admin') {
+  if (!session || !session.user || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
     return false;
   }
   return true;
@@ -168,7 +168,12 @@ export async function DELETE(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+    let id = searchParams.get('id');
+    if (!id) {
+      // Admin UI sends the id as a JSON body instead of a query param.
+      const body = await request.json().catch(() => ({}));
+      id = body.id;
+    }
 
     if (!id) {
       return NextResponse.json(

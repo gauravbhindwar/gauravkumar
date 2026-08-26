@@ -140,17 +140,26 @@ const EducationModal = ({ isOpen, onClose, edu }) => {
 const EducationCard = ({ edu, isLatest, onInspect }) => {
   return (
     <GlassCard className="group relative p-6 md:p-8 shadow-lg border border-base-content/10 hover:border-primary/50 transition-all duration-500">
-      <div className="flex flex-col gap-4 mb-6 items-start">
-        {/* Institution - Brutalist Stop */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-3">
-          <div className="inline-block w-fit px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all break-all sm:break-normal whitespace-pre-wrap">
-            [ STOP_{new Date(edu.startDate || Date.now()).getFullYear()}: {edu.institution.toUpperCase().replace(/\s+/g, '_')} ]
+      <div className="flex flex-col gap-4 mb-6 items-start w-full min-w-0">
+        <div className="flex flex-col gap-3 w-full min-w-0">
+          {/* Top Row: System Tags */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="inline-flex items-center justify-center px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest shrink-0 h-fit w-fit">
+              [ STOP_{new Date(edu.startDate || Date.now()).getFullYear()} ]
+            </div>
+            {isLatest && (
+              <div className="inline-flex items-center justify-center px-2 py-1 bg-secondary text-base-100 font-mono text-[10px] sm:text-xs uppercase tracking-widest border-2 border-base-content shadow-[4px_4px_0_0_currentColor] animate-pulse shrink-0 h-fit w-fit">
+                [ LATEST ]
+              </div>
+            )}
           </div>
-          {isLatest && (
-            <span className="inline-block w-fit px-2 py-1 bg-secondary text-base-100 font-mono text-[10px] sm:text-xs uppercase tracking-widest border-2 border-base-content shadow-[4px_4px_0_0_currentColor] animate-pulse">
-              [ LATEST ]
-            </span>
-          )}
+
+          {/* Second Row: Institution Identity */}
+          <div className="flex flex-row items-center gap-3 w-full min-w-0">
+            <div className="inline-flex items-center px-3 py-1 bg-base-100 text-base-content border-2 border-base-content shadow-[4px_4px_0_0_currentColor] font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all flex-1 min-w-0 break-words whitespace-normal h-fit w-full">
+              {edu.institution.toUpperCase().replace(/\s+/g, '_').replace(/_/g, '_\u200B')}
+            </div>
+          </div>
         </div>
 
         <div>
